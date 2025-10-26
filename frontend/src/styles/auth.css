@@ -1,0 +1,27 @@
+.auth-bg {
+  background-image: url("/public/images/MentalHealth.webp");
+  background-size: cover;
+  background-position: center;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.auth-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4); /* pak errësim */
+  backdrop-filter: blur(3px);
+}
+
+.auth-form {
+  position: relative;
+  z-index: 1;
+  background-color: white;
+  padding: 2rem;
+  border-radius: 10px;
+  width: 400px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
