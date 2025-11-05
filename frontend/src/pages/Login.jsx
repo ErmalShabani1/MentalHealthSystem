@@ -21,11 +21,14 @@ const navigate = useNavigate();
     try {
       const res = await loginUser(formData);
       localStorage.setItem("user", JSON.stringify(res.data));
-      toast.success(`Mire se erdhe ${res.data.username}!`, {
+      toast.success(`Mire se erdhe ${res.data.user.userName}!`, {
       autoClose: 3000,
       onClose: () => {
-        if (res.data.role === "User") {
+        if (res.data.user.role === "User") {
           navigate("/userDashboard");
+           if(res.data.user.role === "Pacient"){
+            navigate("/psikologDashboard")
+          }
         } else {
           navigate("/adminDashboard");
         }

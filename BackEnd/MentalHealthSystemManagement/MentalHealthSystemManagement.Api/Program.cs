@@ -26,13 +26,17 @@ builder.Services.AddCors(options =>
         {
             policy.WithOrigins("http://localhost:3000")
                   .AllowAnyHeader()
-                  .AllowAnyMethod();
+                  .AllowAnyMethod()
+                  .AllowCredentials();
         });
 });
 
 // Dependency injection për repositories dhe services
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<IPsikologRepository, PsikologRepository>();
+builder.Services.AddScoped<PsikologService>();
+
 
 var jwtSecret = builder.Configuration["Jwt:Key"] ?? "Kjo_eshte_nje_celes_shume_sekret_per_JWT_256bit";
 builder.Services.AddSingleton(new JwtService(builder.Configuration));

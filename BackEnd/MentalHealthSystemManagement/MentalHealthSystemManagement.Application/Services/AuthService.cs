@@ -42,7 +42,23 @@ namespace MentalHealthSystemManagement.Application.Services
             if (user.PasswordHash != HashPassword(dto.Password))
                 return null;
 
+            //refresh token
+            var refreshToken = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
+            user.RefreshToken = refreshToken;
+            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
+
+            await _userRepository.UpdateAsync(user);
             return user;
+
+        }
+        public async Task<User?> GetUserByRefreshTokenAsync(string refreshToken)
+        {
+            return await _userRepository.GetByRefreshTokenAsync(refreshToken);
+        }
+
+        public async Task UpdateUserAsync(User user)
+        {
+            await _userRepository.UpdateAsync(user);
         }
      
 

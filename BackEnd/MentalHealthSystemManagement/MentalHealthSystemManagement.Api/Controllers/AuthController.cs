@@ -2,7 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using MentalHealthSystemManagement.Application.DTOs.User;
 using MentalHealthSystemManagement.Application.Services;
-
+using MentalHealthSystemManagement.Infrastructure.Data;
+using MentalHealthSystemManagement.Application.Interfaces;
 namespace MentalHealthSystemManagement.Api.Controllers
 {
     [Route("api/[controller]")]
@@ -32,8 +33,7 @@ namespace MentalHealthSystemManagement.Api.Controllers
             var user = await _authservice.LoginAsync(dto);
             if (user == null) return Unauthorized("Emri ose passwordi jane dhene gabim");
 
-            var jwtservice = new JwtService(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
-            var token = jwtservice.GenerateToken(user.Id.ToString(), user.Username, user.Role);
+            var token = _jwtservice.GenerateToken(user.Id.ToString(), user.Username, user.Role);
 
             Response.Cookies.Append("jwt", token, new CookieOptions
             {
@@ -43,8 +43,53 @@ namespace MentalHealthSystemManagement.Api.Controllers
                 Expires = DateTime.UtcNow.AddMinutes(60)
             });
 
+            Response.Cookies.Append("refreshToken", user.RefreshToken!, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.None,
+                Expires = user.RefreshTokenExpiryTime
+            });
+       
+
 
             return Ok(new { message = "Login successful", user = new { user.Username, user.Email, user.Role } });
+
+           
+
+        }
+        [HttpPost("refresh-Token")]
+        public async Task<IActionResult> RefreshToken()
+        {
+            var refreshToken = Request.Cookies["refreshToken"];
+            if (string.IsNullOrEmpty(refreshToken)) return Unauthorized("Refresh token not found");
+            var user = await _authservice.GetUserByRefreshTokenAsync(refreshToken);
+            if (user == null || user.RefreshTokenExpiryTime <= DateTime.UtcNow) return Unauthorized("Invalid or expired refresh token");
+
+            var newJwtToken = _jwtservice.GenerateToken(user.Id.ToString(), user.Username, user.Role);
+            var newRefreshToken = _jwtservice.GenerateRefreshToken();
+
+            user.RefreshToken = newRefreshToken;
+            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
+            await _authservice.UpdateUserAsync(user);
+
+            Response.Cookies.Append("jwt", newJwtToken, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.None,
+                Expires = DateTime.UtcNow.AddMinutes(60)
+            });
+            Response.Cookies.Append("refreshToken", newRefreshToken, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.None,
+                Expires = user.RefreshTokenExpiryTime
+            });
+
+            return Ok(new { message = "Token refreshed successfully" });
+        
         }
 
         [HttpPost("logout")]
