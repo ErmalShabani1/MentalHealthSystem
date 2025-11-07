@@ -36,6 +36,8 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<IPsikologRepository, PsikologRepository>();
 builder.Services.AddScoped<PsikologService>();
+builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
+builder.Services.AddScoped<AppointmentService>();
 
 
 var jwtSecret = builder.Configuration["Jwt:Key"] ?? "Kjo_eshte_nje_celes_shume_sekret_per_JWT_256bit";

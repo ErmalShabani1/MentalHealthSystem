@@ -17,27 +17,35 @@ const navigate = useNavigate();
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const res = await loginUser(formData);
-      localStorage.setItem("user", JSON.stringify(res.data));
-      toast.success(`Mire se erdhe ${res.data.user.userName}!`, {
+  e.preventDefault();
+  try {
+    const res = await loginUser(formData);
+
+    // Ruaj vetëm të dhënat thelbësore: id, username dhe role
+    const userData = {
+      id: res.data.user.id,          // sigurohu që response ka id
+      username: res.data.user.username,
+      role: res.data.user.role
+    };
+
+    localStorage.setItem("user", JSON.stringify(userData));
+
+    toast.success(`Mire se erdhe ${userData.username}!`, {
       autoClose: 3000,
       onClose: () => {
-        if (res.data.user.role === "User") {
+        if (userData.role === "User") {
           navigate("/userDashboard");
-           if(res.data.user.role === "Pacient"){
-            navigate("/psikologDashboard")
-          }
+        } else if (userData.role === "Psikolog") {
+          navigate("/psikologDashboard");
         } else {
           navigate("/adminDashboard");
         }
       },
     });
-    } catch (err) {
-      toast.error(err.response?.data || "Email ose password i gabuar!");
-    }
-  };
+  } catch (err) {
+    toast.error(err.response?.data || "Email ose password i gabuar!");
+  }
+};
 
  return (
     <div className="auth-bg">

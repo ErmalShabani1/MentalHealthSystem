@@ -7,7 +7,7 @@ namespace MentalHealthSystemManagement.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin, Psikolog")]
     public class PsikologiController : ControllerBase
     {
         private readonly PsikologService _psikologiService;

@@ -9,6 +9,7 @@ import AddPsikologinForm from "./pages/Admin/AddPsikologinForm";
 import EditPsikologinForm from "./pages/Admin/EditPsikologinForm";
 import MenaxhoPsikologet from "./pages/Admin/MenaxhoPsikologet";
 
+
 function App() {
   return (
     <Router>
@@ -21,6 +22,7 @@ function App() {
           <Route path="/add-psikologin" element={<AddPsikologinForm />} />
           < Route path="/edit-psikologin/:id" element={<EditPsikologinForm/>}/>
           <Route path="/menaxhoPsikologet" element={<MenaxhoPsikologet/>}/>
+       
       </Routes>
     </Router>
   );
