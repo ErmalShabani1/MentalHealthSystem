@@ -1,12 +1,9 @@
 import React from "react";
 
-function DashboardStats({ psychologistsCount, takimetCount,patientsCount }) {
+function DashboardStats({ psychologistsCount }) {
   const stats = [
     { title: "Psikologët Aktivë", value: psychologistsCount, icon: "👨‍⚕️", color: "primary" },
-    { title: "Pacientët", value: patientsCount, icon: "🧑‍🤝‍🧑", color: "success" },
-    { title: "Raportet", value: 18, icon: "📋", color: "warning" },
-       { title: "Takimet Aktuale", value: takimetCount, icon: "📅", color: "danger" },
-    { title: "Takimet e Ardhshme", value: 12, icon: "📅", color: "info" },
+    { title: "Takimet e mia", value: 12, icon: "📅", color: "info" },
   ];
 
   return (

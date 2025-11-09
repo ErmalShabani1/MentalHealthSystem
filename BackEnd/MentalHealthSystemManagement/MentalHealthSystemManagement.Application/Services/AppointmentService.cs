@@ -1,4 +1,5 @@
-﻿using MentalHealthSystemManagement.Application.Interfaces;
+﻿using MentalHealthSystemManagement.Application.DTOs.Appointments;
+using MentalHealthSystemManagement.Application.Interfaces;
 using MentalHealthSystemManagement.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -21,7 +22,7 @@ namespace MentalHealthSystemManagement.Application.Services
             return await _repository.GetAllAsync();
         }
         //me i pa takimet vetem te nje psikologi te caktuar
-        public async Task<IEnumerable<Appointment>> GetAppointmentsByPsikolog(int id)
+        public async Task<IEnumerable<AppointmentReadDto>> GetAppointmentsByPsikolog(int id)
         {
             return await _repository.GetByPsikologIdAsync(id);
         }
@@ -37,6 +38,7 @@ namespace MentalHealthSystemManagement.Application.Services
             var appointment = new Appointment
             {
                 PsikologId = dto.PsikologId,
+                PatientId = dto.PatientId,
                 PatientName = dto.PatientName,
                 AppointmentDate = dto.AppointmentDate,
                 Notes = dto.Notes ?? string.Empty,

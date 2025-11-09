@@ -7,6 +7,7 @@ using MentalHealthSystemManagement.Domain.Entities;
 using MentalHealthSystemManagement.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
+using MentalHealthSystemManagement.Application.DTOs.Appointments;
 
 namespace MentalHealthSystemManagement.Api.Controllers
 {
@@ -28,11 +29,31 @@ namespace MentalHealthSystemManagement.Api.Controllers
         }
         [HttpPost("add")]
         [Authorize(Roles = "Psikolog")]
-        public async Task<IActionResult> AddAppointments([FromBody] Appointment dto)
+        public async Task<IActionResult> AddAppointments([FromBody] AppointmentDto dto)
         {
-            await _service.CreateAppointment(dto);
-            return Ok("Appointment added successfully");
+            try
+            {
+                var appointment = new Appointment
+                {
+                    PsikologId = dto.PsikologId,
+                    PatientId = dto.PatientId,
+                    PatientName = dto.PatientName,
+                    AppointmentDate = dto.AppointmentDate,
+                    Notes = dto.Notes ?? string.Empty,
+                    Status = "Scheduled"
+                };
+                await _service.CreateAppointment(appointment);
+                return Ok("Appointment added successfully");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Gabim gjatë shtimit të takimit: " + ex.Message);
+                if (ex.InnerException != null)
+                    Console.WriteLine("InnerException: " + ex.InnerException.Message);
+                return StatusCode(500, ex.Message);
+            }
         }
+
         [HttpPut("{id}")]
         [Authorize (Roles = "Psikolog,Admin")]
         public async Task<IActionResult> UpdateAppointment(int id, Appointment appointment)
@@ -50,7 +71,7 @@ namespace MentalHealthSystemManagement.Api.Controllers
             return Ok("Appointment deleted successfully");
         }
         //endpoints per Adminin
-        [HttpGet]
+        [HttpGet("all")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAll()
         {

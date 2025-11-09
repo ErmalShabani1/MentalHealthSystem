@@ -9,6 +9,7 @@ namespace MentalHealthSystemManagement.Application.DTOs.Appointments
     public class AppointmentDto
     {
         public int PsikologId { get; set; }
+        public int PatientId { get; set; }
         public string PatientName { get; set; } = string.Empty;
         public DateTime AppointmentDate { get; set; }
         public string? Notes { get; set; }

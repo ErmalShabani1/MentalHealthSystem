@@ -20,21 +20,25 @@ const navigate = useNavigate();
   e.preventDefault();
   try {
     const res = await loginUser(formData);
-
+console.log("🔍 Response nga backend:", res.data);
     // Ruaj vetëm të dhënat thelbësore: id, username dhe role
     const userData = {
       id: res.data.user.id,          // sigurohu që response ka id
       username: res.data.user.username,
       role: res.data.user.role
     };
+    if (userData.role.toLowerCase() === "psikolog") {
+  localStorage.setItem("psikologId", userData.id);
+  console.log("✅ psikologId u ruajt:", userData.id);
+}
 
     localStorage.setItem("user", JSON.stringify(userData));
 
     toast.success(`Mire se erdhe ${userData.username}!`, {
       autoClose: 3000,
       onClose: () => {
-        if (userData.role === "User") {
-          navigate("/userDashboard");
+        if (userData.role === "Pacient") {
+          navigate("/pacientDashboard");
         } else if (userData.role === "Psikolog") {
           navigate("/psikologDashboard");
         } else {

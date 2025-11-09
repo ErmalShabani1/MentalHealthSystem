@@ -1,51 +1,69 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using MentalHealthSystemManagement.Application.DTOs.Pacienti;
+using MentalHealthSystemManagement.Application.DTOs.Psikologi;
+using MentalHealthSystemManagement.Application.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using MentalHealthSystemManagement.Application.Interfaces;
-using MentalHealthSystemManagement.Domain.Entities;
-
+using Microsoft.EntityFrameworkCore;
 namespace MentalHealthSystemManagement.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin, Psikolog")]
     public class PatientController : ControllerBase
     {
-        private readonly IPatientRepository _repository;
-
-        public PatientController(IPatientRepository repository)
+        private readonly PatientService _patientService;
+        public PatientController(PatientService patientService)
         {
-            _repository = repository;
+            _patientService = patientService;
         }
-        [HttpGet]
+        [HttpPost("add")]
+        public async Task<IActionResult> AddPatient([FromBody] PatientDto dto)
+        {
+            try
+            {
+                await _patientService.AddPatientAsync(
+                    dto.Username, dto.Email, dto.Password,
+                    dto.Emri, dto.Mbiemri, dto.Mosha, dto.Gjinia, dto.Diagnoza, dto.IsDeleted
+                );
+
+                return Ok("Pacienti u shtua me sukses!");
+            }
+            catch (Exception ex)
+            {
+                // Kthen gabimin në mënyrë që ta shohim në browser / Postman
+                return StatusCode(500, $"Gabim i brendshëm: {ex.Message}");
+            }
+        }
+        [HttpGet("get-all")]
         public async Task<IActionResult> GetAll()
         {
-            var patients = await _repository.GetAllAsync();
-            return Ok(patients);
+            var list = await _patientService.GetAllAsync();
+            return Ok(list);
         }
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int id)
+        [HttpPut("update/{id}")]
+        public async Task<IActionResult> Update(int id, [FromBody] UpdatePatientDto dto)
         {
-            var patient = await _repository.GetByIdAsync(id);
-            if (patient == null) return NotFound();
-            return Ok(patient);
-        }
-        [HttpPost]
-        public async Task<IActionResult> Create(Patient patient)
-        {
-            await _repository.AddAsync(patient);
-            return Ok(patient);
-        }
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id,Patient patient)
-        {
-            if(id != patient.Id) return BadRequest();
-            await _repository.UpdateAsync(patient);
-            return Ok(patient);
+            await _patientService.UpdateAsync(id, dto.Emri, dto.Mbiemri, dto.Mosha, dto.Gjinia, dto.Diagnoza);
+            return Ok("Pacienti updated me sukses");
         }
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+      public async Task<IActionResult> Delete(int id)
         {
-            await _repository.DeleteAsync(id);
-            return Ok();
+            try
+            {
+                var patient = await _patientService.GetByIdAsync(id); // përdor service-n
+                if (patient == null)
+                    return NotFound("Pacienti nuk u gjet");
+
+                await _patientService.DeleteAsync(id); // soft delete
+                return Ok("Pacienti u fshi me sukses");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Gabim i brendshëm: {ex.Message}");
+            }
         }
     }
 }
+

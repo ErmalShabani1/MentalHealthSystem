@@ -8,12 +8,20 @@ import AdminDashboard from "./pages/Admin/AdminDashboard";
 import AddPsikologinForm from "./pages/Admin/AddPsikologinForm";
 import EditPsikologinForm from "./pages/Admin/EditPsikologinForm";
 import MenaxhoPsikologet from "./pages/Admin/MenaxhoPsikologet";
+import PsikologDashboard from "./pages/Psikolog/PsikologDashboard";
+import AddTakimin from "./pages/Psikolog/AddTakimin";
+import EditTakimin from "./pages/Psikolog/EditTakimin";
+import MenaxhoTakimet from "./pages/Psikolog/MenaxhoTakimet";
+import PacientDashboard from "./pages/Pacient/PacientDashboard";
+import AddPacientinForm from "./pages/Pacient/AddPacientinForm";
+import EditPacientinForm from "./pages/Pacient/EditPacientin";
+import MenaxhoPacientet from "./pages/Pacient/MenaxhoPacientet";
 
 
 function App() {
   return (
     <Router>
-      <ToastContainer />
+      <ToastContainer position="top-center"  autoClose={3000} />
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
@@ -22,7 +30,15 @@ function App() {
           <Route path="/add-psikologin" element={<AddPsikologinForm />} />
           < Route path="/edit-psikologin/:id" element={<EditPsikologinForm/>}/>
           <Route path="/menaxhoPsikologet" element={<MenaxhoPsikologet/>}/>
-       
+           <Route path="/psikologDashboard" element={<PsikologDashboard />} />
+          <Route path="/add-takimet" element={<AddTakimin />} />
+          < Route path="/edit-takimet/:id" element={<EditTakimin/>}/>
+          <Route path="/menaxhoTakimet" element={<MenaxhoTakimet/>}/>
+             <Route path="/pacientDashboard" element={<PacientDashboard />} />
+          <Route path="/add-pacientin" element={<AddPacientinForm />} />
+          < Route path="/edit-pacientin/:id" element={<EditPacientinForm/>}/>
+          <Route path="/menaxhoPacientet" element={<MenaxhoPacientet/>}/>
+         
       </Routes>
     </Router>
   );

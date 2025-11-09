@@ -53,7 +53,7 @@ namespace MentalHealthSystemManagement.Api.Controllers
        
 
 
-            return Ok(new { message = "Login successful", user = new { user.Username, user.Email, user.Role } });
+            return Ok(new { message = "Login successful", user = new { user.Id,user.Username, user.Email, user.Role } });
 
            
 

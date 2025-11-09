@@ -4,6 +4,7 @@ using MentalHealthSystemManagement.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MentalHealthSystemManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251108141017_ndryshimee")]
+    partial class ndryshimee
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -83,9 +86,6 @@ namespace MentalHealthSystemManagement.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
                     b.Property<string>("Mbiemri")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -93,12 +93,10 @@ namespace MentalHealthSystemManagement.Infrastructure.Migrations
                     b.Property<int>("Mosha")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                    b.Property<bool>("isDeleted")
+                        .HasColumnType("bit");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Patients");
                 });
@@ -214,17 +212,6 @@ namespace MentalHealthSystemManagement.Infrastructure.Migrations
                     b.Navigation("Patient");
 
                     b.Navigation("Psikologi");
-                });
-
-            modelBuilder.Entity("MentalHealthSystemManagement.Domain.Entities.Patient", b =>
-                {
-                    b.HasOne("MentalHealthSystemManagement.Domain.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("MentalHealthSystemManagement.Domain.Entities.Psikologi", b =>
