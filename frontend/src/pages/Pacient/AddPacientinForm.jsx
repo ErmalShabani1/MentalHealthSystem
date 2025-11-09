@@ -3,7 +3,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 
-const API_URL = "https://localhost:7062/api/Patient/add";
+const API_URL = "http://localhost:5054/api/Patient/add";
 
 function AddPacientinForm() {
   const [formData, setFormData] = useState({

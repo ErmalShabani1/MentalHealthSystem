@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "https://localhost:7062/api/Appointments";
+const API_URL = "http://localhost:5054/api/Appointments";
 
 export const getTakimetByPsikologId = async (id) => {
   return await axios.get(`${API_URL}/psikolog/${id}`, { withCredentials: true });

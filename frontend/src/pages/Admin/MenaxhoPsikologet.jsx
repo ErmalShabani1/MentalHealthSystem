@@ -5,17 +5,34 @@ import { toast } from "react-toastify";
 
 function MenaxhoPsikologet() {
   const [psychologists, setPsychologists] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const fetchData = async () => {
-    const res = await getAllPsikologet();
-    setPsychologists(res.data);
+    try {
+      setLoading(true);
+      setError(null);
+      const res = await getAllPsikologet();
+      setPsychologists(res.data || []);
+    } catch (err) {
+      console.error("Error fetching psychologists:", err);
+      setError("Gabim gjatë marrjes së të dhënave. Ju lutem kontrolloni lidhjen me serverin.");
+      toast.error("Gabim gjatë marrjes së psikologëve!");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleDelete = async (id) => {
     if (window.confirm("A jeni i sigurt që doni ta fshini këtë psikolog?")) {
-      await deletePsikologin(id);
-      toast.success("Psikologu u fshi me sukses!");
-      fetchData();
+      try {
+        await deletePsikologin(id);
+        toast.success("Psikologu u fshi me sukses!");
+        fetchData();
+      } catch (err) {
+        console.error("Error deleting psychologist:", err);
+        toast.error("Gabim gjatë fshirjes së psikologut!");
+      }
     }
   };
 
@@ -55,45 +72,67 @@ function MenaxhoPsikologet() {
         <div className="container mt-5">
           <h2 className="mb-4">Menaxho Psikologët</h2>
 
-          <table className="table table-striped table-hover">
-            <thead className="table-dark">
-              <tr>
-                <th>Username</th>
-                <th>Email</th>
-                <th>Name</th>
-                <th>Surname</th>
-                <th>Specialization</th>
-                <th>Experience Level</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {psychologists.map((p) => (
-                <tr key={p.id}>
-                  <td>{p.user.username}</td>
-                  <td>{p.user.email}</td>
-                  <td>{p.name}</td>
-                  <td>{p.surname}</td>
-                  <td>{p.specialization}</td>
-                  <td>{p.experienceLevel}</td>
-                  <td>
-                    <Link
-                      to={`/edit-psikologin/${p.id}`}
-                      className="btn btn-warning btn-sm me-2"
-                    >
-                      Edit
-                    </Link>
-                    <button
-                      onClick={() => handleDelete(p.id)}
-                      className="btn btn-danger btn-sm"
-                    >
-                      Delete
-                    </button>
-                  </td>
+          {loading && (
+            <div className="text-center">
+              <div className="spinner-border" role="status">
+                <span className="visually-hidden">Duke u ngarkuar...</span>
+              </div>
+            </div>
+          )}
+
+          {error && (
+            <div className="alert alert-danger" role="alert">
+              {error}
+            </div>
+          )}
+
+          {!loading && !error && psychologists.length === 0 && (
+            <div className="alert alert-info" role="alert">
+              Nuk ka psikologë të regjistruar.
+            </div>
+          )}
+
+          {!loading && !error && psychologists.length > 0 && (
+            <table className="table table-striped table-hover">
+              <thead className="table-dark">
+                <tr>
+                  <th>Username</th>
+                  <th>Email</th>
+                  <th>Name</th>
+                  <th>Surname</th>
+                  <th>Specialization</th>
+                  <th>Experience Level</th>
+                  <th>Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {psychologists.map((p) => (
+                  <tr key={p.id}>
+                    <td>{p.user?.username || "N/A"}</td>
+                    <td>{p.user?.email || "N/A"}</td>
+                    <td>{p.name || "N/A"}</td>
+                    <td>{p.surname || "N/A"}</td>
+                    <td>{p.specialization || "N/A"}</td>
+                    <td>{p.experienceLevel || "N/A"}</td>
+                    <td>
+                      <Link
+                        to={`/edit-psikologin/${p.id}`}
+                        className="btn btn-warning btn-sm me-2"
+                      >
+                        Edit
+                      </Link>
+                      <button
+                        onClick={() => handleDelete(p.id)}
+                        className="btn btn-danger btn-sm"
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
         </div>
       </div>
     </div>

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using MentalHealthSystemManagement.Application.Services;
 using MentalHealthSystemManagement.Application.DTOs.Psikologi;
+using MentalHealthSystemManagement.Domain.Entities;
 namespace MentalHealthSystemManagement.Api.Controllers
 {
     [Route("api/[controller]")]
@@ -36,8 +37,31 @@ namespace MentalHealthSystemManagement.Api.Controllers
         [HttpGet("get-all")]
         public async Task<IActionResult> GetAll()
         {
-            var list = await _psikologiService.GetAllAsync();
-            return Ok(list);
+            try
+            {
+                var list = await _psikologiService.GetAllAsync();
+                var result = list.Select(p => new PsikologiReadDto
+                {
+                    Id = p.Id,
+                    UserId = p.UserId,
+                    Name = p.Name ?? string.Empty,
+                    Surname = p.Surname ?? string.Empty,
+                    Specialization = p.Specialization ?? string.Empty,
+                    ExperienceLevel = p.ExperienceLevel ?? string.Empty,
+                    User = p.User != null ? new UserInfoDto
+                    {
+                        Id = p.User.Id,
+                        Username = p.User.Username ?? string.Empty,
+                        Email = p.User.Email ?? string.Empty,
+                        Role = p.User.Role ?? string.Empty
+                    } : new UserInfoDto { Id = p.UserId, Username = "N/A", Email = "N/A", Role = "N/A" }
+                }).ToList();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Gabim i brendshëm: {ex.Message}");
+            }
         }
         [HttpPut("update/{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] UpdatePsikologiDto dto)
@@ -48,8 +72,15 @@ namespace MentalHealthSystemManagement.Api.Controllers
         [HttpDelete("delete/{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            await _psikologiService.DeleteAsync(id);
-            return Ok("Psikologi u fshi me sukses");
+            try
+            {
+                await _psikologiService.DeleteAsync(id);
+                return Ok("Psikologi u fshi me sukses");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Gabim i brendshëm: {ex.Message}");
+            }
         }
     }
 }

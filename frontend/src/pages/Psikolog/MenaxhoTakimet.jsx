@@ -41,7 +41,7 @@ function MenaxhoTakimet() {
     const fetchPatients = async () => {
       try {
         const res = await axios.get(
-          "https://localhost:7062/api/Patient/get-all",
+          "http://localhost:5054/api/Patient/get-all",
           { withCredentials: true }
         );
         setPatients(res.data);

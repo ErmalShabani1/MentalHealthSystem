@@ -1,10 +1,11 @@
 ﻿using MentalHealthSystemManagement.Application.DTOs.Pacienti;
-using MentalHealthSystemManagement.Application.DTOs.Psikologi;
 using MentalHealthSystemManagement.Application.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using MentalHealthSystemManagement.Domain.Entities;
+using System.Linq;
 namespace MentalHealthSystemManagement.Api.Controllers
 {
     [Route("api/[controller]")]
@@ -38,8 +39,51 @@ namespace MentalHealthSystemManagement.Api.Controllers
         [HttpGet("get-all")]
         public async Task<IActionResult> GetAll()
         {
-            var list = await _patientService.GetAllAsync();
-            return Ok(list);
+            try
+            {
+                // Debug: Check if user is authenticated and what role they have
+                if (!User.Identity?.IsAuthenticated ?? true)
+                {
+                    return Unauthorized("User is not authenticated");
+                }
+
+                var userRole = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value;
+                if (string.IsNullOrEmpty(userRole))
+                {
+                    return Unauthorized("User role not found in token");
+                }
+
+                var list = await _patientService.GetAllAsync();
+                if (list == null)
+                {
+                    return Ok(new List<PatientReadDto>());
+                }
+
+                var result = list.Select(p => new PatientReadDto
+                {
+                    Id = p.Id,
+                    UserId = p.UserId,
+                    Emri = p.Emri ?? string.Empty,
+                    Mbiemri = p.Mbiemri ?? string.Empty,
+                    Mosha = p.Mosha,
+                    Gjinia = p.Gjinia ?? string.Empty,
+                    Diagnoza = p.Diagnoza ?? string.Empty,
+                    IsDeleted = p.IsDeleted,
+                    User = p.User != null ? new UserInfoDto
+                    {
+                        Id = p.User.Id,
+                        Username = p.User.Username ?? string.Empty,
+                        Email = p.User.Email ?? string.Empty,
+                        Role = p.User.Role ?? string.Empty
+                    } : new UserInfoDto { Id = p.UserId, Username = "N/A", Email = "N/A", Role = "N/A" }
+                }).ToList();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                // Log the full exception for debugging
+                return StatusCode(500, $"Gabim i brendshëm: {ex.Message}. StackTrace: {ex.StackTrace}");
+            }
         }
         [HttpPut("update/{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] UpdatePatientDto dto)

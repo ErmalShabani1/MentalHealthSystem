@@ -5,17 +5,45 @@ import { toast } from "react-toastify";
 
 function MenaxhoPacientet() {
   const [pacient, setPacients] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const fetchData = async () => {
-    const res = await getAllPatients();
-    setPacients(res.data);
+    try {
+      setLoading(true);
+      setError(null);
+      const res = await getAllPatients();
+      setPacients(res.data || []);
+    } catch (err) {
+      console.error("Error fetching patients:", err);
+      const errorMessage = err.response?.data || err.message || "Gabim i panjohur";
+      const statusCode = err.response?.status;
+      
+      if (statusCode === 401 || statusCode === 403) {
+        setError("Ju nuk keni autorizim për të parë këto të dhëna. Ju lutem kyçuni si Admin ose Psikolog.");
+        toast.error("Probleme me autorizimin!");
+      } else if (statusCode === 500) {
+        setError(`Gabim në server: ${errorMessage}`);
+        toast.error("Gabim në server!");
+      } else {
+        setError(`Gabim gjatë marrjes së të dhënave: ${errorMessage}`);
+        toast.error("Gabim gjatë marrjes së pacientëve!");
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleDelete = async (id) => {
     if (window.confirm("A jeni i sigurt që doni ta fshini këtë pacient?")) {
-      await deletePacientin(id);
-      toast.success("Pacienti u fshi me sukses!");
-      fetchData();
+      try {
+        await deletePacientin(id);
+        toast.success("Pacienti u fshi me sukses!");
+        fetchData();
+      } catch (err) {
+        console.error("Error deleting patient:", err);
+        toast.error("Gabim gjatë fshirjes së pacientit!");
+      }
     }
   };
 
@@ -55,47 +83,69 @@ function MenaxhoPacientet() {
         <div className="container mt-5">
           <h2 className="mb-4">Menaxho Pacientet</h2>
 
-          <table className="table table-striped table-hover">
-            <thead className="table-dark">
-              <tr>
-                <th>Username</th>
-                <th>Email</th>
-                <th>Emri</th>
-                <th>Mbiemri</th>
-                <th>Mosha</th>
-                <th>Gjinia </th>
-                <th>Diagnoza </th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {pacient.map((p) => (
-                <tr key={p.id}>
-                  <td>{p.user.username}</td>
-                  <td>{p.user.email}</td>
-                  <td>{p.emri}</td>
-                  <td>{p.mbiemri}</td>
-                  <td>{p.mosha}</td>
-                  <td>{p.gjinia}</td>
-                  <td>{p.diagnoza}</td>
-                  <td>
-                    <Link
-                      to={`/edit-pacientin/${p.id}`}
-                      className="btn btn-warning btn-sm me-2"
-                    >
-                      Edit
-                    </Link>
-                    <button
-                      onClick={() => handleDelete(p.id)}
-                      className="btn btn-danger btn-sm"
-                    >
-                      Delete
-                    </button>
-                  </td>
+          {loading && (
+            <div className="text-center">
+              <div className="spinner-border" role="status">
+                <span className="visually-hidden">Duke u ngarkuar...</span>
+              </div>
+            </div>
+          )}
+
+          {error && (
+            <div className="alert alert-danger" role="alert">
+              {error}
+            </div>
+          )}
+
+          {!loading && !error && pacient.length === 0 && (
+            <div className="alert alert-info" role="alert">
+              Nuk ka pacientë të regjistruar.
+            </div>
+          )}
+
+          {!loading && !error && pacient.length > 0 && (
+            <table className="table table-striped table-hover">
+              <thead className="table-dark">
+                <tr>
+                  <th>Username</th>
+                  <th>Email</th>
+                  <th>Emri</th>
+                  <th>Mbiemri</th>
+                  <th>Mosha</th>
+                  <th>Gjinia</th>
+                  <th>Diagnoza</th>
+                  <th>Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {pacient.map((p) => (
+                  <tr key={p.id}>
+                    <td>{p.user?.username || "N/A"}</td>
+                    <td>{p.user?.email || "N/A"}</td>
+                    <td>{p.emri || "N/A"}</td>
+                    <td>{p.mbiemri || "N/A"}</td>
+                    <td>{p.mosha || "N/A"}</td>
+                    <td>{p.gjinia || "N/A"}</td>
+                    <td>{p.diagnoza || "N/A"}</td>
+                    <td>
+                      <Link
+                        to={`/edit-pacientin/${p.id}`}
+                        className="btn btn-warning btn-sm me-2"
+                      >
+                        Edit
+                      </Link>
+                      <button
+                        onClick={() => handleDelete(p.id)}
+                        className="btn btn-danger btn-sm"
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
         </div>
       </div>
     </div>
