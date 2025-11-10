@@ -12,6 +12,7 @@ import PsikologDashboard from "./pages/Psikolog/PsikologDashboard";
 import AddTakimin from "./pages/Psikolog/AddTakimin";
 import EditTakimin from "./pages/Psikolog/EditTakimin";
 import MenaxhoTakimet from "./pages/Psikolog/MenaxhoTakimet";
+import Raportet from "./pages/Psikolog/Raportet";
 import PacientDashboard from "./pages/Pacient/PacientDashboard";
 import AddPacientinForm from "./pages/Pacient/AddPacientinForm";
 import EditPacientinForm from "./pages/Pacient/EditPacientin";
@@ -34,6 +35,7 @@ function App() {
           <Route path="/add-takimet" element={<AddTakimin />} />
           < Route path="/edit-takimet/:id" element={<EditTakimin/>}/>
           <Route path="/menaxhoTakimet" element={<MenaxhoTakimet/>}/>
+          <Route path="/raportet" element={<Raportet/>}/>
              <Route path="/pacientDashboard" element={<PacientDashboard />} />
           <Route path="/add-pacientin" element={<AddPacientinForm />} />
           < Route path="/edit-pacientin/:id" element={<EditPacientinForm/>}/>

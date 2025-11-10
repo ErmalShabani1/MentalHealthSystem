@@ -20,6 +20,45 @@ namespace MentalHealthSystemManagement.Infrastructure.Data
         public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DbSet<Psikologi> Psikologet { get; set; }
         public DbSet<Appointment> Appointments { get; set; }
-        //ketu i bejme te tjerat 
+        
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            
+            // Configure RefreshToken relationship with User
+            modelBuilder.Entity<RefreshToken>()
+                .HasOne(rt => rt.User)
+                .WithMany()
+                .HasForeignKey(rt => rt.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+            
+            // Configure Appointment relationship - use PsikologId as the foreign key
+            modelBuilder.Entity<Appointment>()
+                .HasOne(a => a.Psikologi)
+                .WithMany()
+                .HasForeignKey(a => a.PsikologId)
+                .OnDelete(DeleteBehavior.Restrict);
+            
+            // Configure Appointment relationship with Patient
+            modelBuilder.Entity<Appointment>()
+                .HasOne(a => a.Patient)
+                .WithMany()
+                .HasForeignKey(a => a.PatientId)
+                .OnDelete(DeleteBehavior.Restrict);
+            
+            // Configure Patient relationship with User
+            modelBuilder.Entity<Patient>()
+                .HasOne(p => p.User)
+                .WithMany()
+                .HasForeignKey(p => p.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+            
+            // Configure Psikologi relationship with User
+            modelBuilder.Entity<Psikologi>()
+                .HasOne(p => p.User)
+                .WithMany()
+                .HasForeignKey(p => p.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+        }
     }
 }

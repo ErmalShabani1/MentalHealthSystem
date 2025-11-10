@@ -55,17 +55,19 @@ namespace MentalHealthSystemManagement.Api.Controllers
                 Response.Cookies.Append("jwt", token, new CookieOptions
                 {
                     HttpOnly = true,
-                    Secure = !isDevelopment, // Allow insecure cookies in development
-                    SameSite = SameSiteMode.None,
-                    Expires = DateTime.UtcNow.AddMinutes(60)
+                    Secure = false, // Set to false for localhost development
+                    SameSite = SameSiteMode.Lax, // Changed from None to Lax for better compatibility
+                    Expires = DateTime.UtcNow.AddMinutes(60),
+                    Path = "/"
                 });
 
                 Response.Cookies.Append("refreshToken", user.RefreshToken!, new CookieOptions
                 {
                     HttpOnly = true,
-                    Secure = !isDevelopment, // Allow insecure cookies in development
-                    SameSite = SameSiteMode.None,
-                    Expires = user.RefreshTokenExpiryTime
+                    Secure = false, // Set to false for localhost development
+                    SameSite = SameSiteMode.Lax, // Changed from None to Lax for better compatibility
+                    Expires = user.RefreshTokenExpiryTime,
+                    Path = "/"
                 });
 
                 return Ok(new { message = "Login successful", user = new { user.Id, user.Username, user.Email, user.Role } });
@@ -94,16 +96,18 @@ namespace MentalHealthSystemManagement.Api.Controllers
             Response.Cookies.Append("jwt", newJwtToken, new CookieOptions
             {
                 HttpOnly = true,
-                Secure = !isDevelopment, // Allow insecure cookies in development
-                SameSite = SameSiteMode.None,
-                Expires = DateTime.UtcNow.AddMinutes(60)
+                Secure = false, // Set to false for localhost development
+                SameSite = SameSiteMode.Lax, // Changed from None to Lax for better compatibility
+                Expires = DateTime.UtcNow.AddMinutes(60),
+                Path = "/"
             });
             Response.Cookies.Append("refreshToken", newRefreshToken, new CookieOptions
             {
                 HttpOnly = true,
-                Secure = !isDevelopment, // Allow insecure cookies in development
-                SameSite = SameSiteMode.None,
-                Expires = user.RefreshTokenExpiryTime
+                Secure = false, // Set to false for localhost development
+                SameSite = SameSiteMode.Lax, // Changed from None to Lax for better compatibility
+                Expires = user.RefreshTokenExpiryTime,
+                Path = "/"
             });
 
             return Ok(new { message = "Token refreshed successfully" });

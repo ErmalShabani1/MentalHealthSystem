@@ -71,6 +71,46 @@ namespace MentalHealthSystemManagement.Infrastructure.Repositories
             }
         }
 
+        public async Task<IEnumerable<PatientReportDto>> GetPatientReportsByPsikologIdAsync(int psikologId)
+        {
+            var appointments = await _context.Appointments
+                .Include(a => a.Patient)
+                    .ThenInclude(p => p.User)
+                .Where(a => a.PsikologId == psikologId)
+                .OrderBy(a => a.PatientId)
+                .ThenByDescending(a => a.AppointmentDate)
+                .ToListAsync();
+
+            var reports = appointments
+                .GroupBy(a => a.PatientId)
+                .Select(g => 
+                {
+                    var firstAppointment = g.First();
+                    var patient = firstAppointment.Patient;
+                    return new PatientReportDto
+                    {
+                        PatientId = g.Key,
+                        PatientName = patient != null 
+                            ? $"{patient.Emri} {patient.Mbiemri}" 
+                            : "Nuk u gjet",
+                        Email = patient?.User?.Email ?? "N/A",
+                        Mosha = patient?.Mosha ?? 0,
+                        Gjinia = patient?.Gjinia ?? "N/A",
+                        Diagnoza = patient?.Diagnoza ?? "N/A",
+                        Appointments = g.Select(a => new AppointmentNoteDto
+                        {
+                            AppointmentId = a.Id,
+                            AppointmentDate = a.AppointmentDate,
+                            Status = a.Status,
+                            Notes = a.Notes
+                        }).ToList()
+                    };
+                })
+                .ToList();
+
+            return reports;
+        }
+
     }
 }
 

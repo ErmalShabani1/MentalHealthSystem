@@ -13,10 +13,11 @@ namespace MentalHealthSystemManagement.Application.Interfaces
     {
     Task<IEnumerable<Appointment>> GetAllAsync();
         Task<IEnumerable<AppointmentReadDto>> GetByPsikologIdAsync(int id);
-        Task<Appointment> GetByIdAsync(int id);
+        Task<Appointment?> GetByIdAsync(int id);
     Task AddAsync(Appointment appointment);
     Task UpdateAsync(Appointment appointment);
     Task DeleteAsync(int id);
+    Task<IEnumerable<PatientReportDto>> GetPatientReportsByPsikologIdAsync(int psikologId);
 
     }
 }

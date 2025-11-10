@@ -85,5 +85,20 @@ namespace MentalHealthSystemManagement.Api.Controllers
             if (appointment == null) return BadRequest("Id not found");
             return Ok(appointment);
         }
+
+        [HttpGet("reports/psikolog/{id}")]
+        [Authorize(Roles = "Psikolog")]
+        public async Task<IActionResult> GetPatientReports(int id)
+        {
+            try
+            {
+                var reports = await _service.GetPatientReportsByPsikolog(id);
+                return Ok(reports);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Gabim i brendshëm: {ex.Message}");
+            }
+        }
     }
 }

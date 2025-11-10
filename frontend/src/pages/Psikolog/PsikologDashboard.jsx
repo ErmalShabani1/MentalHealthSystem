@@ -53,6 +53,11 @@ useEffect(() => {
               📋 Menaxho Takimet
             </Link>
           </li>
+          <li className="nav-item mb-2">
+            <Link to="/raportet" className="nav-link text-white">
+              📊 Raportet e Pacientëve
+            </Link>
+          </li>
         </ul>
       </div>
 

@@ -56,5 +56,10 @@ namespace MentalHealthSystemManagement.Application.Services
             await _repository.DeleteAsync(id);
         }
 
+        public async Task<IEnumerable<PatientReportDto>> GetPatientReportsByPsikolog(int psikologId)
+        {
+            return await _repository.GetPatientReportsByPsikologIdAsync(psikologId);
+        }
+
     }
 }

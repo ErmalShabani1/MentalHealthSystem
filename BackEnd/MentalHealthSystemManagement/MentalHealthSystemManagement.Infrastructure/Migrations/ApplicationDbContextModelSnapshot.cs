@@ -47,9 +47,6 @@ namespace MentalHealthSystemManagement.Infrastructure.Migrations
                     b.Property<int>("PsikologId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("PsikologiId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -58,7 +55,7 @@ namespace MentalHealthSystemManagement.Infrastructure.Migrations
 
                     b.HasIndex("PatientId");
 
-                    b.HasIndex("PsikologiId");
+                    b.HasIndex("PsikologId");
 
                     b.ToTable("Appointments");
                 });
@@ -155,11 +152,12 @@ namespace MentalHealthSystemManagement.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("RefreshTokens");
                 });
@@ -204,12 +202,14 @@ namespace MentalHealthSystemManagement.Infrastructure.Migrations
                     b.HasOne("MentalHealthSystemManagement.Domain.Entities.Patient", "Patient")
                         .WithMany()
                         .HasForeignKey("PatientId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("MentalHealthSystemManagement.Domain.Entities.Psikologi", "Psikologi")
                         .WithMany()
-                        .HasForeignKey("PsikologiId");
+                        .HasForeignKey("PsikologId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("Patient");
 
@@ -228,6 +228,17 @@ namespace MentalHealthSystemManagement.Infrastructure.Migrations
                 });
 
             modelBuilder.Entity("MentalHealthSystemManagement.Domain.Entities.Psikologi", b =>
+                {
+                    b.HasOne("MentalHealthSystemManagement.Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("MentalHealthSystemManagement.Domain.Entities.RefreshToken", b =>
                 {
                     b.HasOne("MentalHealthSystemManagement.Domain.Entities.User", "User")
                         .WithMany()

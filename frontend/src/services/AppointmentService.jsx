@@ -20,3 +20,7 @@ export const deleteTakimin = async (id) => {
 export const getAllAppointmentsAdmin = async () => {
   return await axios.get(`${API_URL}/all`);
 };
+
+export const getPatientReports = async (psikologId) => {
+  return await axios.get(`${API_URL}/reports/psikolog/${psikologId}`, { withCredentials: true });
+};
