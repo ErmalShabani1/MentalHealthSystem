@@ -53,27 +53,11 @@ function MenaxhoTakimet() {
     fetchData();
   }, []);
 
-<<<<<<< HEAD
-  useEffect(() => {
-    // Merr të gjithë pacientët nga backend
-    const fetchPatients = async () => {
-      try {
-        const res = await axios.get(
-          "http://localhost:5054/api/Patient/get-all",
-          { withCredentials: true }
-        );
-        setPatients(res.data);
-      } catch (error) {
-        console.error("Gabim gjatë marrjes së pacientëve:", error);
-      }
-    };
-=======
   // Filtro takimet sipas statusit
   const filteredTakimet = takimet.filter(takim => {
     if (filterStatus === "Të gjitha") return true;
     return takim.status === filterStatus;
   });
->>>>>>> f5d97ba (Stilizime ne front end)
 
   // Llogarit statistikat
   const stats = {
@@ -119,13 +103,11 @@ function MenaxhoTakimet() {
             </Link>
           </li>
           <li className="nav-item mb-2">
-<<<<<<< HEAD
             <Link to="/raportet" className="nav-link text-white">
               📊 Raportet e Pacientëve
-=======
+            </Link>
             <Link to="/pacientetEMi" className="nav-link text-white">
               👥 Pacientët e Mi
->>>>>>> f5d97ba (Stilizime ne front end)
             </Link>
           </li>
         </ul>

@@ -1,4 +1,4 @@
-// Krijoni një file të ri: components/Admin/MenaxhoTakimetAdmin.js
+
 
 import React, { useEffect, useState } from "react";
 import { getAllAppointmentsAdmin, deleteTakimin } from "../../services/AppointmentService";

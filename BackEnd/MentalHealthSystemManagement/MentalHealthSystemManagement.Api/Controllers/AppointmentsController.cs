@@ -55,7 +55,7 @@ namespace MentalHealthSystemManagement.Api.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize (Roles = "Psikolog,Admin")]
+        [Authorize(Roles = "Psikolog,Admin")]
         public async Task<IActionResult> UpdateAppointment(int id, Appointment appointment)
         {
             if (id != appointment.Id)
@@ -81,24 +81,9 @@ namespace MentalHealthSystemManagement.Api.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var appointment = await  _service.GetAppointmentsById(id);
+            var appointment = await _service.GetAppointmentsById(id);
             if (appointment == null) return BadRequest("Id not found");
             return Ok(appointment);
-        }
-
-        [HttpGet("reports/psikolog/{id}")]
-        [Authorize(Roles = "Psikolog")]
-        public async Task<IActionResult> GetPatientReports(int id)
-        {
-            try
-            {
-                var reports = await _service.GetPatientReportsByPsikolog(id);
-                return Ok(reports);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Gabim i brendshëm: {ex.Message}");
-            }
         }
     }
 }

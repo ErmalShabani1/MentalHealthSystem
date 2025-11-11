@@ -1,6 +1,6 @@
 ﻿using MentalHealthSystemManagement.Domain.Entities;
 using MentalHealthSystemManagement.Infrastructure.Data;
-using BCrypt.Net; 
+using BCrypt.Net;
 
 namespace MentalHealthSystemManagement.Infrastructure.SeedData
 {
@@ -15,7 +15,7 @@ namespace MentalHealthSystemManagement.Infrastructure.SeedData
                     Username = "Admin",
                     Email = "admin01@icloud.com",
                     Role = "Admin",
-                    PasswordHash = BCrypt.Net.BCrypt.HashPassword("Admin123") 
+                    PasswordHash = BCrypt.Net.BCrypt.HashPassword("Admin123")
                 };
 
                 context.Users.Add(admin);

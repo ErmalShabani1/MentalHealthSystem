@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:5054/api/Patient";
+const API_URL = "https://localhost:7062/api/Patient";
 
 export const getAllPatients = async () => {
   return await axios.get(`${API_URL}/get-all`, { withCredentials: true });

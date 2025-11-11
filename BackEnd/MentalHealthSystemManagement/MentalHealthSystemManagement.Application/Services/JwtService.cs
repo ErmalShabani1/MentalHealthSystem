@@ -24,8 +24,7 @@ namespace MentalHealthSystemManagement.Application.Services
             {
                 new Claim(JwtRegisteredClaimNames.Sub, userId),
                 new Claim(JwtRegisteredClaimNames.UniqueName, username),
-                new Claim(ClaimTypes.Role, role),
-                new Claim("role", role) // Fallback claim name
+                new Claim(ClaimTypes.Role, role)
             };
             var token = new JwtSecurityToken(
                 issuer: _configuration["Jwt:Issuer"],

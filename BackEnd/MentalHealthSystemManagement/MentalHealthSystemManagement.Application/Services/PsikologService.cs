@@ -20,7 +20,7 @@ namespace MentalHealthSystemManagement.Application.Services
             _psikologRepository = psikologRepository;
             _userRepository = userRepository;
         }
-        public async Task AddPsikologAsync(string username, string email, string password,string name,string surname,string specialization,string experienceLevel)
+        public async Task AddPsikologAsync(string username, string email, string password, string name, string surname, string specialization, string experienceLevel)
         {
             var user = new User
             {
@@ -40,7 +40,7 @@ namespace MentalHealthSystemManagement.Application.Services
                 Specialization = specialization,
                 ExperienceLevel = experienceLevel
             };
-           await _psikologRepository.AddAsync(psikologi);
+            await _psikologRepository.AddAsync(psikologi);
             await _psikologRepository.SaveChangesAsync();
         }
         public async Task<IEnumerable<Psikologi>> GetAllAsync() => await _psikologRepository.GetAllAsync();
@@ -51,7 +51,7 @@ namespace MentalHealthSystemManagement.Application.Services
             if (psikologi == null) throw new Exception("Psikologi nuk u gjet");
 
             psikologi.Name = name;
-            psikologi.Surname = surname;   
+            psikologi.Surname = surname;
             psikologi.Specialization = specialization;
             psikologi.ExperienceLevel = experienceLevel;
 

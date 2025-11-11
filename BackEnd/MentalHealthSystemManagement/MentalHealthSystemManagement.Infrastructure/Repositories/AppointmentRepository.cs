@@ -21,8 +21,8 @@ namespace MentalHealthSystemManagement.Infrastructure.Repositories
         public async Task<IEnumerable<Appointment>> GetAllAsync()
         {
             return await _context.Appointments
-                .Include(a => a.Patient)  
-                .Include(a => a.Psikologi) 
+                .Include(a => a.Patient)
+                .Include(a => a.Psikologi)
                 .ToListAsync();
         }
         public async Task<IEnumerable<AppointmentReadDto>> GetByPsikologIdAsync(int id)
@@ -55,65 +55,24 @@ namespace MentalHealthSystemManagement.Infrastructure.Repositories
             if (existingAppointment == null)
                 throw new Exception("Appointment not found");
 
-          
+
             existingAppointment.PatientId = appointment.PatientId;
             existingAppointment.AppointmentDate = appointment.AppointmentDate;
             existingAppointment.Notes = appointment.Notes;
             existingAppointment.Status = appointment.Status;
 
-        
+
             await _context.SaveChangesAsync();
         }
         public async Task DeleteAsync(int id)
         {
             var appointment = await _context.Appointments.FindAsync(id);
-                if(appointment != null)
+            if (appointment != null)
             {
                 _context.Appointments.Remove(appointment);
                 await _context.SaveChangesAsync();
             }
         }
 
-        public async Task<IEnumerable<PatientReportDto>> GetPatientReportsByPsikologIdAsync(int psikologId)
-        {
-            var appointments = await _context.Appointments
-                .Include(a => a.Patient)
-                    .ThenInclude(p => p.User)
-                .Where(a => a.PsikologId == psikologId)
-                .OrderBy(a => a.PatientId)
-                .ThenByDescending(a => a.AppointmentDate)
-                .ToListAsync();
-
-            var reports = appointments
-                .GroupBy(a => a.PatientId)
-                .Select(g => 
-                {
-                    var firstAppointment = g.First();
-                    var patient = firstAppointment.Patient;
-                    return new PatientReportDto
-                    {
-                        PatientId = g.Key,
-                        PatientName = patient != null 
-                            ? $"{patient.Emri} {patient.Mbiemri}" 
-                            : "Nuk u gjet",
-                        Email = patient?.User?.Email ?? "N/A",
-                        Mosha = patient?.Mosha ?? 0,
-                        Gjinia = patient?.Gjinia ?? "N/A",
-                        Diagnoza = patient?.Diagnoza ?? "N/A",
-                        Appointments = g.Select(a => new AppointmentNoteDto
-                        {
-                            AppointmentId = a.Id,
-                            AppointmentDate = a.AppointmentDate,
-                            Status = a.Status,
-                            Notes = a.Notes
-                        }).ToList()
-                    };
-                })
-                .ToList();
-
-            return reports;
-        }
-
     }
 }
-

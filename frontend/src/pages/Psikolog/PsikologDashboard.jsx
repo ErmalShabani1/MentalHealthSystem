@@ -67,17 +67,15 @@ function PsikologDashboard() {
             </Link>
           </li>
           <li className="nav-item mb-2">
-<<<<<<< HEAD
             <Link to="/raportet" className="nav-link text-white">
               📊 Raportet e Pacientëve
             </Link>
           </li>
-=======
-  <Link to="/pacientetEMi" className="nav-link text-white">
-    👥 Pacientët e Mi
-  </Link>
-</li>
->>>>>>> f5d97ba (Stilizime ne front end)
+          <li className="nav-item mb-2">
+            <Link to="/pacientetEMi" className="nav-link text-white">
+              👥 Pacientët e Mi
+            </Link>
+          </li>
         </ul>
       </div>
 

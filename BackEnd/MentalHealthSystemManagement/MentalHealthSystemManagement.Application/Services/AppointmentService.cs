@@ -28,7 +28,7 @@ namespace MentalHealthSystemManagement.Application.Services
         }
         public async Task<Appointment?> GetAppointmentsById(int id)
         {
-          return  await _repository.GetByIdAsync(id);
+            return await _repository.GetByIdAsync(id);
         }
         public async Task CreateAppointment(Appointment dto)
         {
@@ -54,11 +54,6 @@ namespace MentalHealthSystemManagement.Application.Services
         public async Task DeleteAsync(int id)
         {
             await _repository.DeleteAsync(id);
-        }
-
-        public async Task<IEnumerable<PatientReportDto>> GetPatientReportsByPsikolog(int psikologId)
-        {
-            return await _repository.GetPatientReportsByPsikologIdAsync(psikologId);
         }
 
     }

@@ -20,7 +20,7 @@ namespace MentalHealthSystemManagement.Application.Services
             _patientRepository = patientRepository;
             _userRepository = userRepository;
         }
-        public async Task AddPatientAsync(string username,string email,string password,string emri, string mbiemri, int mosha, string gjinia, string diagnoza, bool IsDeleted)
+        public async Task AddPatientAsync(string username, string email, string password, string emri, string mbiemri, int mosha, string gjinia, string diagnoza, bool IsDeleted)
         {
             var user = new User
             {
@@ -57,7 +57,7 @@ namespace MentalHealthSystemManagement.Application.Services
             patient.Mosha = mosha;
             patient.Gjinia = gjinia;
             patient.Diagnoza = diagnoza;
-          
+
 
             await _patientRepository.UpdateAsync(patient);
         }

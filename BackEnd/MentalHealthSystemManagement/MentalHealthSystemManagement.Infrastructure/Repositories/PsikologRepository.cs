@@ -23,7 +23,7 @@ namespace MentalHealthSystemManagement.Infrastructure.Repositories
         }
         public async Task<Psikologi?> GetByIdAsync(int id)
         {
-            return await _context.Psikologet.Include(p=> p.User).FirstOrDefaultAsync(p=> p.Id == id);
+            return await _context.Psikologet.Include(p => p.User).FirstOrDefaultAsync(p => p.Id == id);
         }
         public async Task UpdateAsync(Psikologi psikolog)
         {
@@ -33,10 +33,10 @@ namespace MentalHealthSystemManagement.Infrastructure.Repositories
         public async Task DeleteAsync(int id)
         {
             var psikologi = await _context.Psikologet.FindAsync(id);
-                if(psikologi != null)
+            if (psikologi != null)
             {
                 _context.Psikologet.Remove(psikologi);
-                   await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
             }
         }
         public async Task SaveChangesAsync()

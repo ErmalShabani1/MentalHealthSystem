@@ -38,7 +38,7 @@ namespace MentalHealthSystemManagement.Infrastructure.Repositories
             var patient = await _context.Patients.FindAsync(id);
             if (patient != null)
             {
-               patient.IsDeleted = true;
+                patient.IsDeleted = true;
                 _context.SaveChanges();
             }
         }

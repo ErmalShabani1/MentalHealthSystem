@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:5054/api/Appointments";
+const API_URL = "https://localhost:7062/api/Appointments";
 
 export const getTakimetByPsikologId = async (id) => {
   return await axios.get(`${API_URL}/psikolog/${id}`, { withCredentials: true });
@@ -22,11 +22,11 @@ export const getAllAppointmentsAdmin = async () => {
   return await axios.get(`${API_URL}/all`, { withCredentials: true });
 };
 
-<<<<<<< HEAD
+
 export const getPatientReports = async (psikologId) => {
   return await axios.get(`${API_URL}/reports/psikolog/${psikologId}`, { withCredentials: true });
-=======
+};
 export const getAppointmentById = async (id) => {
   return await axios.get(`${API_URL}/${id}`, { withCredentials: true });
->>>>>>> f5d97ba (Stilizime ne front end)
+
 };
