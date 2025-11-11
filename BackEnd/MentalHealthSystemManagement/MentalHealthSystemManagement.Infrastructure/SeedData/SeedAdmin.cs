@@ -15,7 +15,7 @@ namespace MentalHealthSystemManagement.Infrastructure.SeedData
                     Username = "Admin",
                     Email = "admin01@icloud.com",
                     Role = "Admin",
-                    PasswordHash = BCrypt.Net.BCrypt.HashPassword("Admin123") // përdor Bcrypt
+                    PasswordHash = BCrypt.Net.BCrypt.HashPassword("Admin123") 
                 };
 
                 context.Users.Add(admin);

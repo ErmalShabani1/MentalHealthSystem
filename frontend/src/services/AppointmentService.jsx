@@ -17,10 +17,16 @@ export const updateTakimin = async (id, data) => {
 export const deleteTakimin = async (id) => {
   return await axios.delete(`${API_URL}/${id}`, { withCredentials: true });
 };
+
 export const getAllAppointmentsAdmin = async () => {
-  return await axios.get(`${API_URL}/all`);
+  return await axios.get(`${API_URL}/all`, { withCredentials: true });
 };
 
+<<<<<<< HEAD
 export const getPatientReports = async (psikologId) => {
   return await axios.get(`${API_URL}/reports/psikolog/${psikologId}`, { withCredentials: true });
+=======
+export const getAppointmentById = async (id) => {
+  return await axios.get(`${API_URL}/${id}`, { withCredentials: true });
+>>>>>>> f5d97ba (Stilizime ne front end)
 };

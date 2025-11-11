@@ -20,7 +20,10 @@ namespace MentalHealthSystemManagement.Infrastructure.Repositories
         }
         public async Task<IEnumerable<Appointment>> GetAllAsync()
         {
-            return await _context.Appointments.ToListAsync();
+            return await _context.Appointments
+                .Include(a => a.Patient)  
+                .Include(a => a.Psikologi) 
+                .ToListAsync();
         }
         public async Task<IEnumerable<AppointmentReadDto>> GetByPsikologIdAsync(int id)
         {
@@ -52,13 +55,13 @@ namespace MentalHealthSystemManagement.Infrastructure.Repositories
             if (existingAppointment == null)
                 throw new Exception("Appointment not found");
 
-            // Përditëso vetëm fushat që lejon frontend-i të ndryshohen
+          
             existingAppointment.PatientId = appointment.PatientId;
             existingAppointment.AppointmentDate = appointment.AppointmentDate;
             existingAppointment.Notes = appointment.Notes;
             existingAppointment.Status = appointment.Status;
 
-            // Mos prek PsikologId, PatientName etj.
+        
             await _context.SaveChangesAsync();
         }
         public async Task DeleteAsync(int id)

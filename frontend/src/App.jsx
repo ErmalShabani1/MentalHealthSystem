@@ -17,6 +17,9 @@ import PacientDashboard from "./pages/Pacient/PacientDashboard";
 import AddPacientinForm from "./pages/Pacient/AddPacientinForm";
 import EditPacientinForm from "./pages/Pacient/EditPacientin";
 import MenaxhoPacientet from "./pages/Pacient/MenaxhoPacientet";
+import MenaxhoTakimetAdmin from "./pages/Admin/MenaxhoTakimetAdmin";
+import EditTakiminAdmin from "./pages/Admin/EditTakiminAdmin";
+import PacientetEMi from "./pages/Psikolog/PacientetEMi";
 
 
 function App() {
@@ -40,7 +43,9 @@ function App() {
           <Route path="/add-pacientin" element={<AddPacientinForm />} />
           < Route path="/edit-pacientin/:id" element={<EditPacientinForm/>}/>
           <Route path="/menaxhoPacientet" element={<MenaxhoPacientet/>}/>
-         
+          <Route path="/menaxhoTakimetAdmin" element={<MenaxhoTakimetAdmin/>}/>
+          <Route path="/edit-takimin-admin/:id" element={<EditTakiminAdmin/>}/>
+          <Route path="/pacientetEMi" element={<PacientetEMi/>}/>
       </Routes>
     </Router>
   );

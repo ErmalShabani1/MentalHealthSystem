@@ -17,3 +17,6 @@ export const updatePacientin = async (id, data) => {
 export const deletePacientin = async (id) => {
   return await axios.delete(`${API_URL}/${id}`, { withCredentials: true });
 };
+export const getPatientById = async (id) => {
+  return await axios.get(`https://localhost:7062/api/Patient/${id}`, { withCredentials: true });
+};

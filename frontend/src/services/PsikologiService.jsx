@@ -17,3 +17,6 @@ export const updatePsikologin = async (id, data) => {
 export const deletePsikologin = async (id) => {
   return await axios.delete(`${API_URL}/delete/${id}`, { withCredentials: true });
 };
+export const getPsikologById = async (id) => {
+  return await axios.get(`https://localhost:7062/api/Psikolog/${id}`, { withCredentials: true });
+};
