@@ -3,7 +3,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom"; // Shto këtë import
 
-const API_URL = "http://localhost:5054/api/Psikologi/add";
+const API_URL = "https://localhost:7062/api/Psikologi/add";
 
 function AddPsikologinForm() {
   const navigate = useNavigate(); // Shto këtë

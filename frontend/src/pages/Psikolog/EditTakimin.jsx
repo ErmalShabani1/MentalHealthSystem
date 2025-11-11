@@ -21,7 +21,7 @@ function EditTakimin() {
     // Merr pacientët për dropdown
     const fetchPatients = async () => {
       try {
-        const res = await axios.get("http://localhost:5054/api/Patient/get-all", { withCredentials: true });
+        const res = await axios.get("https://localhost:7062/api/Patient/get-all", { withCredentials: true });
         setPatients(res.data);
       } catch (error) {
         console.error("Gabim gjatë marrjes së pacientëve:", error);

@@ -25,7 +25,7 @@ function AddTakimin() {
     // Merr të gjithë pacientët nga backend
     const fetchPatients = async () => {
       try {
-        const res = await axios.get("http://localhost:5054/api/Patient/get-all", {
+        const res = await axios.get("https://localhost:7062/api/Patient/get-all", {
           withCredentials: true,
         });
         setPatients(res.data);
