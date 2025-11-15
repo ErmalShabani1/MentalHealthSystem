@@ -33,16 +33,7 @@ namespace MentalHealthSystemManagement.Api.Controllers
         {
             try
             {
-                var appointment = new Appointment
-                {
-                    PsikologId = dto.PsikologId,
-                    PatientId = dto.PatientId,
-                    PatientName = dto.PatientName,
-                    AppointmentDate = dto.AppointmentDate,
-                    Notes = dto.Notes ?? string.Empty,
-                    Status = "Scheduled"
-                };
-                await _service.CreateAppointment(appointment);
+                await _service.CreateAppointment(dto);
                 return Ok("Appointment added successfully");
             }
             catch (Exception ex)

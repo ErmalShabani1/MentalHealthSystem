@@ -30,7 +30,7 @@ namespace MentalHealthSystemManagement.Application.Services
         {
             return await _repository.GetByIdAsync(id);
         }
-        public async Task CreateAppointment(Appointment dto)
+        public async Task CreateAppointment(AppointmentDto dto)
         {
             if (dto.AppointmentDate < DateTime.Now)
                 throw new Exception("Takimet nuk mund te jene ne te kaluaren");

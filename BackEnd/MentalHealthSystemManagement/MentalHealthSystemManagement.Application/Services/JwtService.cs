@@ -21,11 +21,11 @@ namespace MentalHealthSystemManagement.Application.Services
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var claims = new[]
-            {
-                new Claim(JwtRegisteredClaimNames.Sub, userId),
-                new Claim(JwtRegisteredClaimNames.UniqueName, username),
-                new Claim(ClaimTypes.Role, role)
-            };
+ {
+    new Claim("UserId", userId),               // <--- shto këtë
+    new Claim(JwtRegisteredClaimNames.UniqueName, username),
+    new Claim(ClaimTypes.Role, role)
+};
             var token = new JwtSecurityToken(
                 issuer: _configuration["Jwt:Issuer"],
                 audience: _configuration["Jwt:Audience"],

@@ -1,0 +1,19 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using MentalHealthSystemManagement.Domain.Entities;
+
+namespace MentalHealthSystemManagement.Application.Interfaces
+{
+    public interface IHealthReportRepository
+    {
+        Task AddAsync(HealthReports report);
+        Task<IEnumerable<HealthReports>> GetAllAsync();
+        Task<HealthReports?> GetByIdAsync(int id);
+        Task UpdateAsync(HealthReports report);
+        Task DeleteAsync(int id);
+        Task SaveChangesAsync();
+    }
+}

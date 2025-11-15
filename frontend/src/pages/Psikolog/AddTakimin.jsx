@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Link } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
 
 function AddTakimin() {
   const navigate = useNavigate();
@@ -69,19 +70,46 @@ function AddTakimin() {
     setLoading(true);
 
     try {
-      await addTakimin(formData);
+      console.log("Duke dërguar të dhënat:", formData);
+      
+      // Shto await dhe ruaj rezultatin
+      const result = await addTakimin(formData);
+      console.log("Përgjigja nga serveri:", result);
+      
+      // Shfaq mesazhin e suksesit
       toast.success("Takimi u shtua me sukses!");
       
-      // Navigo pas 1.5 sekondash
+      // Reset form data
+      setFormData({
+        psikologId: localStorage.getItem("psikologId"),
+        patientId: patientIdFromUrl || "",
+        appointmentDate: "",
+        notes: "",
+      });
+      
+      // Navigo pas 1.5 sekondash për të lejuar përdoruesit të shohë toast-in
       setTimeout(() => {
         navigate("/menaxhoTakimet");
       }, 1500);
       
     } catch (error) {
-      console.error("Gabim:", error);
-      toast.error(
-        error.response?.data || "Gabim gjatë shtimit të takimit!"
-      );
+      console.error("Gabim i detajuar:", error);
+      
+      // Menaxho gabimet në mënyrë më të detajuar
+      if (error.response) {
+        // Serveri u përgjigj me status code gabim
+        const errorMessage = error.response.data?.message || 
+                           error.response.data?.errors?.[0] || 
+                           error.response.data ||
+                           "Gabim gjatë shtimit të takimit!";
+        toast.error(errorMessage);
+      } else if (error.request) {
+        // Kërkesa u dërgua por nuk u mor përgjigje
+        toast.error("Nuk u mor përgjigje nga serveri! Kontrolloni lidhjen tuaj.");
+      } else {
+        // Diçka tjetër shkoi keq
+        toast.error("Gabim i papritur: " + error.message);
+      }
     } finally {
       setLoading(false);
     }
@@ -300,8 +328,5 @@ function AddTakimin() {
     </div>
   );
 }
-
-
-
 
 export default AddTakimin;

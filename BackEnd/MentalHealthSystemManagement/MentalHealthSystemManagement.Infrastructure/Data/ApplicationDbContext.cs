@@ -20,6 +20,43 @@ namespace MentalHealthSystemManagement.Infrastructure.Data
         public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DbSet<Psikologi> Psikologet { get; set; }
         public DbSet<Appointment> Appointments { get; set; }
-        //ketu i bejme te tjerat 
+        public DbSet<HealthReports> HealthReports { get; set; }
+        //ketu i bejme te tjerat
+        //
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+
+            modelBuilder.Entity<Psikologi>().ToTable("Psikologet");
+            //Kompozim: nje psikolog ka shume takime
+            modelBuilder.Entity<Appointment>()
+                .HasOne(a => a.Psikologi)
+                .WithMany()
+                .HasForeignKey(a => a.PsikologId)
+                .OnDelete(DeleteBehavior.Restrict); // nese fshihet psikologu fshihet edhe takimi 
+
+            //kompozim: nje pacient ka shume takime
+            modelBuilder.Entity<Appointment>()
+                .HasOne(a => a.Patient)
+                .WithMany()
+                .HasForeignKey(a => a.PatientId)
+                .OnDelete(DeleteBehavior.Cascade); // i bie qe nese fshihet pacienti fsihet edhe takimi
+
+
+            //raportet kompozim
+            modelBuilder.Entity<HealthReports>()
+                .HasOne(r => r.Psikologi)
+                .WithMany()
+                .HasForeignKey(r => r.PsikologId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<HealthReports>()
+                .HasOne(r => r.Patient)
+                .WithMany()
+                .HasForeignKey(r => r.PatientId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+        }
     }
+    
 }
