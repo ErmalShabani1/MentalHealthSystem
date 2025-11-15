@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
-using MentalHealthSystemManagement.Application.DTOs.HealthReports;
+﻿using MentalHealthSystemManagement.Application.DTOs.HealthReports;
 using MentalHealthSystemManagement.Application.Services;
 using MentalHealthSystemManagement.Infrastructure.Data;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace MentalHealthSystemManagement.Api.Controllers
 {
@@ -26,6 +27,17 @@ namespace MentalHealthSystemManagement.Api.Controllers
         {
             try
             {
+                var userId = User.FindFirst("UserId")?.Value;
+
+                // Gjej psikologun sipas UserId
+                var psikolog = await _context.Psikologet
+        .FirstOrDefaultAsync(p => p.UserId == int.Parse(userId));
+
+                if (psikolog == null)
+                    return BadRequest("Psikologu nuk ekziston!");
+
+                dto.PsikologId = psikolog.Id;
+
                 await _service.AddReportAsync(dto);
                 return Ok("Report added successfully");
             }
@@ -61,5 +73,7 @@ namespace MentalHealthSystemManagement.Api.Controllers
             await _service.DeleteAsync(id);
             return Ok("Raporti u fshi me sukses");
         }
+       
+        
     }
 }

@@ -12,7 +12,6 @@ import PsikologDashboard from "./pages/Psikolog/PsikologDashboard";
 import AddTakimin from "./pages/Psikolog/AddTakimin";
 import EditTakimin from "./pages/Psikolog/EditTakimin";
 import MenaxhoTakimet from "./pages/Psikolog/MenaxhoTakimet";
-import Raportet from "./pages/Psikolog/Raportet";
 import PacientDashboard from "./pages/Pacient/PacientDashboard";
 import AddPacientinForm from "./pages/Pacient/AddPacientinForm";
 import EditPacientinForm from "./pages/Pacient/EditPacientin";
@@ -20,6 +19,11 @@ import MenaxhoPacientet from "./pages/Pacient/MenaxhoPacientet";
 import MenaxhoTakimetAdmin from "./pages/Admin/MenaxhoTakimetAdmin";
 import EditTakiminAdmin from "./pages/Admin/EditTakiminAdmin";
 import PacientetEMi from "./pages/Psikolog/PacientetEMi";
+import AddRaportinForm from "./pages/Psikolog/AddRaportinForm";
+import EditRaportinForm from "./pages/Psikolog/EditRaportinForm";
+import MenaxhoRaportet from "./pages/Psikolog/MenaxhoRaportetForm";
+import ShfaqRaportet from "./pages/Pacient/ShfaqRaportet";
+import ShfaqTakimet from "./pages/Pacient/ShfaqTakimet";
 
 
 function App() {
@@ -38,7 +42,6 @@ function App() {
           <Route path="/add-takimet" element={<AddTakimin />} />
           < Route path="/edit-takimet/:id" element={<EditTakimin/>}/>
           <Route path="/menaxhoTakimet" element={<MenaxhoTakimet/>}/>
-          <Route path="/raportet" element={<Raportet/>}/>
              <Route path="/pacientDashboard" element={<PacientDashboard />} />
           <Route path="/add-pacientin" element={<AddPacientinForm />} />
           < Route path="/edit-pacientin/:id" element={<EditPacientinForm/>}/>
@@ -46,6 +49,11 @@ function App() {
           <Route path="/menaxhoTakimetAdmin" element={<MenaxhoTakimetAdmin/>}/>
           <Route path="/edit-takimin-admin/:id" element={<EditTakiminAdmin/>}/>
           <Route path="/pacientetEMi" element={<PacientetEMi/>}/>
+             <Route path="/add-raportin" element={<AddRaportinForm />} />
+          < Route path="/edit-raportin/:id" element={<EditRaportinForm/>}/>
+          <Route path="/menaxhoRaportet" element={<MenaxhoRaportet/>}/>
+          <Route path="/raportetEMia" element={<ShfaqRaportet/>}/>
+          <Route path="/takimetEMia" element={<ShfaqTakimet/>}/>
       </Routes>
     </Router>
   );

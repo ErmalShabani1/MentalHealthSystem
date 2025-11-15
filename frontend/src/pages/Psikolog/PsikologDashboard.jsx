@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getTakimetByPsikologId } from "../../services/AppointmentService";
+import { getRaportetByPsikologId } from "../../services/RaportService";
 
 function PsikologDashboard() {
   const [takimet, setTakimet] = useState([]);
+  const [raportet, setRaportet] = useState([]);
   const [loading, setLoading] = useState(true);
   const psikologId = localStorage.getItem("psikologId");
 
@@ -13,8 +15,15 @@ function PsikologDashboard() {
 
       try {
         setLoading(true);
-        const res = await getTakimetByPsikologId(psikologId);
-        setTakimet(res.data);
+        
+        // Merr të dhënat paralelisht
+        const [takimetRes, raportetRes] = await Promise.all([
+          getTakimetByPsikologId(psikologId),
+          getRaportetByPsikologId(psikologId)
+        ]);
+        
+        setTakimet(takimetRes.data);
+        setRaportet(raportetRes.data);
       } catch (error) {
         console.error("Gabim gjatë marrjes së të dhënave:", error);
       } finally {
@@ -25,7 +34,7 @@ function PsikologDashboard() {
     fetchData();
   }, [psikologId]);
 
-  // Llogarit statistikat nga të dhënat reale
+  // Llogarit statistikat nga të dhënat reale - TAKIMET
   const takimetCount = takimet.length;
   const completedAppointments = takimet.filter(app => 
     app.status === "Completed"
@@ -41,6 +50,18 @@ function PsikologDashboard() {
   }).length;
 
   const uniquePatients = [...new Set(takimet.map(app => app.patientName))].length;
+
+  // Llogarit statistikat nga të dhënat reale - RAPORTET
+  const raportetCount = raportet.length;
+  const raportetThisMonth = raportet.filter(rap => {
+    const reportDate = new Date(rap.createdAt);
+    const now = new Date();
+    return reportDate.getMonth() === now.getMonth() && 
+           reportDate.getFullYear() === now.getFullYear();
+  }).length;
+  
+  const updatedReports = raportet.filter(rap => rap.updatedAt && rap.updatedAt !== rap.createdAt).length;
+  const uniquePatientsWithReports = [...new Set(raportet.map(rap => rap.patientName))].length;
 
   return (
     <div className="d-flex" style={{ minHeight: "100vh" }}>
@@ -67,8 +88,13 @@ function PsikologDashboard() {
             </Link>
           </li>
           <li className="nav-item mb-2">
-            <Link to="/raportet" className="nav-link text-white">
-              📊 Raportet e Pacientëve
+            <Link to="/add-raportin" className="nav-link text-white">
+              📝 Shto Raport
+            </Link>
+          </li>
+          <li className="nav-item mb-2">
+            <Link to="/menaxhoRaportet" className="nav-link text-white">
+              📊 Menaxho Raportet
             </Link>
           </li>
           <li className="nav-item mb-2">
@@ -103,7 +129,7 @@ function PsikologDashboard() {
             </div>
           ) : (
             <>
-              {/* Statistikat */}
+              {/* Statistikat - PAMJA E TASHME (NUK NDRYSHO) */}
               <div className="row">
                 <div className="col-xl-3 col-md-6 mb-4">
                   <div className="card border-left-primary shadow h-100 py-2">
@@ -231,6 +257,82 @@ function PsikologDashboard() {
                   </div>
                 </div>
               </div>
+
+              {/* SEKSIONI I RI - STATISTIKAT E RAPORTEVE */}
+              <div className="row mt-5">
+                <div className="col-12">
+                  <div className="card shadow-sm border-0">
+                    <div className="card-header bg-success text-white">
+                      <h5 className="mb-0">
+                        <i className="fas fa-file-medical me-2"></i>
+                        Statistikat e Raporteve
+                      </h5>
+                    </div>
+                    <div className="card-body">
+                      <div className="row">
+                        <div className="col-xl-3 col-md-6 mb-3">
+                          <div className="card bg-light border-0">
+                            <div className="card-body text-center">
+                              <div className="text-success mb-2">
+                                <i className="fas fa-file-medical fa-2x"></i>
+                              </div>
+                              <h3 className="text-success">{raportetCount}</h3>
+                              <p className="mb-0 text-muted">Total Raporte</p>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="col-xl-3 col-md-6 mb-3">
+                          <div className="card bg-light border-0">
+                            <div className="card-body text-center">
+                              <div className="text-info mb-2">
+                                <i className="fas fa-calendar fa-2x"></i>
+                              </div>
+                              <h3 className="text-info">{raportetThisMonth}</h3>
+                              <p className="mb-0 text-muted">Këtë Muaj</p>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="col-xl-3 col-md-6 mb-3">
+                          <div className="card bg-light border-0">
+                            <div className="card-body text-center">
+                              <div className="text-warning mb-2">
+                                <i className="fas fa-edit fa-2x"></i>
+                              </div>
+                              <h3 className="text-warning">{updatedReports}</h3>
+                              <p className="mb-0 text-muted">Të Përditësuara</p>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="col-xl-3 col-md-6 mb-3">
+                          <div className="card bg-light border-0">
+                            <div className="card-body text-center">
+                              <div className="text-primary mb-2">
+                                <i className="fas fa-user-md fa-2x"></i>
+                              </div>
+                              <h3 className="text-primary">{uniquePatientsWithReports}</h3>
+                              <p className="mb-0 text-muted">Pacientë me Raporte</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Raportet e Fundit */}
+                      <div className="mt-4">
+                        <div className="d-flex justify-content-between align-items-center mb-3">
+                          <h6 className="mb-0">Raportet e Fundit</h6>
+                          <Link to="/menaxhoRaportet" className="btn btn-sm btn-outline-success">
+                            Shiko të Gjitha
+                          </Link>
+                        </div>
+                        <RecentReports reports={raportet} />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </>
           )}
         </div>
@@ -239,7 +341,7 @@ function PsikologDashboard() {
   );
 }
 
-// Komponenti për takimet e sotme
+// Komponenti për takimet e sotme (I NJËJTË)
 function TodayAppointments({ appointments }) {
   const todayAppointments = appointments.filter(app => {
     const today = new Date().toDateString();
@@ -283,7 +385,7 @@ function TodayAppointments({ appointments }) {
   );
 }
 
-// Komponenti për takimet e ardhshme
+// Komponenti për takimet e ardhshme (I NJËJTË)
 function UpcomingAppointments({ appointments }) {
   const upcomingAppointments = appointments
     .filter(app => new Date(app.appointmentDate) > new Date() && app.status === "Scheduled")
@@ -317,6 +419,56 @@ function UpcomingAppointments({ appointments }) {
       ) : (
         <div className="list-group-item text-center text-muted py-4">
           Nuk ka takime të ardhshme
+        </div>
+      )}
+    </div>
+  );
+}
+
+// Komponenti i RI për raportet e fundit
+function RecentReports({ reports }) {
+  const recentReports = reports
+    .slice(0, 5) // Merr 5 raportet e fundit
+    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+  return (
+    <div className="list-group list-group-flush">
+      {recentReports.length > 0 ? (
+        recentReports.map((report, index) => (
+          <div key={index} className="list-group-item d-flex justify-content-between align-items-center">
+            <div className="flex-grow-1">
+              <h6 className="mb-1 text-success">{report.title}</h6>
+              <small className="text-muted d-block">
+                Pacienti: <strong>{report.patientName}</strong>
+              </small>
+              <small className="text-muted">
+                Data: {new Date(report.createdAt).toLocaleDateString('sq-AL')}
+                {report.updatedAt && report.updatedAt !== report.createdAt && (
+                  <span className="text-info ms-2">
+                    <i className="fas fa-edit me-1"></i>
+                    Përditësuar
+                  </span>
+                )}
+              </small>
+            </div>
+            <div className="text-end">
+              <span className="badge bg-warning text-dark" title={report.diagnoza}>
+                {report.diagnoza.length > 25 
+                  ? `${report.diagnoza.substring(0, 25)}...` 
+                  : report.diagnoza
+                }
+              </span>
+            </div>
+          </div>
+        ))
+      ) : (
+        <div className="list-group-item text-center text-muted py-3">
+          <i className="fas fa-file-medical fa-2x mb-2 d-block"></i>
+          <p className="mb-2">Nuk ka raporte të shkruara</p>
+          <Link to="/add-raportin" className="btn btn-sm btn-success">
+            <i className="fas fa-plus me-1"></i>
+            Shto Raport të Parë
+          </Link>
         </div>
       )}
     </div>

@@ -30,3 +30,6 @@ export const getAppointmentById = async (id) => {
   return await axios.get(`${API_URL}/${id}`, { withCredentials: true });
 
 };
+export const getMyTakimet = async () => {
+  return await axios.get(`${API_URL}/my-appointments`, { withCredentials: true });
+};
