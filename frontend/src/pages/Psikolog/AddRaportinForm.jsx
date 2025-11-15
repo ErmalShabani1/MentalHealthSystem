@@ -4,8 +4,14 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { addRaportin } from "../../services/RaportService";
+import { logoutUser } from "../../services/authService";
 function AddRaportinForm() {
   const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await logoutUser();
+    navigate("/");
+  };
 
   const [formData, setFormData] = useState({
 
@@ -169,6 +175,14 @@ function AddRaportinForm() {
             </Link>
           </li>
         </ul>
+        <div className="mt-auto pt-3 border-top">
+          <button onClick={handleLogout} className="btn btn-danger w-100 mb-2">
+            🚪 Logout
+          </button>
+          <button onClick={() => navigate(-1)} className="btn btn-secondary w-100">
+            ← Kthehu
+          </button>
+        </div>
       </div>
 
       {/* Përmbajtja kryesore */}

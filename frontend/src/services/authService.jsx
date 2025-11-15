@@ -13,3 +13,12 @@ export const loginUser = async (userData) => {
 export const refreshToken = async () => {
     return await axios.post(`${API_URL}/refresh-token`);
 }
+export const logoutUser = async () => {
+    try {
+        await axios.post(`${API_URL}/logout`);
+    } catch (err) {
+        console.error("Logout request failed:", err?.response || err);
+    }
+    localStorage.removeItem("user");
+    localStorage.removeItem("psikologId");
+}

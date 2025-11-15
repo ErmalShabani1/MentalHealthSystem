@@ -1,13 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { getMyRaportet } from "../../services/RaportService";
 import { getMyTakimet } from "../../services/AppointmentService"; // Krijo këtë service
 import { toast } from "react-toastify";
+import { logoutUser } from "../../services/authService";
 
 function PacientDashboard() {
+  const navigate = useNavigate();
   const [raportet, setRaportet] = useState([]);
   const [takimet, setTakimet] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const handleLogout = async () => {
+    await logoutUser();
+    navigate("/");
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -80,6 +87,11 @@ function PacientDashboard() {
             </Link>
           </li>
         </ul>
+        <div className="mt-auto pt-3 border-top">
+          <button onClick={handleLogout} className="btn btn-danger w-100">
+            🚪 Logout
+          </button>
+        </div>
       </div>
 
       {/* Përmbajtja kryesore */}

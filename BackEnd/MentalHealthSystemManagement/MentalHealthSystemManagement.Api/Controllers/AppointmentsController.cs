@@ -5,6 +5,7 @@ using MentalHealthSystemManagement.Application.Interfaces;
 using MentalHealthSystemManagement.Application.DTOs;
 using MentalHealthSystemManagement.Domain.Entities;
 using MentalHealthSystemManagement.Infrastructure.Repositories;
+using MentalHealthSystemManagement.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using MentalHealthSystemManagement.Application.DTOs.Appointments;
@@ -16,9 +17,12 @@ namespace MentalHealthSystemManagement.Api.Controllers
     public class AppointmentsController : ControllerBase
     {
         private readonly AppointmentService _service;
-        public AppointmentsController(AppointmentService service)
+        private readonly ApplicationDbContext _context;
+        
+        public AppointmentsController(AppointmentService service, ApplicationDbContext context)
         {
             _service = service;
+            _context = context;
         }
         [HttpGet("psikolog/{id}")]
         [Authorize(Roles = "Psikolog")]
@@ -33,6 +37,14 @@ namespace MentalHealthSystemManagement.Api.Controllers
         {
             try
             {
+                // Merr emrin e pacientit nga databaza
+                var patient = await _context.Patients.FindAsync(dto.PatientId);
+                if (patient == null)
+                    return BadRequest("Pacienti nuk u gjet");
+
+                // Vendos emrin e pacientit në DTO
+                dto.PatientName = $"{patient.Emri} {patient.Mbiemri}";
+
                 await _service.CreateAppointment(dto);
                 return Ok("Appointment added successfully");
             }

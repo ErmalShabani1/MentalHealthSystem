@@ -3,10 +3,16 @@ import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { getRaportById, updateRaportin } from "../../services/RaportService";
 import { Link } from "react-router-dom";
+import { logoutUser } from "../../services/authService";
 
 function EditRaportinForm() {
   const { id } = useParams();
   const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await logoutUser();
+    navigate("/");
+  };
 
   const [formData, setFormData] = useState({
     title: "",
@@ -164,6 +170,14 @@ function EditRaportinForm() {
             </Link>
           </li>
         </ul>
+        <div className="mt-auto pt-3 border-top">
+          <button onClick={handleLogout} className="btn btn-danger w-100 mb-2">
+            🚪 Logout
+          </button>
+          <button onClick={() => navigate(-1)} className="btn btn-secondary w-100">
+            ← Kthehu
+          </button>
+        </div>
       </div>
 
       {/* Përmbajtja kryesore */}

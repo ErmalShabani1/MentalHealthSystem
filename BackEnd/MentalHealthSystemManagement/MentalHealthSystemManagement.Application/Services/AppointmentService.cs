@@ -12,6 +12,7 @@ namespace MentalHealthSystemManagement.Application.Services
     public class AppointmentService
     {
         private readonly IAppointmentRepository _repository;
+        
         public AppointmentService(IAppointmentRepository repository)
         {
             _repository = repository;
@@ -39,7 +40,7 @@ namespace MentalHealthSystemManagement.Application.Services
             {
                 PsikologId = dto.PsikologId,
                 PatientId = dto.PatientId,
-                PatientName = dto.PatientName,
+                PatientName = dto.PatientName ?? string.Empty,
                 AppointmentDate = dto.AppointmentDate,
                 Notes = dto.Notes ?? string.Empty,
                 Status = "Scheduled"

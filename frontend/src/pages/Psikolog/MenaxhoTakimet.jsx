@@ -1,13 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { getTakimetByPsikologId, deleteTakimin } from "../../services/AppointmentService";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { logoutUser } from "../../services/authService";
 
 function MenaxhoTakimet() {
+  const navigate = useNavigate();
   const [takimet, setTakimet] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filterStatus, setFilterStatus] = useState("Të gjitha");
   const psikologId = localStorage.getItem("psikologId");
+
+  const handleLogout = async () => {
+    await logoutUser();
+    navigate("/");
+  };
 
   // Merr takimet nga backend
   const fetchData = async () => {
@@ -111,6 +118,14 @@ function MenaxhoTakimet() {
             </Link>
           </li>
         </ul>
+        <div className="mt-auto pt-3 border-top">
+          <button onClick={handleLogout} className="btn btn-danger w-100 mb-2">
+            🚪 Logout
+          </button>
+          <button onClick={() => navigate(-1)} className="btn btn-secondary w-100">
+            ← Kthehu
+          </button>
+        </div>
       </div>
 
       {/* Përmbajtja kryesore */}

@@ -8,6 +8,9 @@ import AdminDashboard from "./pages/Admin/AdminDashboard";
 import AddPsikologinForm from "./pages/Admin/AddPsikologinForm";
 import EditPsikologinForm from "./pages/Admin/EditPsikologinForm";
 import MenaxhoPsikologet from "./pages/Admin/MenaxhoPsikologet";
+import MenaxhoUserat from "./pages/Admin/MenaxhoUserat";
+import EditUser from "./pages/Admin/EditUser";
+import AddUser from "./pages/Admin/AddUser";
 import PsikologDashboard from "./pages/Psikolog/PsikologDashboard";
 import AddTakimin from "./pages/Psikolog/AddTakimin";
 import EditTakimin from "./pages/Psikolog/EditTakimin";
@@ -38,6 +41,9 @@ function App() {
           <Route path="/add-psikologin" element={<AddPsikologinForm />} />
           < Route path="/edit-psikologin/:id" element={<EditPsikologinForm/>}/>
           <Route path="/menaxhoPsikologet" element={<MenaxhoPsikologet/>}/>
+          <Route path="/menaxhoUserat" element={<MenaxhoUserat/>}/>
+          <Route path="/edit-user/:id" element={<EditUser/>}/>
+          <Route path="/add-user" element={<AddUser/>}/>
            <Route path="/psikologDashboard" element={<PsikologDashboard />} />
           <Route path="/add-takimet" element={<AddTakimin />} />
           < Route path="/edit-takimet/:id" element={<EditTakimin/>}/>

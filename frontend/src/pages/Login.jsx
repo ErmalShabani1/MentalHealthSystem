@@ -18,19 +18,35 @@ const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
   e.preventDefault();
+  console.log("🔄 Duke filluar login...");
+  console.log("📧 Email:", formData.email);
+  
   try {
+    console.log("📤 Duke dërguar request...");
     const res = await loginUser(formData);
-console.log("🔍 Response nga backend:", res.data);
+    console.log("✅ Response nga backend:", res.data);
+    console.log("👤 User data:", res.data.user);
+    
     // Ruaj vetëm të dhënat thelbësore: id, username dhe role
     const userData = {
-      id: res.data.user.id,          // sigurohu që response ka id
+      id: res.data.user.id,
       username: res.data.user.username,
       role: res.data.user.role
     };
-    if (userData.role.toLowerCase() === "psikolog") {
-  localStorage.setItem("psikologId", userData.id);
-  console.log("✅ psikologId u ruajt:", userData.id);
-}
+    
+    console.log("💾 Duke ruajtur në localStorage:", userData);
+    
+    // Ruaj psikologId nëse është psikolog
+    if (userData.role.toLowerCase() === "psikolog" && res.data.user.psikologId) {
+      localStorage.setItem("psikologId", res.data.user.psikologId);
+      console.log("✅ psikologId u ruajt:", res.data.user.psikologId);
+    }
+
+    // Ruaj patientId nëse është pacient
+    if (userData.role.toLowerCase() === "pacient" && res.data.user.patientId) {
+      localStorage.setItem("patientId", res.data.user.patientId);
+      console.log("✅ patientId u ruajt:", res.data.user.patientId);
+    }
 
     localStorage.setItem("user", JSON.stringify(userData));
 
@@ -47,6 +63,10 @@ console.log("🔍 Response nga backend:", res.data);
       },
     });
   } catch (err) {
+    console.error("❌ Error gjatë login:", err);
+    console.error("📋 Error response:", err.response);
+    console.error("📋 Error data:", err.response?.data);
+    console.error("📋 Error status:", err.response?.status);
     toast.error(err.response?.data || "Email ose password i gabuar!");
   }
 };

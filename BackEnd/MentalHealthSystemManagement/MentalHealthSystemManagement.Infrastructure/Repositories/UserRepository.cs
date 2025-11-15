@@ -17,6 +17,14 @@ namespace MentalHealthSystemManagement.Infrastructure.Repositories
         {
             return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
         }
+        public async Task<User?> GetByIdAsync(int id)
+        {
+            return await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
+        }
+        public async Task<IEnumerable<User>> GetAllAsync()
+        {
+            return await _context.Users.ToListAsync();
+        }
         public async Task<User?> GetByRefreshTokenAsync(string refreshToken)
         {
             return await _context.Users.FirstOrDefaultAsync(u => u.RefreshToken == refreshToken);
@@ -30,6 +38,15 @@ namespace MentalHealthSystemManagement.Infrastructure.Repositories
         {
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
+        }
+        public async Task DeleteAsync(int id)
+        {
+            var user = await _context.Users.FindAsync(id);
+            if (user != null)
+            {
+                _context.Users.Remove(user);
+                await _context.SaveChangesAsync();
+            }
         }
         public async Task SaveChangesAsync()
         {

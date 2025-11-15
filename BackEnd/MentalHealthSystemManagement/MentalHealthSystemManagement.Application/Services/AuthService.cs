@@ -70,5 +70,23 @@ namespace MentalHealthSystemManagement.Application.Services
             await _userRepository.UpdateAsync(user);
             await _userRepository.SaveChangesAsync();
         }
+
+        // Merr të gjithë përdoruesit
+        public async Task<IEnumerable<User>> GetAllUsersAsync()
+        {
+            return await _userRepository.GetAllAsync();
+        }
+
+        // Merr përdorues sipas ID
+        public async Task<User?> GetUserByIdAsync(int id)
+        {
+            return await _userRepository.GetByIdAsync(id);
+        }
+
+        // Fshi përdorues
+        public async Task DeleteUserAsync(int id)
+        {
+            await _userRepository.DeleteAsync(id);
+        }
     }
 }

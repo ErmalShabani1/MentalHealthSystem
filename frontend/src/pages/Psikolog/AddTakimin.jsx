@@ -5,11 +5,17 @@ import axios from "axios";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
+import { logoutUser } from "../../services/authService";
 
 function AddTakimin() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const patientIdFromUrl = searchParams.get('patientId');
+
+  const handleLogout = async () => {
+    await logoutUser();
+    navigate("/");
+  };
 
   const [formData, setFormData] = useState({
     psikologId: localStorage.getItem("psikologId"),
@@ -152,6 +158,14 @@ function AddTakimin() {
             </Link>
           </li>
         </ul>
+        <div className="mt-auto pt-3 border-top">
+          <button onClick={handleLogout} className="btn btn-danger w-100 mb-2">
+            🚪 Logout
+          </button>
+          <button onClick={() => navigate(-1)} className="btn btn-secondary w-100">
+            ← Kthehu
+          </button>
+        </div>
       </div>
 
       {/* Përmbajtja kryesore */}

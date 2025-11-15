@@ -1,13 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { getAllRaportet, deleteRaportin, getRaportetByPsikologId } from "../../services/RaportService";
+import { logoutUser } from "../../services/authService";
 
 function MenaxhoRaportet() {
+  const navigate = useNavigate();
   const [raportet, setRaportet] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filterPatient, setFilterPatient] = useState("Të gjitha");
+
+  const handleLogout = async () => {
+    await logoutUser();
+    navigate("/");
+  };
 
   useEffect(() => {
     fetchRaportet();
@@ -110,6 +117,14 @@ const handleDelete = async (id) => {
             </Link>
           </li>
         </ul>
+        <div className="mt-auto pt-3 border-top">
+          <button onClick={handleLogout} className="btn btn-danger w-100 mb-2">
+            🚪 Logout
+          </button>
+          <button onClick={() => navigate(-1)} className="btn btn-secondary w-100">
+            ← Kthehu
+          </button>
+        </div>
       </div>
 
       {/* Përmbajtja kryesore */}

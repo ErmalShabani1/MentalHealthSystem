@@ -98,5 +98,49 @@ namespace MentalHealthSystemManagement.Api.Controllers
             Response.Cookies.Delete("jwt");
             return Ok(new { message = "Logged out successfullt" });
         }
+
+        [HttpGet("users")]
+        public async Task<IActionResult> GetAllUsers()
+        {
+            var users = await _authservice.GetAllUsersAsync();
+            return Ok(users);
+        }
+
+        [HttpGet("users/{id}")]
+        public async Task<IActionResult> GetUserById(int id)
+        {
+            var user = await _authservice.GetUserByIdAsync(id);
+            if (user == null) return NotFound("User not found");
+            return Ok(user);
+        }
+
+        [HttpPut("users/{id}")]
+        public async Task<IActionResult> UpdateUser(int id, [FromBody] RegisterUserDto dto)
+        {
+            var user = await _authservice.GetUserByIdAsync(id);
+            if (user == null) return NotFound("User not found");
+
+            user.Username = dto.Username;
+            user.Email = dto.Email;
+            user.Role = dto.Role;
+            
+            if (!string.IsNullOrEmpty(dto.Password))
+            {
+                user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password);
+            }
+
+            await _authservice.UpdateUserAsync(user);
+            return Ok(new { message = "User updated successfully" });
+        }
+
+        [HttpDelete("users/{id}")]
+        public async Task<IActionResult> DeleteUser(int id)
+        {
+            var user = await _authservice.GetUserByIdAsync(id);
+            if (user == null) return NotFound("User not found");
+
+            await _authservice.DeleteUserAsync(id);
+            return Ok(new { message = "User deleted successfully" });
+        }
     }
 }

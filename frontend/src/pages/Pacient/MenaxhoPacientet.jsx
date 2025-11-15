@@ -1,12 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { getAllPatients, deletePacientin } from "../../services/PacientiService";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { logoutUser } from "../../services/authService";
 
 function MenaxhoPacientet() {
+  const navigate = useNavigate();
   const [pacient, setPacients] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const handleLogout = async () => {
+    await logoutUser();
+    navigate("/");
+  };
 
   const fetchData = async () => {
     try {
@@ -76,6 +83,14 @@ function MenaxhoPacientet() {
             </Link>
           </li>
         </ul>
+        <div className="mt-auto pt-3 border-top">
+          <button onClick={handleLogout} className="btn btn-danger w-100 mb-2">
+            🚪 Logout
+          </button>
+          <button onClick={() => navigate(-1)} className="btn btn-secondary w-100">
+            ← Kthehu
+          </button>
+        </div>
       </div>
 
       {/* Përmbajtja kryesore */}

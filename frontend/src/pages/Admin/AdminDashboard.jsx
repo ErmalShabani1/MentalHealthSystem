@@ -2,14 +2,21 @@ import React, { useEffect, useState } from "react";
 import { getAllPsikologet } from "../../services/PsikologiService";
 import { getAllPatients } from "../../services/PacientiService";
 import { getAllAppointmentsAdmin } from "../../services/AppointmentService";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { logoutUser } from "../../services/authService";
 
 function AdminDashboard() {
+  const navigate = useNavigate();
   const [psychologistsCount, setPsychologistsCount] = useState(0);
   const [patientsCount, setPatientsCount] = useState(0);
   const [takimetCount, setTakimetCount] = useState(0);
   const [recentAppointments, setRecentAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const handleLogout = async () => {
+    await logoutUser();
+    navigate("/");
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -65,6 +72,12 @@ function AdminDashboard() {
               🏠 Dashboard
             </Link>
           </li>
+          <h6 className="text-center mt-4">👥 Përdoruesit</h6>
+          <li className="nav-item mb-2">
+            <Link to="/menaxhoUserat" className="nav-link text-white">
+              👤 Menaxho Përdoruesit
+            </Link>
+          </li>
           <h6 className="text-center mt-4">👨‍⚕️ Psikologët</h6>
           <li className="nav-item mb-2">
             <Link to="/add-psikologin" className="nav-link text-white">
@@ -94,6 +107,11 @@ function AdminDashboard() {
   </Link>
 </li>
         </ul>
+        <div className="mt-auto pt-3 border-top">
+          <button onClick={handleLogout} className="btn btn-danger w-100">
+            🚪 Logout
+          </button>
+        </div>
       </div>
 
       {/* Përmbajtja kryesore */}

@@ -1,13 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { getTakimetByPsikologId } from "../../services/AppointmentService";
+import { logoutUser } from "../../services/authService";
 import { getRaportetByPsikologId } from "../../services/RaportService";
 
 function PsikologDashboard() {
+  const navigate = useNavigate();
   const [takimet, setTakimet] = useState([]);
   const [raportet, setRaportet] = useState([]);
   const [loading, setLoading] = useState(true);
   const psikologId = localStorage.getItem("psikologId");
+
+  const handleLogout = async () => {
+    await logoutUser();
+    navigate("/");
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -103,6 +110,11 @@ function PsikologDashboard() {
             </Link>
           </li>
         </ul>
+        <div className="mt-auto pt-3 border-top">
+          <button onClick={handleLogout} className="btn btn-danger w-100">
+            🚪 Logout
+          </button>
+        </div>
       </div>
 
       {/* Përmbajtja kryesore */}
