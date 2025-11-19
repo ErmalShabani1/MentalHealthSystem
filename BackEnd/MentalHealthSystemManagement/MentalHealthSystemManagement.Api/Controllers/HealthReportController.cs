@@ -10,7 +10,7 @@ namespace MentalHealthSystemManagement.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin, Psikolog, Patient")]
+    [Authorize(Roles = "Admin, Psikolog, Pacient")]
     public class HealthReportController : ControllerBase
     {
         private readonly HealthReportService _service;
@@ -47,6 +47,7 @@ namespace MentalHealthSystemManagement.Api.Controllers
             }
         }
         [HttpGet("get-all")]
+        [Authorize(Roles = "Admin,Pacient,Psikolog")]
         public async Task<IActionResult> GetAll()
         {
             var list = await _service.GetAllAsync();
@@ -58,6 +59,26 @@ namespace MentalHealthSystemManagement.Api.Controllers
             var report = await _service.GetByIdAsync(id);
             if (report == null) return NotFound("Raporti nuk u gjet");
             return Ok(report);
+        }
+        [HttpGet("my-reports")]
+        [Authorize(Roles = "Pacient")]
+        public async Task<IActionResult> GetMyReports()
+        {
+            try
+            {
+                var userId = int.Parse(User.FindFirst("UserId").Value);
+
+                var pacienti = await _context.Patients.FirstOrDefaultAsync(p => p.UserId == userId);
+                if (pacienti == null)
+                    return BadRequest("Pacienti nuk ekziston!");
+
+                var raportet = await _service.GetByPatientIdAsync(pacienti.Id);
+                return Ok(raportet);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
         [HttpPut("update/{id}")]
         [Authorize(Roles ="Psikolog")]

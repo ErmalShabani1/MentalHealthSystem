@@ -65,17 +65,17 @@ function ShfaqTakimet() {
             </Link>
           </li>
           <li className="nav-item mb-2">
-            <Link to="/raportetEMia" className="nav-link text-white">
+            <Link to="/shfaqRaportet" className="nav-link text-white">
               📊 Raportet e Mia
             </Link>
           </li>
           <li className="nav-item mb-2">
-            <Link to="/takimetEMia" className="nav-link text-white active">
+            <Link to="/shfaqTakimet" className="nav-link text-white active">
               📅 Takimet e Mia
             </Link>
           </li>
           <li className="nav-item mb-2">
-            <Link to="/psikologet" className="nav-link text-white">
+            <Link to="/shfaqPsikologet" className="nav-link text-white">
               👨‍⚕️ Psikologët
             </Link>
           </li>

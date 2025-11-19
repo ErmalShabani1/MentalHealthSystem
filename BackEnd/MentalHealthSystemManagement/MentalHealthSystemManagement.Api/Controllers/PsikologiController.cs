@@ -7,7 +7,7 @@ namespace MentalHealthSystemManagement.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin, Psikolog")]
+    [Authorize(Roles = "Admin, Psikolog,Pacient")]
     public class PsikologiController : ControllerBase
     {
         private readonly PsikologService _psikologiService;
@@ -34,6 +34,7 @@ namespace MentalHealthSystemManagement.Api.Controllers
             }
         }
         [HttpGet("get-all")]
+        [Authorize(Roles = "Admin,Pacient")]
         public async Task<IActionResult> GetAll()
         {
             var list = await _psikologiService.GetAllAsync();

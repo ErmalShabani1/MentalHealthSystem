@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using MentalHealthSystemManagement.Application.DTOs.User;
+﻿using MentalHealthSystemManagement.Application.DTOs.User;
+using MentalHealthSystemManagement.Application.Interfaces;
 using MentalHealthSystemManagement.Application.Services;
 using MentalHealthSystemManagement.Infrastructure.Data;
-using MentalHealthSystemManagement.Application.Interfaces;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 namespace MentalHealthSystemManagement.Api.Controllers
 {
     [Route("api/[controller]")]
@@ -12,11 +13,13 @@ namespace MentalHealthSystemManagement.Api.Controllers
     {
         private readonly AuthService _authservice;
         private readonly JwtService _jwtservice;
+        private readonly ApplicationDbContext _context;
 
-        public AuthController(AuthService authservice, JwtService jwtservice)
+        public AuthController(AuthService authservice, JwtService jwtservice, ApplicationDbContext context)
         {
             _authservice = authservice;
             _jwtservice = jwtservice;
+            _context = context;
         }
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterUserDto dto)
@@ -51,13 +54,38 @@ namespace MentalHealthSystemManagement.Api.Controllers
                 Expires = user.RefreshTokenExpiryTime
             });
 
+            // 🔹 Gjej psikologId / patientId
+            int? psikologId = null;
+            int? patientId = null;
 
+            if (user.Role == "Psikolog")
+            {
+                var psikolog = await _context.Psikologet.FirstOrDefaultAsync(p => p.UserId == user.Id);
+                psikologId = psikolog?.Id;
+            }
+            else if (user.Role == "Pacient")
+            {
+                var patient = await _context.Patients.FirstOrDefaultAsync(p => p.UserId == user.Id);
+                patientId = patient?.Id;
+            }
 
-            return Ok(new { message = "Login successful", user = new { user.Id, user.Username, user.Email, user.Role } });
-
-
-
+            // 🔹 Kthe gjithçka në response
+            return Ok(new
+            {
+                message = "Login successful",
+                user = new
+                {
+                    id = user.Id,
+                    username = user.Username,
+                    email = user.Email,
+                    role = user.Role,
+                    psikologId = psikologId,
+                    patientId = patientId
+                },
+                token = token
+            });
         }
+        
         [HttpPost("refresh-Token")]
         public async Task<IActionResult> RefreshToken()
         {

@@ -25,7 +25,7 @@ namespace MentalHealthSystemManagement.Api.Controllers
             _context = context;
         }
         [HttpGet("psikolog/{id}")]
-        [Authorize(Roles = "Psikolog")]
+        [Authorize(Roles = "Psikolog,Admin")]
         public async Task<IActionResult> GetByPsikologi(int id)
         {
             var appointments = await _service.GetAppointmentsByPsikolog(id);
@@ -75,7 +75,7 @@ namespace MentalHealthSystemManagement.Api.Controllers
         }
         //endpoints per Adminin
         [HttpGet("all")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Pacient")]
         public async Task<IActionResult> GetAll()
         {
             var appointments = await _service.GetAllApointmentsAsync();

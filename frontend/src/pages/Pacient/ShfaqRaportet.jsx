@@ -47,17 +47,17 @@ function ShfaqRaportet() {
             </Link>
           </li>
           <li className="nav-item mb-2">
-            <Link to="/raportetEMia" className="nav-link text-white active">
+            <Link to="/shfaqRaportet" className="nav-link text-white active">
               📊 Raportet e Mia
             </Link>
           </li>
           <li className="nav-item mb-2">
-            <Link to="/takimetEMia" className="nav-link text-white">
+            <Link to="/shfaqTakimet" className="nav-link text-white">
               📅 Takimet e Mia
             </Link>
           </li>
           <li className="nav-item mb-2">
-            <Link to="/psikologet" className="nav-link text-white">
+            <Link to="/shfaqPsikologet" className="nav-link text-white">
               👨‍⚕️ Psikologët
             </Link>
           </li>

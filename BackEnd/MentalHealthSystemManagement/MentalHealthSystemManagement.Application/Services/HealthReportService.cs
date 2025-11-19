@@ -62,6 +62,24 @@ namespace MentalHealthSystemManagement.Application.Services
             };
             
         }
+        public async Task<List<HealthReportDto>> GetByPatientIdAsync(int patientId)
+        {
+            var reports = await _repository.GetByPatientIdAsync(patientId);
+
+            // Manual mapping pa AutoMapper
+            var reportDtos = reports.Select(hr => new HealthReportDto
+            {
+                Id = hr.Id,
+                Title = hr.Title,
+                Diagnoza = hr.Diagnoza,
+                Description = hr.Description,
+                CreatedAt = hr.CreatedAt,
+                UpdatedAt = hr.UpdatedAt,                               
+            }).ToList();
+
+            return reportDtos;
+        }
+
         public async Task UpdateReportAsync(int id,UpdateHealthReportDto dto)
         {
             var report = await _repository.GetByIdAsync( id);

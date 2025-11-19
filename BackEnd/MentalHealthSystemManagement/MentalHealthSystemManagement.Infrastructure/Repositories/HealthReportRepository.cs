@@ -38,6 +38,14 @@ namespace MentalHealthSystemManagement.Infrastructure.Repositories
             _context.HealthReports.Update(report);
             await _context.SaveChangesAsync();
         }
+        public async Task<List<HealthReports>> GetByPatientIdAsync(int patientId)
+        {
+            return await _context.HealthReports
+                .Include(hr => hr.Psikologi)
+                .Where(hr => hr.PatientId == patientId)
+                .OrderByDescending(hr => hr.CreatedAt)
+                .ToListAsync();
+        }
         public async Task DeleteAsync(int id)
         {
             var report = await _context.HealthReports.FindAsync(id);

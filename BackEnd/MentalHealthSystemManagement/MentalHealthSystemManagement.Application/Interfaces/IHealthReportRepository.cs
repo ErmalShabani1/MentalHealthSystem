@@ -12,6 +12,7 @@ namespace MentalHealthSystemManagement.Application.Interfaces
         Task AddAsync(HealthReports report);
         Task<IEnumerable<HealthReports>> GetAllAsync();
         Task<HealthReports?> GetByIdAsync(int id);
+        Task<List<HealthReports>> GetByPatientIdAsync(int patientId);
         Task UpdateAsync(HealthReports report);
         Task DeleteAsync(int id);
         Task SaveChangesAsync();

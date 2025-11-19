@@ -27,6 +27,7 @@ import EditRaportinForm from "./pages/Psikolog/EditRaportinForm";
 import MenaxhoRaportet from "./pages/Psikolog/MenaxhoRaportetForm";
 import ShfaqRaportet from "./pages/Pacient/ShfaqRaportet";
 import ShfaqTakimet from "./pages/Pacient/ShfaqTakimet";
+import ShfaqPsikologet from "./pages/Pacient/ShfaqPsikologet";
 
 
 function App() {
@@ -58,8 +59,9 @@ function App() {
              <Route path="/add-raportin" element={<AddRaportinForm />} />
           < Route path="/edit-raportin/:id" element={<EditRaportinForm/>}/>
           <Route path="/menaxhoRaportet" element={<MenaxhoRaportet/>}/>
-          <Route path="/raportetEMia" element={<ShfaqRaportet/>}/>
-          <Route path="/takimetEMia" element={<ShfaqTakimet/>}/>
+          <Route path="/shfaqRaportet" element={<ShfaqRaportet/>}/>
+          <Route path="/shfaqTakimet" element={<ShfaqTakimet/>}/>
+            <Route path="/shfaqPsikologet" element={<ShfaqPsikologet/>}/>
       </Routes>
     </Router>
   );
