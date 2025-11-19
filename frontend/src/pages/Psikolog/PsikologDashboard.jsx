@@ -102,32 +102,14 @@ function PsikologDashboard() {
 
       } catch (error) {
         console.error("Gabim gjatë marrjes së të dhënave:", error);
+        console.error("Error response:", error.response);
+        console.error("Error data:", error.response?.data);
+        console.error("Error status:", error.response?.status);
         setError('Gabim gjatë ngarkimit të të dhënave');
         
-        // Në rast gabimi, përdor të dhëna testuese për të testuar komponentin
-        const testRaportet = [
-          {
-            id: 1,
-            title: "Raport Test 1",
-            patientName: "Pacient Test 1",
-            diagnoza: "Anxiety Disorder",
-            psikologId: psikologId,
-            psikologName: psikologName,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
-          },
-          {
-            id: 2,
-            title: "Raport Test 2", 
-            patientName: "Pacient Test 2",
-            diagnoza: "Depression",
-            psikologId: psikologId,
-            psikologName: psikologName,
-            createdAt: new Date('2024-01-15').toISOString(),
-            updatedAt: new Date('2024-01-20').toISOString()
-          }
-        ];
-        setRaportet(testRaportet);
+        // Vendos arrays bosh në vend të të dhënave testuese
+        setTakimet([]);
+        setRaportet([]);
       } finally {
         setLoading(false);
       }
@@ -182,43 +164,59 @@ function PsikologDashboard() {
     <div className="d-flex" style={{ minHeight: "100vh" }}>
       {/* Sidebar */}
       <div
-        className="bg-dark text-white p-3"
-        style={{ width: "250px", position: "fixed", height: "100vh", overflowY: "auto" }}
+        className="bg-dark text-white p-3 d-flex flex-column"
+        style={{ width: "250px", position: "fixed", height: "100vh" }}
       >
-        <h4 className="mb-4 text-center">Psikolog Panel</h4>
-        <ul className="nav flex-column">
-          <li className="nav-item mb-2">
-            <Link to="/psikologDashboard" className="nav-link text-white active">
-              🏠 Dashboard
-            </Link>
-          </li>
-          <li className="nav-item mb-2">
-            <Link to="/add-takimet" className="nav-link text-white">
-              ➕ Shto Takim
-            </Link>
-          </li>
-          <li className="nav-item mb-2">
-            <Link to="/menaxhoTakimet" className="nav-link text-white">
-              📋 Menaxho Takimet
-            </Link>
-          </li>
-          <li className="nav-item mb-2">
-            <Link to="/add-raportin" className="nav-link text-white">
-              📝 Shto Raport
-            </Link>
-          </li>
-          <li className="nav-item mb-2">
-            <Link to="/menaxhoRaportet" className="nav-link text-white">
-              📊 Menaxho Raportet
-            </Link>
-          </li>
-          <li className="nav-item mb-2">
-            <Link to="/pacientetEMi" className="nav-link text-white">
-              👥 Pacientët e Mi
-            </Link>
-          </li>
-        </ul>
-        <div className="mt-auto pt-3 border-top">
+        {/* Dashboard */}
+        <div className="mb-3">
+          <Link to="/psikologDashboard" className="nav-link text-white px-3 py-2 mb-1 active" style={{backgroundColor: 'rgba(255,255,255,0.15)', borderRadius: '4px'}}>
+            🏠 Dashboard
+          </Link>
+        </div>
+
+        {/* Psikologët Section */}
+        <div className="mb-3">
+          <div className="text-white mb-2 px-2 py-1">
+            <small className="text-uppercase fw-semibold" style={{fontSize: '0.75rem', letterSpacing: '0.5px'}}>👨‍⚕️ Psikologët</small>
+          </div>
+          <Link to="/add-takimet" className="nav-link text-white px-3 py-2 mb-1">
+            ➕ Shto Takim
+          </Link>
+          <Link to="/menaxhoTakimet" className="nav-link text-white px-3 py-2 mb-1">
+            👨‍⚕️ Menaxho Takimet
+          </Link>
+        </div>
+
+        {/* Terapia Section */}
+        <div className="mb-3">
+          <div className="text-white mb-2 px-2 py-1">
+            <small className="text-uppercase fw-semibold" style={{fontSize: '0.75rem', letterSpacing: '0.5px'}}>🧘 Terapia</small>
+          </div>
+          <Link to="/add-terapine" className="nav-link text-white px-3 py-2 mb-1">
+            ➕ Shto Seancë
+          </Link>
+          <Link to="/menaxhoTerapine" className="nav-link text-white px-3 py-2 mb-1">
+            📋 Menaxho Seanca
+          </Link>
+        </div>
+
+        {/* Pacientët Section */}
+        <div className="mb-3">
+          <div className="text-white mb-2 px-2 py-1">
+            <small className="text-uppercase fw-semibold" style={{fontSize: '0.75rem', letterSpacing: '0.5px'}}>📖 Pacientët</small>
+          </div>
+          <Link to="/add-raportin" className="nav-link text-white px-3 py-2 mb-1">
+            ➕ Shto Raport
+          </Link>
+          <Link to="/menaxhoRaportet" className="nav-link text-white px-3 py-2 mb-1">
+            👨‍⚕️ Menaxho Raportet
+          </Link>
+          <Link to="/pacientetEMi" className="nav-link text-white px-3 py-2 mb-1">
+            👥 Pacientët e Mi
+          </Link>
+        </div>
+
+        <div className="mt-auto">
           <button onClick={handleLogout} className="btn btn-danger w-100">
             🚪 Logout
           </button>

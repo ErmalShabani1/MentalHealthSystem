@@ -86,38 +86,30 @@ const handleDelete = async (id) => {
     <div className="d-flex" style={{ minHeight: "100vh" }}>
       {/* Sidebar */}
       <div
-        className="bg-dark text-white p-3"
-        style={{ width: "250px", position: "fixed", height: "100vh", overflowY: "auto" }}
+        className="bg-dark text-white p-3 d-flex flex-column"
+        style={{ width: "250px", position: "fixed", height: "100vh" }}
       >
-        <h4 className="mb-4 text-center">Psikolog Panel</h4>
-        <ul className="nav flex-column">
-          <li className="nav-item mb-2">
-            <Link to="/psikologDashboard" className="nav-link text-white">
-              🏠 Dashboard
-            </Link>
-          </li>
-          <li className="nav-item mb-2">
-            <Link to="/add-raportin" className="nav-link text-white">
-              📝 Shto Raport
-            </Link>
-          </li>
-          <li className="nav-item mb-2">
-            <Link to="/menaxhoRaportet" className="nav-link text-white active">
-              📊 Menaxho Raportet
-            </Link>
-          </li>
-          <li className="nav-item mb-2">
-            <Link to="/menaxhoTakimet" className="nav-link text-white">
-              📋 Menaxho Takimet
-            </Link>
-          </li>
-          <li className="nav-item mb-2">
-            <Link to="/pacientetEMi" className="nav-link text-white">
-              👥 Pacientët e Mi
-            </Link>
-          </li>
-        </ul>
-        <div className="mt-auto pt-3 border-top">
+        {/* Dashboard */}
+        <div className="mb-3">
+          <Link to="/psikologDashboard" className="nav-link text-white px-3 py-2 mb-1" style={{borderRadius: '4px'}}>
+            🏠 Dashboard
+          </Link>
+        </div>
+
+        {/* Pacientët Section */}
+        <div className="mb-3">
+          <div className="text-white mb-2 px-2 py-1">
+            <small className="text-uppercase fw-semibold" style={{fontSize: '0.75rem', letterSpacing: '0.5px'}}>📖 Pacientët</small>
+          </div>
+          <Link to="/menaxhoRaportet" className="nav-link text-white px-3 py-2 mb-1 active" style={{backgroundColor: 'rgba(255,255,255,0.15)', borderRadius: '4px'}}>
+            👨‍⚕️ Menaxho Raportet
+          </Link>
+          <Link to="/add-raportin" className="nav-link text-white px-3 py-2 mb-1">
+            ➕ Shto Raport
+          </Link>
+        </div>
+        
+        <div className="mt-auto">
           <button onClick={handleLogout} className="btn btn-danger w-100 mb-2">
             🚪 Logout
           </button>
@@ -250,14 +242,14 @@ const handleDelete = async (id) => {
                 </div>
               ) : (
                 <div className="table-responsive">
-                  <table className="table table-hover mb-0">
+                  <table className="table table-hover align-middle mb-0">
                     <thead className="table-light">
                       <tr>
                         <th>Titulli</th>
                         <th>Pacienti</th>
                         <th>Diagnoza</th>
                         <th>Data</th>
-                        <th width="120">Veprimet</th>
+                        <th className="text-center" width="200">Veprime</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -265,84 +257,60 @@ const handleDelete = async (id) => {
                         <tr key={r.id}>
                           <td>
                             <div>
-                              <strong>{r.title}</strong>
+                              <div className="fw-bold">{r.title}</div>
                               {r.description && (
-                                <br />
-                              )}
-                              {r.description && (
-                                <small className="text-muted">
-                                  {r.description.length > 50 
-                                    ? `${r.description.substring(0, 50)}...` 
-                                    : r.description
-                                  }
+                                <small className="text-muted text-truncate d-block" style={{maxWidth: '300px'}}>
+                                  {r.description}
                                 </small>
                               )}
                             </div>
                           </td>
                           <td>
                             <div>
-                              <strong>{r.patientName}</strong>
-                              <br />
-                              <small className="text-muted">
-                                Psikologu: {r.psikologName}
-                              </small>
+                              <div className="fw-semibold">{r.patientName}</div>
+                              <small className="text-muted">{r.psikologName}</small>
                             </div>
                           </td>
                           <td>
-                            <span className="badge bg-warning text-dark" title={r.diagnoza}>
-                              {r.diagnoza.length > 30 
-                                ? `${r.diagnoza.substring(0, 30)}...` 
+                            <span className="badge bg-warning text-dark px-3 py-2" title={r.diagnoza}>
+                              {r.diagnoza.length > 25 
+                                ? `${r.diagnoza.substring(0, 25)}...` 
                                 : r.diagnoza
                               }
                             </span>
                           </td>
                           <td>
                             <div>
-                              <strong>{new Date(r.createdAt).toLocaleDateString('sq-AL')}</strong>
-                              <br />
+                              <div className="fw-semibold">{new Date(r.createdAt).toLocaleDateString('sq-AL')}</div>
                               <small className="text-muted">
                                 {r.updatedAt && r.updatedAt !== r.createdAt ? (
                                   <span className="text-info">
-                                    <i className="fas fa-edit me-1"></i>
                                     Përditësuar
                                   </span>
                                 ) : (
                                   <span className="text-success">
-                                    <i className="fas fa-plus me-1"></i>
-                                    Krijuar
+                                    E re
                                   </span>
                                 )}
                               </small>
                             </div>
                           </td>
                           <td>
-                            <div className="btn-group btn-group-sm" role="group">
+                            <div className="d-flex gap-2 justify-content-center">
                               <Link
                                 to={`/edit-raportin/${r.id}`}
-                                className="btn btn-outline-warning"
-                                title="Modifiko raportin"
+                                className="btn btn-sm btn-outline-primary"
                               >
-                                <i className="fas fa-edit"></i>
+                                <i className="fas fa-edit me-1"></i>
+                                Modifiko
                               </Link>
                               
                               <button
                                 onClick={() => handleDelete(r.id)}
-                                className="btn btn-outline-danger"
-                                title="Fshi raportin"
+                                className="btn btn-sm btn-outline-danger"
                               >
-                                <i className="fas fa-trash"></i>
-                              </button>
-
-                              {/* Butoni për shikim të shpejtë */}
-                              <button
-                                className="btn btn-outline-info"
-                                title="Shiko detajet"
-                                onClick={() => {
-                                  // Mund të implementohet një modal për shikim të shpejtë
-                                  toast.info(`Diagnoza: ${r.diagnoza}`);
-                                }}
-                              >
-                                <i className="fas fa-eye"></i>
+                                <i className="fas fa-trash me-1"></i>
+                                Fshi
                               </button>
                             </div>
                           </td>

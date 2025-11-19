@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MentalHealthSystemManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251111232900_Ushtrimet")]
-    partial class Ushtrimet
+    [Migration("20251119222233_UpdateTherapySessionFields")]
+    partial class UpdateTherapySessionFields
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -50,9 +50,6 @@ namespace MentalHealthSystemManagement.Infrastructure.Migrations
                     b.Property<int>("PsikologId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("PsikologiId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -61,9 +58,53 @@ namespace MentalHealthSystemManagement.Infrastructure.Migrations
 
                     b.HasIndex("PatientId");
 
-                    b.HasIndex("PsikologiId");
+                    b.HasIndex("PsikologId");
 
                     b.ToTable("Appointments");
+                });
+
+            modelBuilder.Entity("MentalHealthSystemManagement.Domain.Entities.HealthReports", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("AppointmentId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Diagnoza")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PatientId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PsikologId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PatientId");
+
+                    b.HasIndex("PsikologId");
+
+                    b.ToTable("HealthReports");
                 });
 
             modelBuilder.Entity("MentalHealthSystemManagement.Domain.Entities.Patient", b =>
@@ -137,7 +178,7 @@ namespace MentalHealthSystemManagement.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Psikologet");
+                    b.ToTable("Psikologet", (string)null);
                 });
 
             modelBuilder.Entity("MentalHealthSystemManagement.Domain.Entities.RefreshToken", b =>
@@ -166,6 +207,76 @@ namespace MentalHealthSystemManagement.Infrastructure.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("RefreshTokens");
+                });
+
+            modelBuilder.Entity("MentalHealthSystemManagement.Domain.Entities.TherapySession", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("DurationMinutes")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Exercises")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Goals")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MoodAfter")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MoodBefore")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Notes")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PatientId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Progress")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PsikologId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("SessionDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("SessionNumber")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SessionType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PatientId");
+
+                    b.HasIndex("PsikologId");
+
+                    b.ToTable("TherapySessions");
                 });
 
             modelBuilder.Entity("MentalHealthSystemManagement.Domain.Entities.User", b =>
@@ -213,7 +324,28 @@ namespace MentalHealthSystemManagement.Infrastructure.Migrations
 
                     b.HasOne("MentalHealthSystemManagement.Domain.Entities.Psikologi", "Psikologi")
                         .WithMany()
-                        .HasForeignKey("PsikologiId");
+                        .HasForeignKey("PsikologId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Patient");
+
+                    b.Navigation("Psikologi");
+                });
+
+            modelBuilder.Entity("MentalHealthSystemManagement.Domain.Entities.HealthReports", b =>
+                {
+                    b.HasOne("MentalHealthSystemManagement.Domain.Entities.Patient", "Patient")
+                        .WithMany()
+                        .HasForeignKey("PatientId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("MentalHealthSystemManagement.Domain.Entities.Psikologi", "Psikologi")
+                        .WithMany()
+                        .HasForeignKey("PsikologId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("Patient");
 
@@ -251,6 +383,25 @@ namespace MentalHealthSystemManagement.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("MentalHealthSystemManagement.Domain.Entities.TherapySession", b =>
+                {
+                    b.HasOne("MentalHealthSystemManagement.Domain.Entities.Patient", "Patient")
+                        .WithMany()
+                        .HasForeignKey("PatientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MentalHealthSystemManagement.Domain.Entities.Psikologi", "Psikologi")
+                        .WithMany()
+                        .HasForeignKey("PsikologId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Patient");
+
+                    b.Navigation("Psikologi");
                 });
 #pragma warning restore 612, 618
         }

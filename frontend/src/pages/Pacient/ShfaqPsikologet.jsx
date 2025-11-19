@@ -57,6 +57,11 @@ function ShfaqPsikologet() {
             </Link>
           </li>
           <li className="nav-item mb-2">
+            <Link to="/shfaqTerapine" className="nav-link text-white">
+              🧘 Terapitë e Mija
+            </Link>
+          </li>
+          <li className="nav-item mb-2">
             <Link to="/shfaqPsikologet" className="nav-link text-white active">
               👨‍⚕️ Psikologët
             </Link>

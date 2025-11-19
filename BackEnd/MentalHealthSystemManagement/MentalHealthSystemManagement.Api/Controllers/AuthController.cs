@@ -36,7 +36,22 @@ namespace MentalHealthSystemManagement.Api.Controllers
             var user = await _authservice.LoginAsync(dto);
             if (user == null) return Unauthorized("Emri ose passwordi jane dhene gabim");
 
-            var token = _jwtservice.GenerateToken(user.Id.ToString(), user.Username, user.Role);
+            // 🔹 Gjej psikologId / patientId
+            int? psikologId = null;
+            int? patientId = null;
+
+            if (user.Role == "Psikolog")
+            {
+                var psikolog = await _context.Psikologet.FirstOrDefaultAsync(p => p.UserId == user.Id);
+                psikologId = psikolog?.Id;
+            }
+            else if (user.Role == "Pacient")
+            {
+                var patient = await _context.Patients.FirstOrDefaultAsync(p => p.UserId == user.Id);
+                patientId = patient?.Id;
+            }
+
+            var token = _jwtservice.GenerateToken(user.Id.ToString(), user.Username, user.Role, psikologId, patientId);
 
             Response.Cookies.Append("jwt", token, new CookieOptions
             {
@@ -53,21 +68,6 @@ namespace MentalHealthSystemManagement.Api.Controllers
                 SameSite = SameSiteMode.None,
                 Expires = user.RefreshTokenExpiryTime
             });
-
-            // 🔹 Gjej psikologId / patientId
-            int? psikologId = null;
-            int? patientId = null;
-
-            if (user.Role == "Psikolog")
-            {
-                var psikolog = await _context.Psikologet.FirstOrDefaultAsync(p => p.UserId == user.Id);
-                psikologId = psikolog?.Id;
-            }
-            else if (user.Role == "Pacient")
-            {
-                var patient = await _context.Patients.FirstOrDefaultAsync(p => p.UserId == user.Id);
-                patientId = patient?.Id;
-            }
 
             // 🔹 Kthe gjithçka në response
             return Ok(new
@@ -94,7 +94,22 @@ namespace MentalHealthSystemManagement.Api.Controllers
             var user = await _authservice.GetUserByRefreshTokenAsync(refreshToken);
             if (user == null || user.RefreshTokenExpiryTime <= DateTime.UtcNow) return Unauthorized("Invalid or expired refresh token");
 
-            var newJwtToken = _jwtservice.GenerateToken(user.Id.ToString(), user.Username, user.Role);
+            // 🔹 Gjej psikologId / patientId për refresh token
+            int? psikologId = null;
+            int? patientId = null;
+
+            if (user.Role == "Psikolog")
+            {
+                var psikolog = await _context.Psikologet.FirstOrDefaultAsync(p => p.UserId == user.Id);
+                psikologId = psikolog?.Id;
+            }
+            else if (user.Role == "Pacient")
+            {
+                var patient = await _context.Patients.FirstOrDefaultAsync(p => p.UserId == user.Id);
+                patientId = patient?.Id;
+            }
+
+            var newJwtToken = _jwtservice.GenerateToken(user.Id.ToString(), user.Username, user.Role, psikologId, patientId);
             var newRefreshToken = _jwtservice.GenerateRefreshToken();
 
             user.RefreshToken = newRefreshToken;

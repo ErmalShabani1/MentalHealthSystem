@@ -15,17 +15,25 @@ namespace MentalHealthSystemManagement.Application.Services
         {
             _configuration = configuration;
         }
-        public string GenerateToken(string userId, string username, string role)
+        public string GenerateToken(string userId, string username, string role, int? psikologId = null, int? patientId = null)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            var claims = new[]
- {
-    new Claim("UserId", userId),               // <--- shto këtë
-    new Claim(JwtRegisteredClaimNames.UniqueName, username),
-    new Claim(ClaimTypes.Role, role)
-};
+            var claimsList = new List<Claim>
+            {
+                new Claim("UserId", userId),
+                new Claim(JwtRegisteredClaimNames.UniqueName, username),
+                new Claim(ClaimTypes.Role, role)
+            };
+
+            if (psikologId.HasValue)
+                claimsList.Add(new Claim("PsikologId", psikologId.Value.ToString()));
+
+            if (patientId.HasValue)
+                claimsList.Add(new Claim("PatientId", patientId.Value.ToString()));
+
+            var claims = claimsList.ToArray();
             var token = new JwtSecurityToken(
                 issuer: _configuration["Jwt:Issuer"],
                 audience: _configuration["Jwt:Audience"],

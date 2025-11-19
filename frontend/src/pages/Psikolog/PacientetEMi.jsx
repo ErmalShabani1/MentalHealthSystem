@@ -73,33 +73,66 @@ function PacientetEMi() {
     <div className="d-flex" style={{ minHeight: "100vh" }}>
       {/* Sidebar */}
       <div
-        className="bg-dark text-white p-3"
-        style={{ width: "250px", position: "fixed", height: "100vh", overflowY: "auto" }}
+        className="bg-dark text-white p-3 d-flex flex-column"
+        style={{ width: "250px", position: "fixed", height: "100vh" }}
       >
-        <h4 className="mb-4 text-center">Psikolog Panel</h4>
-        <ul className="nav flex-column">
-          <li className="nav-item mb-2">
-            <Link to="/psikologDashboard" className="nav-link text-white">
-              🏠 Dashboard
-            </Link>
-          </li>
-          <li className="nav-item mb-2">
-            <Link to="/add-takimet" className="nav-link text-white">
-              ➕ Shto Takim
-            </Link>
-          </li>
-          <li className="nav-item mb-2">
-            <Link to="/menaxhoTakimet" className="nav-link text-white">
-              📋 Menaxho Takimet
-            </Link>
-          </li>
-          <li className="nav-item mb-2">
-            <Link to="/pacientet" className="nav-link text-white active">
-              👥 Pacientët e Mi
-            </Link>
-          </li>
-        </ul>
-        <div className="mt-auto pt-3 border-top">
+        {/* Dashboard */}
+        <div className="mb-3">
+          <Link to="/psikologDashboard" className="nav-link text-white px-3 py-2 mb-1" style={{borderRadius: '4px'}}>
+            🏠 Dashboard
+          </Link>
+        </div>
+
+        {/* Takimet Section */}
+        <div className="mb-3">
+          <div className="text-white mb-2 px-2 py-1">
+            <small className="text-uppercase fw-semibold" style={{fontSize: '0.75rem', letterSpacing: '0.5px'}}>📅 Takimet</small>
+          </div>
+          <Link to="/menaxhoTakimet" className="nav-link text-white px-3 py-2 mb-1">
+            📋 Menaxho Takimet
+          </Link>
+          <Link to="/add-takimet" className="nav-link text-white px-3 py-2 mb-1">
+            ➕ Shto Takim
+          </Link>
+        </div>
+
+        {/* Pacientët Section */}
+        <div className="mb-3">
+          <div className="text-white mb-2 px-2 py-1">
+            <small className="text-uppercase fw-semibold" style={{fontSize: '0.75rem', letterSpacing: '0.5px'}}>👥 Pacientët</small>
+          </div>
+          <Link to="/pacientetEMi" className="nav-link text-white px-3 py-2 mb-1 active" style={{backgroundColor: 'rgba(255,255,255,0.15)', borderRadius: '4px'}}>
+            👥 Pacientët e Mi
+          </Link>
+        </div>
+
+        {/* Terapia Section */}
+        <div className="mb-3">
+          <div className="text-white mb-2 px-2 py-1">
+            <small className="text-uppercase fw-semibold" style={{fontSize: '0.75rem', letterSpacing: '0.5px'}}>🧘 Terapia</small>
+          </div>
+          <Link to="/menaxhoTerapine" className="nav-link text-white px-3 py-2 mb-1">
+            📋 Menaxho Seanca
+          </Link>
+          <Link to="/add-terapine" className="nav-link text-white px-3 py-2 mb-1">
+            ➕ Shto Seancë
+          </Link>
+        </div>
+
+        {/* Raportet Section */}
+        <div className="mb-3">
+          <div className="text-white mb-2 px-2 py-1">
+            <small className="text-uppercase fw-semibold" style={{fontSize: '0.75rem', letterSpacing: '0.5px'}}>📄 Raportet</small>
+          </div>
+          <Link to="/menaxhoRaportet" className="nav-link text-white px-3 py-2 mb-1">
+            📋 Menaxho Raportet
+          </Link>
+          <Link to="/add-raportin" className="nav-link text-white px-3 py-2 mb-1">
+            ➕ Shto Raport
+          </Link>
+        </div>
+        
+        <div className="mt-auto">
           <button onClick={handleLogout} className="btn btn-danger w-100 mb-2">
             🚪 Logout
           </button>
@@ -220,7 +253,7 @@ function PacientetEMi() {
                 </div>
               ) : (
                 <div className="table-responsive">
-                  <table className="table table-hover mb-0">
+                  <table className="table table-hover align-middle mb-0">
                     <thead className="table-light">
                       <tr>
                         <th>Pacienti</th>
@@ -229,7 +262,7 @@ function PacientetEMi() {
                         <th>Takime Përfunduar</th>
                         <th>Takime Aktive</th>
                         <th>Takimi i Fundit</th>
-                        <th width="120">Veprimet</th>
+                        <th className="text-center" width="220">Veprime</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -239,8 +272,7 @@ function PacientetEMi() {
                           <tr key={pacient.id}>
                             <td>
                               <div>
-                                <strong>{pacient.emri}</strong>
-                                <br />
+                                <div className="fw-bold">{pacient.emri}</div>
                                 <small className="text-muted">ID: {pacient.id}</small>
                               </div>
                             </td>
@@ -253,43 +285,47 @@ function PacientetEMi() {
                               <strong>{pacient.takimetTotal}</strong>
                             </td>
                             <td>
-                              <span className="text-success">
-                                <strong>{pacient.takimetPërfunduar}</strong>
+                              <span className="text-success fw-semibold">
+                                {pacient.takimetPërfunduar}
                               </span>
                             </td>
                             <td>
-                              <span className="text-warning">
-                                <strong>{pacient.takimetAktive}</strong>
+                              <span className="text-warning fw-semibold">
+                                {pacient.takimetAktive}
                               </span>
                             </td>
                             <td>
                               {pacient.takimiFundit ? (
-                                <small>
-                                  {new Date(pacient.takimiFundit).toLocaleDateString('sq-AL')}
-                                  <br />
-                                  <span className="text-muted">
-                                    {new Date(pacient.takimiFundit).toLocaleTimeString('sq-AL')}
-                                  </span>
-                                </small>
+                                <div>
+                                  <div className="fw-semibold">
+                                    {new Date(pacient.takimiFundit).toLocaleDateString('sq-AL')}
+                                  </div>
+                                  <small className="text-muted">
+                                    {new Date(pacient.takimiFundit).toLocaleTimeString('sq-AL', { 
+                                      hour: '2-digit', 
+                                      minute: '2-digit' 
+                                    })}
+                                  </small>
+                                </div>
                               ) : (
                                 <span className="text-muted">Asnjë</span>
                               )}
                             </td>
                             <td>
-                              <div className="btn-group btn-group-sm" role="group">
+                              <div className="d-flex gap-2 justify-content-center">
                                 <Link
                                   to={`/add-takimet?patientId=${pacient.id}`}
-                                  className="btn btn-outline-primary"
-                                  title="Shto takim të ri"
+                                  className="btn btn-sm btn-outline-primary"
                                 >
-                                  <i className="fas fa-plus"></i>
+                                  <i className="fas fa-plus me-1"></i>
+                                  Takim
                                 </Link>
                                 <Link
-                                  to={`/menaxhoTakimet`}
-                                  className="btn btn-outline-info"
-                                  title="Shiko takimet"
+                                  to={`/add-raportin?patientId=${pacient.id}`}
+                                  className="btn btn-sm btn-outline-success"
                                 >
-                                  <i className="fas fa-eye"></i>
+                                  <i className="fas fa-file-medical me-1"></i>
+                                  Raport
                                 </Link>
                               </div>
                             </td>

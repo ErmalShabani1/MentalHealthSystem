@@ -132,33 +132,30 @@ function AddTakimin() {
     <div className="d-flex" style={{ minHeight: "100vh" }}>
       {/* Sidebar */}
       <div
-        className="bg-dark text-white p-3"
-        style={{ width: "250px", position: "fixed", height: "100vh", overflowY: "auto" }}
+        className="bg-dark text-white p-3 d-flex flex-column"
+        style={{ width: "250px", position: "fixed", height: "100vh" }}
       >
-        <h4 className="mb-4 text-center">Psikolog Panel</h4>
-        <ul className="nav flex-column">
-          <li className="nav-item mb-2">
-            <Link to="/psikologDashboard" className="nav-link text-white">
-              🏠 Dashboard
-            </Link>
-          </li>
-          <li className="nav-item mb-2">
-            <Link to="/add-takimet" className="nav-link text-white active">
-              ➕ Shto Takim
-            </Link>
-          </li>
-          <li className="nav-item mb-2">
-            <Link to="/menaxhoTakimet" className="nav-link text-white">
-              📋 Menaxho Takimet
-            </Link>
-          </li>
-          <li className="nav-item mb-2">
-            <Link to="/pacientetEMi" className="nav-link text-white">
-              👥 Pacientët e Mi
-            </Link>
-          </li>
-        </ul>
-        <div className="mt-auto pt-3 border-top">
+        {/* Dashboard */}
+        <div className="mb-3">
+          <Link to="/psikologDashboard" className="nav-link text-white px-3 py-2 mb-1" style={{borderRadius: '4px'}}>
+            🏠 Dashboard
+          </Link>
+        </div>
+
+        {/* Psikologët Section */}
+        <div className="mb-3">
+          <div className="text-white mb-2 px-2 py-1">
+            <small className="text-uppercase fw-semibold" style={{fontSize: '0.75rem', letterSpacing: '0.5px'}}>👨‍⚕️ Psikologët</small>
+          </div>
+          <Link to="/add-takimet" className="nav-link text-white px-3 py-2 mb-1 active" style={{backgroundColor: 'rgba(255,255,255,0.15)', borderRadius: '4px'}}>
+            ➕ Shto Takim
+          </Link>
+          <Link to="/menaxhoTakimet" className="nav-link text-white px-3 py-2 mb-1">
+            📋 Menaxho Takimet
+          </Link>
+        </div>
+        
+        <div className="mt-auto">
           <button onClick={handleLogout} className="btn btn-danger w-100 mb-2">
             🚪 Logout
           </button>

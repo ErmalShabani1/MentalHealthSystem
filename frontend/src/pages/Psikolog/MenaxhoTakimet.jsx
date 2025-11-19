@@ -89,36 +89,30 @@ function MenaxhoTakimet() {
     <div className="d-flex" style={{ minHeight: "100vh" }}>
       {/* Sidebar */}
       <div
-        className="bg-dark text-white p-3"
-        style={{ width: "250px", position: "fixed", height: "100vh", overflowY: "auto" }}
+        className="bg-dark text-white p-3 d-flex flex-column"
+        style={{ width: "250px", position: "fixed", height: "100vh" }}
       >
-        <h4 className="mb-4 text-center">Psikolog Panel</h4>
-        <ul className="nav flex-column">
-          <li className="nav-item mb-2">
-            <Link to="/psikologDashboard" className="nav-link text-white">
-              🏠 Dashboard
-            </Link>
-          </li>
-          <li className="nav-item mb-2">
-            <Link to="/add-takimet" className="nav-link text-white">
-              ➕ Shto Takim
-            </Link>
-          </li>
-          <li className="nav-item mb-2">
-            <Link to="/menaxhoTakimet" className="nav-link text-white active">
-              📋 Menaxho Takimet
-            </Link>
-          </li>
-          <li className="nav-item mb-2">
-            <Link to="/raportet" className="nav-link text-white">
-              📊 Raportet e Pacientëve
-            </Link>
-            <Link to="/pacientetEMi" className="nav-link text-white">
-              👥 Pacientët e Mi
-            </Link>
-          </li>
-        </ul>
-        <div className="mt-auto pt-3 border-top">
+        {/* Dashboard */}
+        <div className="mb-3">
+          <Link to="/psikologDashboard" className="nav-link text-white px-3 py-2 mb-1" style={{borderRadius: '4px'}}>
+            🏠 Dashboard
+          </Link>
+        </div>
+
+        {/* Psikologët Section */}
+        <div className="mb-3">
+          <div className="text-white mb-2 px-2 py-1">
+            <small className="text-uppercase fw-semibold" style={{fontSize: '0.75rem', letterSpacing: '0.5px'}}>👨‍⚕️ Psikologët</small>
+          </div>
+          <Link to="/menaxhoTakimet" className="nav-link text-white px-3 py-2 mb-1 active" style={{backgroundColor: 'rgba(255,255,255,0.15)', borderRadius: '4px'}}>
+            📋 Menaxho Takimet
+          </Link>
+          <Link to="/add-takimet" className="nav-link text-white px-3 py-2 mb-1">
+            ➕ Shto Takim
+          </Link>
+        </div>
+        
+        <div className="mt-auto">
           <button onClick={handleLogout} className="btn btn-danger w-100 mb-2">
             🚪 Logout
           </button>
@@ -251,14 +245,14 @@ function MenaxhoTakimet() {
                 </div>
               ) : (
                 <div className="table-responsive">
-                  <table className="table table-hover mb-0">
+                  <table className="table table-hover align-middle mb-0">
                     <thead className="table-light">
                       <tr>
                         <th>Pacienti</th>
                         <th>Data dhe Koha</th>
                         <th>Statusi</th>
                         <th>Shënime</th>
-                        <th width="150">Veprimet</th>
+                        <th className="text-center" width="200">Veprime</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -266,15 +260,13 @@ function MenaxhoTakimet() {
                         <tr key={t.id}>
                           <td>
                             <div>
-                              <strong>{t.patientName}</strong>
-                              <br />
+                              <div className="fw-bold">{t.patientName}</div>
                               <small className="text-muted">ID: {t.patientId}</small>
                             </div>
                           </td>
                           <td>
                             <div>
-                              <strong>{new Date(t.appointmentDate).toLocaleDateString('sq-AL')}</strong>
-                              <br />
+                              <div className="fw-semibold">{new Date(t.appointmentDate).toLocaleDateString('sq-AL')}</div>
                               <small className="text-muted">
                                 {new Date(t.appointmentDate).toLocaleTimeString('sq-AL', { 
                                   hour: '2-digit', 
@@ -288,43 +280,29 @@ function MenaxhoTakimet() {
                           </td>
                           <td>
                             {t.notes ? (
-                              <span title={t.notes}>
-                                {t.notes.length > 50 
-                                  ? `${t.notes.substring(0, 50)}...` 
-                                  : t.notes
-                                }
+                              <span className="text-truncate d-inline-block" style={{maxWidth: '200px'}} title={t.notes}>
+                                {t.notes}
                               </span>
                             ) : (
-                              <span className="text-muted">Nuk ka shënime</span>
+                              <span className="text-muted fst-italic">Pa shënime</span>
                             )}
                           </td>
                           <td>
-                            <div className="btn-group btn-group-sm" role="group">
+                            <div className="d-flex gap-2 justify-content-center">
                               <Link
                                 to={`/edit-takimet/${t.id}`}
-                                className="btn btn-outline-warning"
-                                title="Modifiko takimin"
+                                className="btn btn-sm btn-outline-primary"
                               >
-                                <i className="fas fa-edit"></i>
+                                <i className="fas fa-edit me-1"></i>
+                                Modifiko
                               </Link>
-                              
-                              <select 
-                                className="form-select form-select-sm"
-                                value={t.status}
-                                onChange={(e) => handleStatusChange(t.id, e.target.value)}
-                                title="Ndrysho statusin"
-                              >
-                                <option value="Scheduled">Planifikuar</option>
-                                <option value="Completed">Përfunduar</option>
-                                <option value="Cancelled">Anuluar</option>
-                              </select>
                               
                               <button
                                 onClick={() => handleDelete(t.id)}
-                                className="btn btn-outline-danger"
-                                title="Fshi takimin"
+                                className="btn btn-sm btn-outline-danger"
                               >
-                                <i className="fas fa-trash"></i>
+                                <i className="fas fa-trash me-1"></i>
+                                Fshi
                               </button>
                             </div>
                           </td>

@@ -21,6 +21,7 @@ namespace MentalHealthSystemManagement.Infrastructure.Data
         public DbSet<Psikologi> Psikologet { get; set; }
         public DbSet<Appointment> Appointments { get; set; }
         public DbSet<HealthReports> HealthReports { get; set; }
+        public DbSet<TherapySession> TherapySessions { get; set; }
         //ketu i bejme te tjerat
         //
 
@@ -55,6 +56,19 @@ namespace MentalHealthSystemManagement.Infrastructure.Data
                 .WithMany()
                 .HasForeignKey(r => r.PatientId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            // TherapySessions kompozim
+            modelBuilder.Entity<TherapySession>()
+                .HasOne(t => t.Psikologi)
+                .WithMany()
+                .HasForeignKey(t => t.PsikologId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<TherapySession>()
+                .HasOne(t => t.Patient)
+                .WithMany()
+                .HasForeignKey(t => t.PatientId)
+                .OnDelete(DeleteBehavior.Cascade);
 
         }
     }

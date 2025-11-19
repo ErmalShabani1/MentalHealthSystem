@@ -28,6 +28,9 @@ import MenaxhoRaportet from "./pages/Psikolog/MenaxhoRaportetForm";
 import ShfaqRaportet from "./pages/Pacient/ShfaqRaportet";
 import ShfaqTakimet from "./pages/Pacient/ShfaqTakimet";
 import ShfaqPsikologet from "./pages/Pacient/ShfaqPsikologet";
+import MenaxhoTerapine from "./pages/Psikolog/MenaxhoTerapine";
+import AddTerapine from "./pages/Psikolog/AddTerapine";
+import ShfaqTerapine from "./pages/Pacient/ShfaqTerapine";
 
 
 function App() {
@@ -61,7 +64,10 @@ function App() {
           <Route path="/menaxhoRaportet" element={<MenaxhoRaportet/>}/>
           <Route path="/shfaqRaportet" element={<ShfaqRaportet/>}/>
           <Route path="/shfaqTakimet" element={<ShfaqTakimet/>}/>
-            <Route path="/shfaqPsikologet" element={<ShfaqPsikologet/>}/>
+          <Route path="/shfaqPsikologet" element={<ShfaqPsikologet/>}/>
+          <Route path="/menaxhoTerapine" element={<MenaxhoTerapine/>}/>
+          <Route path="/add-terapine" element={<AddTerapine/>}/>
+          <Route path="/shfaqTerapine" element={<ShfaqTerapine/>}/>
       </Routes>
     </Router>
   );

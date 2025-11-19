@@ -4,6 +4,7 @@ using MentalHealthSystemManagement.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MentalHealthSystemManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251119210505_TherapySessionsTable")]
+    partial class TherapySessionsTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -220,19 +223,7 @@ namespace MentalHealthSystemManagement.Infrastructure.Migrations
                     b.Property<int>("DurationMinutes")
                         .HasColumnType("int");
 
-                    b.Property<string>("Exercises")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Goals")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MoodAfter")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MoodBefore")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -252,9 +243,6 @@ namespace MentalHealthSystemManagement.Infrastructure.Migrations
 
                     b.Property<DateTime>("SessionDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<int>("SessionNumber")
-                        .HasColumnType("int");
 
                     b.Property<string>("SessionType")
                         .IsRequired()
