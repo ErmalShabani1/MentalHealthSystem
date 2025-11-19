@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { getAllPsikologet } from "../../services/PsikologiService";
 import { getAllPatients } from "../../services/PacientiService";
+
 import { getAllAppointmentsAdmin } from "../../services/AppointmentService";
 import { Link, useNavigate } from "react-router-dom";
 import { logoutUser } from "../../services/authService";
+
+import { getTakimetByPsikologId } from "../../services/AppointmentService"; // Shto këtë
+
+
 
 function AdminDashboard() {
   const navigate = useNavigate();
@@ -11,6 +16,7 @@ function AdminDashboard() {
   const [patientsCount, setPatientsCount] = useState(0);
   const [takimetCount, setTakimetCount] = useState(0);
   const [recentAppointments, setRecentAppointments] = useState([]);
+  const [allTakimet, setAllTakimet] = useState([]); // Shto këtë state
   const [loading, setLoading] = useState(true);
 
   const handleLogout = async () => {
@@ -22,24 +28,58 @@ function AdminDashboard() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const [resPsych, resPatients, resTakimet] = await Promise.all([
+        console.log("🔍 ADMIN DASHBOARD - Duke marrë të dhënat...");
+        
+        // Merr psikologët dhe pacientët
+        const [resPsych, resPatients] = await Promise.all([
           getAllPsikologet(),
-          getAllPatients(),
-          getAllAppointmentsAdmin()
+          getAllPatients()
         ]);
+
+        console.log(`✅ Gjetur ${resPsych.data.length} psikologë`);
+        console.log(`✅ Gjetur ${resPatients.data.length} pacientë`);
 
         setPsychologistsCount(resPsych.data.length);
         setPatientsCount(resPatients.data.length);
-        setTakimetCount(resTakimet.data.length);
+
+        // Merr takimet për ÇDO psikolog
+        const allTakimet = [];
+        
+        for (const psikolog of resPsych.data) {
+          try {
+            console.log(`🔍 Duke marrë takimet për psikolog ${psikolog.id}...`);
+            const takimetRes = await getTakimetByPsikologId(psikolog.id);
+            
+            if (takimetRes.data && takimetRes.data.length > 0) {
+              console.log(`✅ Psikolog ${psikolog.id} (${psikolog.name}): ${takimetRes.data.length} takime`);
+              
+              // Shto informacion shtesë për çdo takim
+              const takimetMeDetaje = takimetRes.data.map(takim => ({
+                ...takim,
+                psikologName: `${psikolog.name} ${psikolog.surname}`,
+                psikologId: psikolog.id
+              }));
+              
+              allTakimet.push(...takimetMeDetaje);
+            }
+          } catch (error) {
+            console.log(`❌ Nuk u morën takimet për psikolog ${psikolog.id}:`, error.message);
+          }
+        }
+
+        console.log(`📊 Total takime të mbledhura: ${allTakimet.length}`);
+        
+        setTakimetCount(allTakimet.length);
+        setAllTakimet(allTakimet);
         
         // Merr 5 takimet më të fundit
-        const sortedAppointments = resTakimet.data
+        const sortedAppointments = allTakimet
           .sort((a, b) => new Date(b.appointmentDate) - new Date(a.appointmentDate))
           .slice(0, 5);
         setRecentAppointments(sortedAppointments);
         
       } catch (error) {
-        console.error("Gabim gjatë marrjes së të dhënave:", error);
+        console.error("❌ Gabim gjatë marrjes së të dhënave:", error);
       } finally {
         setLoading(false);
       }
@@ -47,14 +87,16 @@ function AdminDashboard() {
     fetchData();
   }, []);
 
-  // Llogarit statistikat e tjera bazuar në të dhënat reale
-  const completedAppointments = recentAppointments.filter(app => 
+  // Llogarit statistikat nga të gjitha takimet
+  const completedAppointments = allTakimet.filter(app => 
     app.status === "Completed"
   ).length;
   
-  const upcomingAppointments = recentAppointments.filter(app => 
+  const upcomingAppointments = allTakimet.filter(app => 
     new Date(app.appointmentDate) > new Date() && app.status === "Scheduled"
   ).length;
+  
+  
   
   const newPatientsThisMonth = Math.floor(patientsCount * 0.1); // Supozim
 
@@ -275,54 +317,66 @@ function AdminDashboard() {
 }
 
 // Komponenti për takimet e fundit
-// Komponenti për takimet e fundit
+
 function RecentAppointments({ appointments }) {
   return (
     <div className="list-group list-group-flush">
       {appointments.length > 0 ? (
-        appointments.map((appointment, index) => (
-          <div key={index} className="list-group-item d-flex justify-content-between align-items-center">
-            <div>
-              <h6 className="mb-1">
-                {appointment.patient?.emri && appointment.patient?.mbiemri 
-                  ? `${appointment.patient.emri} ${appointment.patient.mbiemri}`
-                  : appointment.patientName || "Pacient i panjohur"
-                }
-              </h6>
-              <small className="text-muted">
-                Psikolog: {appointment.psikologi?.emri && appointment.psikologi?.mbiemri 
-                  ? `${appointment.psikologi.emri} ${appointment.psikologi.mbiemri}`
-                  : `Psikolog ID: ${appointment.psikologId}`
-                }
-              </small>
-              <br></br>
-              {appointment.notes && (
-                
+        appointments.map((appointment, index) => {
+          // Debug për çdo takim
+          console.log(`📅 Takimi ${index}:`, appointment);
+          
+          // Merr emrin e pacientit nga struktura të ndryshme
+          const patientName = 
+            appointment.patientName || 
+            (appointment.patient?.emri && appointment.patient?.mbiemri 
+              ? `${appointment.patient.emri} ${appointment.patient.mbiemri}`
+              : `Pacient ID: ${appointment.patientId || 'N/A'}`
+            );
+
+          // Merr emrin e psikologut nga struktura të ndryshme
+          const psikologName = 
+            appointment.psikologName ||
+            (appointment.psikolog?.name && appointment.psikolog?.surname
+              ? `${appointment.psikolog.name} ${appointment.psikolog.surname}`
+              : `Psikolog ID: ${appointment.psikologId || 'N/A'}`
+            );
+
+          return (
+            <div key={index} className="list-group-item d-flex justify-content-between align-items-center">
+              <div>
+                <h6 className="mb-1">{patientName}</h6>
                 <small className="text-muted">
-                  Shënime: {appointment.notes.length > 50 
-                    ? `${appointment.notes.substring(0, 50)}...` 
-                    : appointment.notes
-                  }
+                  Psikolog: {psikologName}
                 </small>
-              )}
-            </div>
-            <div className="text-end">
-              <div className="fw-bold">
-                {new Date(appointment.appointmentDate).toLocaleDateString('sq-AL')}
+                <br />
+                {appointment.notes && (
+                  <small className="text-muted">
+                    Shënime: {appointment.notes.length > 50 
+                      ? `${appointment.notes.substring(0, 50)}...` 
+                      : appointment.notes
+                    }
+                  </small>
+                )}
               </div>
-              <div className="text-muted small">
-                {new Date(appointment.appointmentDate).toLocaleTimeString('sq-AL')}
+              <div className="text-end">
+                <div className="fw-bold">
+                  {new Date(appointment.appointmentDate).toLocaleDateString('sq-AL')}
+                </div>
+                <div className="text-muted small">
+                  {new Date(appointment.appointmentDate).toLocaleTimeString('sq-AL')}
+                </div>
+                <small className={`badge ${
+                  appointment.status === 'Completed' ? 'bg-success' : 
+                  appointment.status === 'Cancelled' ? 'bg-danger' : 'bg-warning'
+                }`}>
+                  {appointment.status === 'Completed' ? 'Përfunduar' : 
+                   appointment.status === 'Cancelled' ? 'Anuluar' : 'Në pritje'}
+                </small>
               </div>
-              <small className={`badge ${
-                appointment.status === 'Completed' ? 'bg-success' : 
-                appointment.status === 'Cancelled' ? 'bg-danger' : 'bg-warning'
-              }`}>
-                {appointment.status === 'Completed' ? 'Përfunduar' : 
-                 appointment.status === 'Cancelled' ? 'Anuluar' : 'Në pritje'}
-              </small>
             </div>
-          </div>
-        ))
+          );
+        })
       ) : (
         <div className="list-group-item text-center text-muted py-4">
           Nuk ka takime të fundit

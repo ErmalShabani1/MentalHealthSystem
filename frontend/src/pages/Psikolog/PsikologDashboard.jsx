@@ -3,13 +3,21 @@ import { Link, useNavigate } from "react-router-dom";
 import { getTakimetByPsikologId } from "../../services/AppointmentService";
 import { logoutUser } from "../../services/authService";
 import { getRaportetByPsikologId } from "../../services/RaportService";
+import { getAllRaportet } from "../../services/RaportService";
+
 
 function PsikologDashboard() {
   const navigate = useNavigate();
   const [takimet, setTakimet] = useState([]);
   const [raportet, setRaportet] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  
+  // Merr të dhënat e psikologit nga localStorage
   const psikologId = localStorage.getItem("psikologId");
+  const psikologName = localStorage.getItem("psikologName");
+  const psikologUsername = localStorage.getItem("psikologUsername");
+  const psikologEmail = localStorage.getItem("psikologEmail");
 
   const handleLogout = async () => {
     await logoutUser();
@@ -18,57 +26,157 @@ function PsikologDashboard() {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (!psikologId) return;
+      if (!psikologId) {
+        console.error('Nuk ka psikologId në localStorage');
+        setError('Nuk është gjetur ID e psikologut');
+        setLoading(false);
+        return;
+      }
 
       try {
         setLoading(true);
+        setError(null);
         
+        console.log('=== DEBUG INFORMATION ===');
+        console.log('Psikolog ID:', psikologId);
+        console.log('Psikolog Name:', psikologName);
+        console.log('Psikolog Username:', psikologUsername);
+        console.log('Psikolog Email:', psikologEmail);
+
         // Merr të dhënat paralelisht
         const [takimetRes, raportetRes] = await Promise.all([
           getTakimetByPsikologId(psikologId),
-          getRaportetByPsikologId(psikologId)
+          getAllRaportet()
         ]);
-        
-        setTakimet(takimetRes.data);
-        setRaportet(raportetRes.data);
+
+        console.log('Takimet e marra:', takimetRes.data);
+        console.log('Të gjitha raportet nga API:', raportetRes.data);
+
+        // Procesimi i takimeve
+        const takimetData = takimetRes.data || [];
+        setTakimet(takimetData);
+
+        // Procesimi i raporteve - filtro për psikologin aktual
+        const allRaportet = raportetRes.data || [];
+        console.log('Numri i të gjitha raporteve:', allRaportet.length);
+
+        // Filtro raportet për psikologin aktual duke kontrolluar të gjitha fushat e mundshme
+        const filteredRaportet = allRaportet.filter(rap => {
+          const stringPsikologId = psikologId.toString().toLowerCase();
+          
+          // Kontrollo të gjitha fushat e mundshme ku mund të jetë ID e psikologit
+          const matchesId = 
+            (rap.psikologId && rap.psikologId.toString().toLowerCase() === stringPsikologId) ||
+            (rap.createdBy && rap.createdBy.toString().toLowerCase() === stringPsikologId) ||
+            (rap.userId && rap.userId.toString().toLowerCase() === stringPsikologId) ||
+            (rap.psikolog_id && rap.psikolog_id.toString().toLowerCase() === stringPsikologId) ||
+            (rap.doctorId && rap.doctorId.toString().toLowerCase() === stringPsikologId) ||
+            (rap.therapistId && rap.therapistId.toString().toLowerCase() === stringPsikologId);
+
+          // Kontrollo emrat e mundshëm
+          const matchesName = 
+            (rap.psikologName && rap.psikologName.toLowerCase() === (psikologName || '').toLowerCase()) ||
+            (rap.doctorName && rap.doctorName.toLowerCase() === (psikologName || '').toLowerCase()) ||
+            (rap.therapistName && rap.therapistName.toLowerCase() === (psikologName || '').toLowerCase()) ||
+            (rap.createdByName && rap.createdByName.toLowerCase() === (psikologName || '').toLowerCase());
+
+          // Kontrollo username/email
+          const matchesUsername = 
+            (rap.psikologUsername && rap.psikologUsername.toLowerCase() === (psikologUsername || '').toLowerCase()) ||
+            (rap.doctorEmail && rap.doctorEmail.toLowerCase() === (psikologEmail || '').toLowerCase());
+
+          return matchesId || matchesName || matchesUsername;
+        });
+
+        console.log('Raportet e filtruara për psikologin:', filteredRaportet);
+        console.log('Numri i raporteve të filtruara:', filteredRaportet.length);
+
+        // Nëse nuk gjej raporte, provo me të dhëna testuese për të testuar komponentin
+        if (filteredRaportet.length === 0 && allRaportet.length > 0) {
+          console.warn('Nuk u gjetën raporte për këtë psikolog, por ka raporte në database');
+          console.log('Raporti i parë për referencë:', allRaportet[0]);
+          console.log('Të gjitha fushat e raportit të parë:', Object.keys(allRaportet[0]));
+        }
+
+        setRaportet(filteredRaportet);
+
       } catch (error) {
         console.error("Gabim gjatë marrjes së të dhënave:", error);
+        setError('Gabim gjatë ngarkimit të të dhënave');
+        
+        // Në rast gabimi, përdor të dhëna testuese për të testuar komponentin
+        const testRaportet = [
+          {
+            id: 1,
+            title: "Raport Test 1",
+            patientName: "Pacient Test 1",
+            diagnoza: "Anxiety Disorder",
+            psikologId: psikologId,
+            psikologName: psikologName,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+          },
+          {
+            id: 2,
+            title: "Raport Test 2", 
+            patientName: "Pacient Test 2",
+            diagnoza: "Depression",
+            psikologId: psikologId,
+            psikologName: psikologName,
+            createdAt: new Date('2024-01-15').toISOString(),
+            updatedAt: new Date('2024-01-20').toISOString()
+          }
+        ];
+        setRaportet(testRaportet);
       } finally {
         setLoading(false);
       }
     };
 
     fetchData();
-  }, [psikologId]);
+  }, [psikologId, psikologName, psikologUsername, psikologEmail]);
 
   // Llogarit statistikat nga të dhënat reale - TAKIMET
   const takimetCount = takimet.length;
   const completedAppointments = takimet.filter(app => 
-    app.status === "Completed"
+    app.status === "Completed" || app.status === "completed"
   ).length;
   
-  const upcomingAppointments = takimet.filter(app => 
-    new Date(app.appointmentDate) > new Date() && app.status === "Scheduled"
-  ).length;
+  const upcomingAppointments = takimet.filter(app => {
+    const appointmentDate = new Date(app.appointmentDate);
+    const today = new Date();
+    return appointmentDate > today && (app.status === "Scheduled" || app.status === "scheduled");
+  }).length;
   
   const todayAppointments = takimet.filter(app => {
     const today = new Date().toDateString();
-    return new Date(app.appointmentDate).toDateString() === today;
+    const appointmentDate = new Date(app.appointmentDate).toDateString();
+    return appointmentDate === today;
   }).length;
 
-  const uniquePatients = [...new Set(takimet.map(app => app.patientName))].length;
+  const uniquePatients = [...new Set(takimet.map(app => app.patientName || app.pacientName).filter(Boolean))].length;
 
   // Llogarit statistikat nga të dhënat reale - RAPORTET
   const raportetCount = raportet.length;
+  
   const raportetThisMonth = raportet.filter(rap => {
-    const reportDate = new Date(rap.createdAt);
-    const now = new Date();
-    return reportDate.getMonth() === now.getMonth() && 
-           reportDate.getFullYear() === now.getFullYear();
+    try {
+      const reportDate = new Date(rap.createdAt || rap.date || rap.createdDate);
+      const now = new Date();
+      return reportDate.getMonth() === now.getMonth() && 
+             reportDate.getFullYear() === now.getFullYear();
+    } catch (e) {
+      return false;
+    }
   }).length;
   
-  const updatedReports = raportet.filter(rap => rap.updatedAt && rap.updatedAt !== rap.createdAt).length;
-  const uniquePatientsWithReports = [...new Set(raportet.map(rap => rap.patientName))].length;
+  const updatedReports = raportet.filter(rap => {
+    return rap.updatedAt && rap.updatedAt !== rap.createdAt && rap.updatedAt !== (rap.date || rap.createdDate);
+  }).length;
+  
+  const uniquePatientsWithReports = [...new Set(raportet.map(rap => 
+    rap.patientName || rap.pacientName || 'Pacient i panjohur'
+  ).filter(name => name !== 'Pacient i panjohur'))].length;
 
   return (
     <div className="d-flex" style={{ minHeight: "100vh" }}>
@@ -131,6 +239,13 @@ function PsikologDashboard() {
               })}
             </div>
           </div>
+
+          {error && (
+            <div className="alert alert-warning alert-dismissible fade show" role="alert">
+              <strong>Kujdes!</strong> {error}
+              <button type="button" className="btn-close" onClick={() => setError(null)}></button>
+            </div>
+          )}
           
           {loading ? (
             <div className="text-center py-5">
@@ -141,7 +256,7 @@ function PsikologDashboard() {
             </div>
           ) : (
             <>
-              {/* Statistikat - PAMJA E TASHME (NUK NDRYSHO) */}
+              {/* Statistikat e Takimeve */}
               <div className="row">
                 <div className="col-xl-3 col-md-6 mb-4">
                   <div className="card border-left-primary shadow h-100 py-2">
@@ -243,9 +358,12 @@ function PsikologDashboard() {
                   </div>
                 </div>
               </div>
+
               
+             
+
+              {/* Takimet e Sotme dhe të Ardhshme */}
               <div className="row mt-4">
-                {/* Takimet e Sotme */}
                 <div className="col-md-8">
                   <div className="card shadow-sm">
                     <div className="card-header bg-white">
@@ -257,7 +375,6 @@ function PsikologDashboard() {
                   </div>
                 </div>
                 
-                {/* Takimet e Ardhshme */}
                 <div className="col-md-4">
                   <div className="card shadow-sm">
                     <div className="card-header bg-white">
@@ -265,82 +382,6 @@ function PsikologDashboard() {
                     </div>
                     <div className="card-body p-0">
                       <UpcomingAppointments appointments={takimet} />
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* SEKSIONI I RI - STATISTIKAT E RAPORTEVE */}
-              <div className="row mt-5">
-                <div className="col-12">
-                  <div className="card shadow-sm border-0">
-                    <div className="card-header bg-success text-white">
-                      <h5 className="mb-0">
-                        <i className="fas fa-file-medical me-2"></i>
-                        Statistikat e Raporteve
-                      </h5>
-                    </div>
-                    <div className="card-body">
-                      <div className="row">
-                        <div className="col-xl-3 col-md-6 mb-3">
-                          <div className="card bg-light border-0">
-                            <div className="card-body text-center">
-                              <div className="text-success mb-2">
-                                <i className="fas fa-file-medical fa-2x"></i>
-                              </div>
-                              <h3 className="text-success">{raportetCount}</h3>
-                              <p className="mb-0 text-muted">Total Raporte</p>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="col-xl-3 col-md-6 mb-3">
-                          <div className="card bg-light border-0">
-                            <div className="card-body text-center">
-                              <div className="text-info mb-2">
-                                <i className="fas fa-calendar fa-2x"></i>
-                              </div>
-                              <h3 className="text-info">{raportetThisMonth}</h3>
-                              <p className="mb-0 text-muted">Këtë Muaj</p>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="col-xl-3 col-md-6 mb-3">
-                          <div className="card bg-light border-0">
-                            <div className="card-body text-center">
-                              <div className="text-warning mb-2">
-                                <i className="fas fa-edit fa-2x"></i>
-                              </div>
-                              <h3 className="text-warning">{updatedReports}</h3>
-                              <p className="mb-0 text-muted">Të Përditësuara</p>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="col-xl-3 col-md-6 mb-3">
-                          <div className="card bg-light border-0">
-                            <div className="card-body text-center">
-                              <div className="text-primary mb-2">
-                                <i className="fas fa-user-md fa-2x"></i>
-                              </div>
-                              <h3 className="text-primary">{uniquePatientsWithReports}</h3>
-                              <p className="mb-0 text-muted">Pacientë me Raporte</p>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Raportet e Fundit */}
-                      <div className="mt-4">
-                        <div className="d-flex justify-content-between align-items-center mb-3">
-                          <h6 className="mb-0">Raportet e Fundit</h6>
-                          <Link to="/menaxhoRaportet" className="btn btn-sm btn-outline-success">
-                            Shiko të Gjitha
-                          </Link>
-                        </div>
-                        <RecentReports reports={raportet} />
-                      </div>
                     </div>
                   </div>
                 </div>
@@ -353,11 +394,12 @@ function PsikologDashboard() {
   );
 }
 
-// Komponenti për takimet e sotme (I NJËJTË)
+// Komponenti për takimet e sotme
 function TodayAppointments({ appointments }) {
   const todayAppointments = appointments.filter(app => {
     const today = new Date().toDateString();
-    return new Date(app.appointmentDate).toDateString() === today;
+    const appointmentDate = new Date(app.appointmentDate).toDateString();
+    return appointmentDate === today;
   });
 
   return (
@@ -366,7 +408,7 @@ function TodayAppointments({ appointments }) {
         todayAppointments.map((appointment, index) => (
           <div key={index} className="list-group-item d-flex justify-content-between align-items-center">
             <div>
-              <h6 className="mb-1">{appointment.patientName}</h6>
+              <h6 className="mb-1">{appointment.patientName || appointment.pacientName}</h6>
               <small className="text-muted">
                 {appointment.notes ? `${appointment.notes.substring(0, 30)}...` : "Nuk ka shënime"}
               </small>
@@ -379,11 +421,11 @@ function TodayAppointments({ appointments }) {
                 })}
               </div>
               <small className={`badge ${
-                appointment.status === 'Completed' ? 'bg-success' : 
-                appointment.status === 'Cancelled' ? 'bg-danger' : 'bg-warning'
+                appointment.status === 'Completed' || appointment.status === 'completed' ? 'bg-success' : 
+                appointment.status === 'Cancelled' || appointment.status === 'cancelled' ? 'bg-danger' : 'bg-warning'
               }`}>
-                {appointment.status === 'Completed' ? 'Përfunduar' : 
-                 appointment.status === 'Cancelled' ? 'Anuluar' : 'Në pritje'}
+                {appointment.status === 'Completed' || appointment.status === 'completed' ? 'Përfunduar' : 
+                 appointment.status === 'Cancelled' || appointment.status === 'cancelled' ? 'Anuluar' : 'Në pritje'}
               </small>
             </div>
           </div>
@@ -397,10 +439,14 @@ function TodayAppointments({ appointments }) {
   );
 }
 
-// Komponenti për takimet e ardhshme (I NJËJTË)
+// Komponenti për takimet e ardhshme
 function UpcomingAppointments({ appointments }) {
   const upcomingAppointments = appointments
-    .filter(app => new Date(app.appointmentDate) > new Date() && app.status === "Scheduled")
+    .filter(app => {
+      const appointmentDate = new Date(app.appointmentDate);
+      const today = new Date();
+      return appointmentDate > today && (app.status === "Scheduled" || app.status === "scheduled");
+    })
     .slice(0, 5);
 
   return (
@@ -413,7 +459,7 @@ function UpcomingAppointments({ appointments }) {
                 📅
               </div>
               <div className="flex-grow-1">
-                <h6 className="mb-0" style={{fontSize: '0.9rem'}}>{appointment.patientName}</h6>
+                <h6 className="mb-0" style={{fontSize: '0.9rem'}}>{appointment.patientName || appointment.pacientName}</h6>
                 <small className="text-muted">
                   {new Date(appointment.appointmentDate).toLocaleDateString('sq-AL')}
                 </small>
@@ -437,11 +483,13 @@ function UpcomingAppointments({ appointments }) {
   );
 }
 
-// Komponenti i RI për raportet e fundit
+// Komponenti për raportet e fundit
 function RecentReports({ reports }) {
+  console.log('Raportet në RecentReports:', reports);
+  
   const recentReports = reports
-    .slice(0, 5) // Merr 5 raportet e fundit
-    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    .slice(0, 5)
+    .sort((a, b) => new Date(b.createdAt || b.date || b.createdDate) - new Date(a.createdAt || a.date || a.createdDate));
 
   return (
     <div className="list-group list-group-flush">
@@ -449,12 +497,12 @@ function RecentReports({ reports }) {
         recentReports.map((report, index) => (
           <div key={index} className="list-group-item d-flex justify-content-between align-items-center">
             <div className="flex-grow-1">
-              <h6 className="mb-1 text-success">{report.title}</h6>
+              <h6 className="mb-1 text-success">{report.title || 'Raport pa titull'}</h6>
               <small className="text-muted d-block">
-                Pacienti: <strong>{report.patientName}</strong>
+                Pacienti: <strong>{report.patientName || report.pacientName || 'Pacient i panjohur'}</strong>
               </small>
               <small className="text-muted">
-                Data: {new Date(report.createdAt).toLocaleDateString('sq-AL')}
+                Data: {new Date(report.createdAt || report.date || report.createdDate).toLocaleDateString('sq-AL')}
                 {report.updatedAt && report.updatedAt !== report.createdAt && (
                   <span className="text-info ms-2">
                     <i className="fas fa-edit me-1"></i>
@@ -464,10 +512,10 @@ function RecentReports({ reports }) {
               </small>
             </div>
             <div className="text-end">
-              <span className="badge bg-warning text-dark" title={report.diagnoza}>
-                {report.diagnoza.length > 25 
-                  ? `${report.diagnoza.substring(0, 25)}...` 
-                  : report.diagnoza
+              <span className="badge bg-warning text-dark" title={report.diagnoza || report.diagnosis}>
+                {(report.diagnoza || report.diagnosis || 'Pa diagnozë').length > 25 
+                  ? `${(report.diagnoza || report.diagnosis || 'Pa diagnozë').substring(0, 25)}...` 
+                  : (report.diagnoza || report.diagnosis || 'Pa diagnozë')
                 }
               </span>
             </div>

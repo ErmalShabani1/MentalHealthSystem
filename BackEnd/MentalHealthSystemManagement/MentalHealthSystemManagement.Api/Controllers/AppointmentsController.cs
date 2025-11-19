@@ -82,6 +82,7 @@ namespace MentalHealthSystemManagement.Api.Controllers
             return Ok(appointments);
         }
         [HttpGet("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetById(int id)
         {
             var appointment = await _service.GetAppointmentsById(id);
