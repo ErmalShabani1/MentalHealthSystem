@@ -164,65 +164,82 @@ function PsikologDashboard() {
     <div className="d-flex" style={{ minHeight: "100vh" }}>
       {/* Sidebar */}
       <div
-        className="bg-dark text-white p-3 d-flex flex-column"
-        style={{ width: "250px", position: "fixed", height: "100vh" }}
-      >
-        {/* Dashboard */}
-        <div className="mb-3">
-          <Link to="/psikologDashboard" className="nav-link text-white px-3 py-2 mb-1 active" style={{backgroundColor: 'rgba(255,255,255,0.15)', borderRadius: '4px'}}>
-            🏠 Dashboard
-          </Link>
-        </div>
+  className="bg-dark text-white p-3 d-flex flex-column"
+  style={{ 
+    width: "250px", 
+    position: "fixed", 
+    height: "100vh",
+    overflowY: "auto" // Shto këtë linjë
+  }}
+>
+  {/* Dashboard */}
+  <div className="mb-3">
+    <Link to="/psikologDashboard" className="nav-link text-white px-3 py-2 mb-1 active" style={{backgroundColor: 'rgba(255,255,255,0.15)', borderRadius: '4px'}}>
+      🏠 Dashboard
+    </Link>
+  </div>
 
-        {/* Psikologët Section */}
-        <div className="mb-3">
-          <div className="text-white mb-2 px-2 py-1">
-            <small className="text-uppercase fw-semibold" style={{fontSize: '0.75rem', letterSpacing: '0.5px'}}>👨‍⚕️ Psikologët</small>
-          </div>
-          <Link to="/add-takimet" className="nav-link text-white px-3 py-2 mb-1">
-            ➕ Shto Takim
-          </Link>
-          <Link to="/menaxhoTakimet" className="nav-link text-white px-3 py-2 mb-1">
-            👨‍⚕️ Menaxho Takimet
-          </Link>
-        </div>
+  {/* Psikologët Section */}
+  <div className="mb-3">
+    <div className="text-white mb-2 px-2 py-1">
+      <small className="text-uppercase fw-semibold" style={{fontSize: '0.75rem', letterSpacing: '0.5px'}}>👨‍⚕️ Psikologët</small>
+    </div>
+    <Link to="/add-takimet" className="nav-link text-white px-3 py-2 mb-1">
+      ➕ Shto Takim
+    </Link>
+    <Link to="/menaxhoTakimet" className="nav-link text-white px-3 py-2 mb-1">
+      👨‍⚕️ Menaxho Takimet
+    </Link>
+  </div>
 
-        {/* Terapia Section */}
-        <div className="mb-3">
-          <div className="text-white mb-2 px-2 py-1">
-            <small className="text-uppercase fw-semibold" style={{fontSize: '0.75rem', letterSpacing: '0.5px'}}>🧘 Terapia</small>
-          </div>
-          <Link to="/add-terapine" className="nav-link text-white px-3 py-2 mb-1">
-            ➕ Shto Seancë
-          </Link>
-          <Link to="/menaxhoTerapine" className="nav-link text-white px-3 py-2 mb-1">
-            📋 Menaxho Seanca
-          </Link>
-        </div>
+  {/* Terapia Section */}
+  <div className="mb-3">
+    <div className="text-white mb-2 px-2 py-1">
+      <small className="text-uppercase fw-semibold" style={{fontSize: '0.75rem', letterSpacing: '0.5px'}}>🧘 Terapia</small>
+    </div>
+    <Link to="/add-terapine" className="nav-link text-white px-3 py-2 mb-1">
+      ➕ Shto Seancë
+    </Link>
+    <Link to="/menaxhoTerapine" className="nav-link text-white px-3 py-2 mb-1">
+      📋 Menaxho Seanca
+    </Link>
+  </div>
 
-        {/* Pacientët Section */}
-        <div className="mb-3">
-          <div className="text-white mb-2 px-2 py-1">
-            <small className="text-uppercase fw-semibold" style={{fontSize: '0.75rem', letterSpacing: '0.5px'}}>📖 Pacientët</small>
-          </div>
-          <Link to="/add-raportin" className="nav-link text-white px-3 py-2 mb-1">
-            ➕ Shto Raport
-          </Link>
-          <Link to="/menaxhoRaportet" className="nav-link text-white px-3 py-2 mb-1">
-            👨‍⚕️ Menaxho Raportet
-          </Link>
-          <Link to="/pacientetEMi" className="nav-link text-white px-3 py-2 mb-1">
-            👥 Pacientët e Mi
-          </Link>
-        </div>
+  {/* Treatment Plan Section */}
+  <div className="mb-3">
+    <div className="text-white mb-2 px-2 py-1">
+      <small className="text-uppercase fw-semibold" style={{fontSize: '0.75rem', letterSpacing: '0.5px'}}>📋 Treatment Plan</small>
+    </div>
+    <Link to="/add-treatmentplan" className="nav-link text-white px-3 py-2 mb-1">
+      ➕ Shto Plan
+    </Link>
+    <Link to="/menaxho-treatmentplan" className="nav-link text-white px-3 py-2 mb-1">
+      📊 Menaxho Planet
+    </Link>
+  </div>
 
-        <div className="mt-auto">
-          <button onClick={handleLogout} className="btn btn-danger w-100">
-            🚪 Logout
-          </button>
-        </div>
-      </div>
+  {/* Pacientët Section */}
+  <div className="mb-3">
+    <div className="text-white mb-2 px-2 py-1">
+      <small className="text-uppercase fw-semibold" style={{fontSize: '0.75rem', letterSpacing: '0.5px'}}>📖 Pacientët</small>
+    </div>
+    <Link to="/add-raportin" className="nav-link text-white px-3 py-2 mb-1">
+      ➕ Shto Raport
+    </Link>
+    <Link to="/menaxhoRaportet" className="nav-link text-white px-3 py-2 mb-1">
+      👨‍⚕️ Menaxho Raportet
+    </Link>
+    <Link to="/pacientetEMi" className="nav-link text-white px-3 py-2 mb-1">
+      👥 Pacientët e Mi
+    </Link>
+  </div>
 
+  <div className="mt-auto">
+    <button onClick={handleLogout} className="btn btn-danger w-100">
+      🚪 Logout
+    </button>
+  </div>
+</div>
       {/* Përmbajtja kryesore */}
       <div className="flex-grow-1" style={{ marginLeft: "250px", backgroundColor: "#f8f9fa" }}>
         <div className="container-fluid py-4">

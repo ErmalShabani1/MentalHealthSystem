@@ -87,6 +87,11 @@ function PacientDashboard() {
             </Link>
           </li>
           <li className="nav-item mb-2">
+  <Link to="/shfaq-treatmentplan" className="nav-link text-white">
+    📋 Planet e Mia të Trajtimit
+  </Link>
+</li>
+          <li className="nav-item mb-2">
             <Link to="/shfaqPsikologet" className="nav-link text-white">
               👨‍⚕️ Psikologët
             </Link>

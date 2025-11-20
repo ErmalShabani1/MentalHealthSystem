@@ -39,16 +39,12 @@ namespace MentalHealthSystemManagement.Application.Services
                 Status = plan.Status
             };
         }
-        public async Task<TreatmentPlanReadDto> GetByIdAsync(int id, int userId, string role)
+        public async Task<TreatmentPlanReadDto> GetByIdAsync(int id)
         {
             var plan = await _repository.GetByIdAsync(id);
             if (plan == null) throw new Exception("TreatmentPlan nuk ekziston");
 
-            if (role == "Patient" && plan.PatientId != userId)
-                throw new UnauthorizedAccessException("Nuk keni qasje");
-
-            if (role == "Psikolog" && plan.PsikologId != userId)
-                throw new UnauthorizedAccessException("Nuk keni qasje");
+          
 
             return new TreatmentPlanReadDto
             {

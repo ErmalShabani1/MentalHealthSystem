@@ -35,6 +35,14 @@ namespace MentalHealthSystemManagement.Api.Controllers
             if (claim == null)
                 throw new Exception("PsikologId claim missing from token.");
             return int.Parse(claim.Value);
+
+        }
+        private int GetPatientId()
+        {
+            var claim = User.FindFirst("PatientId");
+            if (claim == null)
+                throw new Exception("PatientId claim missing from token.");
+            return int.Parse(claim.Value);
         }
 
         [HttpPost("add")]
@@ -46,20 +54,65 @@ namespace MentalHealthSystemManagement.Api.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize(Roles = "Psikolog,Patient")]
+        [Authorize(Roles = "Psikolog,Pacient")]
         public async Task<IActionResult> Get(int id)
         {
-            var userId = GetUserId();
-            var role = GetRole();
-            return Ok(await _service.GetByIdAsync(id, userId, role));
+            try
+            {
+                var userId = GetUserId();
+                var role = GetRole();
+
+                if (role == "Psikolog")
+                {
+                    var psikologId = GetPsikologId();
+                    return Ok(await _service.GetByIdAsync(id));
+                }
+                else if (role == "Pacient")
+                {
+                    // patient nuk ka psikologId claim
+                    return Ok(await _service.GetByIdAsync(id));
+                }
+                else
+                {
+                    return Forbid();
+                }
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Gabim në GetTreatmentPlan: {ex}");
+                return StatusCode(500, new { message = "Gabim gjatë marrjes së planit", details = ex.Message });
+            }
         }
 
         [HttpPut("{id}")]
         [Authorize(Roles = "Psikolog")]
         public async Task<IActionResult> Update(int id, TreatmentPlanUpdateDto dto)
         {
-            await _service.UpdateAsync(id, GetUserId(), dto);
-            return Ok("Updated");
+            try
+            {
+                await _service.UpdateAsync(id, GetPsikologId(), dto);
+                return Ok(new { message = "Updated successfully" });
+            }
+            catch (KeyNotFoundException ex) // për ID që nuk ekziston
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (UnauthorizedAccessException ex) // nëse user nuk ka akses
+            {
+                return Forbid();
+            }
+            catch (Exception ex) // çdo gabim tjetër
+            {
+                // e printon gabimin në log (opsionale)
+                Console.Error.WriteLine($"Gabim në UpdateTreatmentPlan: {ex}");
+
+                // kthen gabim të detajuar në JSON
+                return StatusCode(500, new { message = "Gabim gjatë përditësimit të planit", details = ex.Message });
+            }
         }
 
         [HttpDelete("{id}")]
@@ -78,10 +131,10 @@ namespace MentalHealthSystemManagement.Api.Controllers
         }
 
         [HttpGet("for-patient")]
-        [Authorize(Roles = "Patient")]
+        [Authorize(Roles = "Pacient")]
         public async Task<IActionResult> GetForPatient()
         {
-            return Ok(await _service.GetAllForPatientAsync(GetPsikologId()));
+            return Ok(await _service.GetAllForPatientAsync(GetPatientId()));
         }
     }
 }

@@ -66,7 +66,7 @@ namespace MentalHealthSystemManagement.Api.Controllers
         {
             try
             {
-                var userId = int.Parse(User.FindFirst("UserId").Value);
+                var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
 
                 var pacienti = await _context.Patients.FirstOrDefaultAsync(p => p.UserId == userId);
                 if (pacienti == null)
