@@ -73,8 +73,13 @@ function MenaxhoTreatmentPlan() {
   };
 
   const formatDate = (dateString) => {
-    if (!dateString) return 'N/A';
-    return new Date(dateString).toLocaleDateString('sq-AL');
+    if (!dateString) return null;
+    const date = new Date(dateString);
+    return date.toLocaleDateString('sq-AL', { 
+      year: 'numeric', 
+      month: '2-digit', 
+      day: '2-digit' 
+    });
   };
 
   return (

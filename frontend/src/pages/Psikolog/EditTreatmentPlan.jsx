@@ -52,11 +52,14 @@ function EditTreatmentPlan() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    console.log(`🔄 Ndryshim në ${name}:`, value);
     setFormData({ ...formData, [name]: value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    console.log("🔍 FormData para ruajtjes:", formData);
     
     // Validimi i të dhënave
     if (!formData.title.trim()) {
@@ -67,9 +70,13 @@ function EditTreatmentPlan() {
     setLoading(true);
 
     try {
-      console.log("Duke dërguar të dhënat e përditësuara:", formData);
+      console.log("📤 Duke dërguar të dhënat e përditësuara:", {
+        id: id,
+        data: formData
+      });
       
-      await updateTreatmentPlan(id, formData);
+      const response = await updateTreatmentPlan(id, formData);
+      console.log("✅ Përgjigja nga serveri:", response);
       
       toast.success("Treatment Plan u përditësua me sukses!");
       

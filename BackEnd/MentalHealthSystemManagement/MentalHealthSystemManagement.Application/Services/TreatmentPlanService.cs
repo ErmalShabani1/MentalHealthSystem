@@ -66,24 +66,31 @@ namespace MentalHealthSystemManagement.Application.Services
             return list.Select(x => new TreatmentPlanReadDto
             {
                 TreatmentPlanId = x.TreatmentPlanId,
-                PatientId= x.PatientId,
-                PsikologId= x.PsikologId,
+                PatientId = x.PatientId,
+                PsikologId = x.PsikologId,
                 Title = x.Title,
-                Status = x.Status
+                Description = x.Description,
+                StartDate = x.StartDate,
+                EndDate = x.EndDate,
+                Status = x.Status,
+                Goals = x.Goals
             });
         }
         public async Task<IEnumerable<TreatmentPlanReadDto>> GetAllForPatientAsync(int patientId)
         {
-            var list = await _repository.GetAllForPsikologAsync(patientId);
+            var list = await _repository.GetAllForPatientAsync(patientId);
 
             return list.Select(x => new TreatmentPlanReadDto
             {
-
                 TreatmentPlanId = x.TreatmentPlanId,
                 PatientId = x.PatientId,
                 PsikologId = x.PsikologId,
                 Title = x.Title,
-                Status = x.Status
+                Description = x.Description,
+                StartDate = x.StartDate,
+                EndDate = x.EndDate,
+                Status = x.Status,
+                Goals = x.Goals
             });
         }
         public async Task UpdateAsync(int id, int psikologId, TreatmentPlanUpdateDto update)
