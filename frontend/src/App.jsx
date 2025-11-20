@@ -35,6 +35,7 @@ import AddTreatmentPlan from "./pages/Psikolog/AddTreatmentPlan";
 import EditTreatmentPlan from "./pages/Psikolog/EditTreatmentPlan";
 import MenaxhoTreatmentPlan from "./pages/Psikolog/MenaxhoTreatmentPlan";
 import ShfaqTreatmentPlan from "./pages/Pacient/ShfaqTreatmentPlan";
+import EditTherapySession from "./pages/Psikolog/EditTherapySession";
 
 
 function App() {
@@ -77,6 +78,7 @@ function App() {
            {/* TherapySessions Routes */}
           <Route path="/menaxhoTerapine" element={<MenaxhoTerapine/>}/>
           <Route path="/add-terapine" element={<AddTerapine/>}/>
+          <Route path="/edit-terapine/:id" element={<EditTherapySession />} />
           <Route path="/shfaqTerapine" element={<ShfaqTerapine/>}/>
           {/* Treatment Plan Routes */}
           <Route path="/add-treatmentplan" element={<AddTreatmentPlan />} />
