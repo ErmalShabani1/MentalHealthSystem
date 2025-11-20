@@ -21,12 +21,12 @@ namespace MentalHealthSystemManagement.Infrastructure.Data
         public DbSet<Psikologi> Psikologet { get; set; }
         public DbSet<Appointment> Appointments { get; set; }
         public DbSet<HealthReports> HealthReports { get; set; }
-<<<<<<< Updated upstream
+
         public DbSet<TherapySession> TherapySessions { get; set; }
-=======
+
        public DbSet<TreatmentPlan> TreatmentPlans { get; set; }
         public DbSet<TreatmentPlanUshtrimi> TreatmentPlanUshtrimet { get; set; }
->>>>>>> Stashed changes
+
         //ketu i bejme te tjerat
         //
 
@@ -61,7 +61,7 @@ namespace MentalHealthSystemManagement.Infrastructure.Data
                 .HasForeignKey(r => r.PatientId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-<<<<<<< Updated upstream
+
             // TherapySessions kompozim
             modelBuilder.Entity<TherapySession>()
                 .HasOne(t => t.Psikologi)
@@ -72,8 +72,8 @@ namespace MentalHealthSystemManagement.Infrastructure.Data
             modelBuilder.Entity<TherapySession>()
                 .HasOne(t => t.Patient)
                 .WithMany()
-                .HasForeignKey(t => t.PatientId)
-=======
+                .HasForeignKey(t => t.PatientId);
+
             modelBuilder.Entity<TreatmentPlan>()
             .HasOne(tp => tp.Patient)
             .WithMany()
@@ -94,7 +94,7 @@ namespace MentalHealthSystemManagement.Infrastructure.Data
                 .HasOne(tu => tu.TreatmentPlan)
                 .WithMany(tp => tp.TreatmentPlanUshtrimet)
                 .HasForeignKey(tu => tu.TreatmentPlanId)
->>>>>>> Stashed changes
+
                 .OnDelete(DeleteBehavior.Cascade);
 
         }

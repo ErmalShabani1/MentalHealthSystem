@@ -22,7 +22,7 @@ namespace MentalHealthSystemManagement.Application.Services
 
             var claimsList = new List<Claim>
             {
-                new Claim("UserId", userId),
+               new Claim(ClaimTypes.NameIdentifier, userId),
                 new Claim(JwtRegisteredClaimNames.UniqueName, username),
                 new Claim(ClaimTypes.Role, role)
             };
