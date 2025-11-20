@@ -16,7 +16,7 @@ namespace MentalHealthSystemManagement.Domain.Entities
         public string Status { get; set; } = "Scheduled";
         public string Notes { get; set; } = string.Empty;
 
-        public Psikologi Psikologi { get; set; } = null!;
+        public Psikologi Psikolog { get; set; } = null!;
         public Patient Patient { get; set; } = null!;
 
     }

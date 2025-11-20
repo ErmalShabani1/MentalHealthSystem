@@ -22,7 +22,7 @@ namespace MentalHealthSystemManagement.Infrastructure.Repositories
         {
             return await _context.Appointments
                 .Include(a => a.Patient)
-                .Include(a => a.Psikologi)
+                .Include(a => a.Psikolog)
                 .ToListAsync();
         }
         public async Task<IEnumerable<AppointmentReadDto>> GetByPsikologIdAsync(int id)

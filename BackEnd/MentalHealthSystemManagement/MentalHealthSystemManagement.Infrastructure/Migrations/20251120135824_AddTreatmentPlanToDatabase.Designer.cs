@@ -4,6 +4,7 @@ using MentalHealthSystemManagement.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MentalHealthSystemManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251120135824_AddTreatmentPlanToDatabase")]
+    partial class AddTreatmentPlanToDatabase
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -206,15 +209,6 @@ namespace MentalHealthSystemManagement.Infrastructure.Migrations
                     b.ToTable("RefreshTokens");
                 });
 
-<<<<<<< Updated upstream
-            modelBuilder.Entity("MentalHealthSystemManagement.Domain.Entities.TherapySession", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-=======
             modelBuilder.Entity("MentalHealthSystemManagement.Domain.Entities.TreatmentPlan", b =>
                 {
                     b.Property<int>("TreatmentPlanId")
@@ -222,20 +216,10 @@ namespace MentalHealthSystemManagement.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TreatmentPlanId"));
->>>>>>> Stashed changes
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-<<<<<<< Updated upstream
-                    b.Property<int>("DurationMinutes")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Exercises")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-=======
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -243,45 +227,10 @@ namespace MentalHealthSystemManagement.Infrastructure.Migrations
                     b.Property<DateTime?>("EndDate")
                         .HasColumnType("datetime2");
 
->>>>>>> Stashed changes
                     b.Property<string>("Goals")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-<<<<<<< Updated upstream
-                    b.Property<string>("MoodAfter")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MoodBefore")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Notes")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("PatientId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Progress")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("PsikologId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("SessionDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("SessionNumber")
-                        .HasColumnType("int");
-
-                    b.Property<string>("SessionType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-=======
                     b.Property<int>("PatientId")
                         .HasColumnType("int");
 
@@ -291,17 +240,10 @@ namespace MentalHealthSystemManagement.Infrastructure.Migrations
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
->>>>>>> Stashed changes
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-<<<<<<< Updated upstream
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-=======
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -310,15 +252,11 @@ namespace MentalHealthSystemManagement.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("TreatmentPlanId");
->>>>>>> Stashed changes
 
                     b.HasIndex("PatientId");
 
                     b.HasIndex("PsikologId");
 
-<<<<<<< Updated upstream
-                    b.ToTable("TherapySessions");
-=======
                     b.ToTable("TreatmentPlans");
                 });
 
@@ -338,7 +276,6 @@ namespace MentalHealthSystemManagement.Infrastructure.Migrations
                     b.HasIndex("TreatmentPlanId");
 
                     b.ToTable("TreatmentPlanUshtrimet");
->>>>>>> Stashed changes
                 });
 
             modelBuilder.Entity("MentalHealthSystemManagement.Domain.Entities.User", b =>
@@ -447,24 +384,11 @@ namespace MentalHealthSystemManagement.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-<<<<<<< Updated upstream
-            modelBuilder.Entity("MentalHealthSystemManagement.Domain.Entities.TherapySession", b =>
-=======
             modelBuilder.Entity("MentalHealthSystemManagement.Domain.Entities.TreatmentPlan", b =>
->>>>>>> Stashed changes
                 {
                     b.HasOne("MentalHealthSystemManagement.Domain.Entities.Patient", "Patient")
                         .WithMany()
                         .HasForeignKey("PatientId")
-<<<<<<< Updated upstream
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("MentalHealthSystemManagement.Domain.Entities.Psikologi", "Psikologi")
-                        .WithMany()
-                        .HasForeignKey("PsikologId")
-                        .OnDelete(DeleteBehavior.Restrict)
-=======
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
@@ -472,14 +396,10 @@ namespace MentalHealthSystemManagement.Infrastructure.Migrations
                         .WithMany()
                         .HasForeignKey("PsikologId")
                         .OnDelete(DeleteBehavior.NoAction)
->>>>>>> Stashed changes
                         .IsRequired();
 
                     b.Navigation("Patient");
 
-<<<<<<< Updated upstream
-                    b.Navigation("Psikologi");
-=======
                     b.Navigation("Psikolog");
                 });
 
@@ -497,7 +417,6 @@ namespace MentalHealthSystemManagement.Infrastructure.Migrations
             modelBuilder.Entity("MentalHealthSystemManagement.Domain.Entities.TreatmentPlan", b =>
                 {
                     b.Navigation("TreatmentPlanUshtrimet");
->>>>>>> Stashed changes
                 });
 #pragma warning restore 612, 618
         }

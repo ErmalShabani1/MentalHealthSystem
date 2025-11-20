@@ -21,30 +21,34 @@ namespace MentalHealthSystemManagement.Infrastructure.Data
         public DbSet<Psikologi> Psikologet { get; set; }
         public DbSet<Appointment> Appointments { get; set; }
         public DbSet<HealthReports> HealthReports { get; set; }
+<<<<<<< Updated upstream
         public DbSet<TherapySession> TherapySessions { get; set; }
+=======
+       public DbSet<TreatmentPlan> TreatmentPlans { get; set; }
+        public DbSet<TreatmentPlanUshtrimi> TreatmentPlanUshtrimet { get; set; }
+>>>>>>> Stashed changes
         //ketu i bejme te tjerat
         //
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-
+            // Kompozim: një psikolog ka shumë takime
             modelBuilder.Entity<Psikologi>().ToTable("Psikologet");
-            //Kompozim: nje psikolog ka shume takime
+
             modelBuilder.Entity<Appointment>()
-                .HasOne(a => a.Psikologi)
+                .HasOne(a => a.Psikolog)
                 .WithMany()
                 .HasForeignKey(a => a.PsikologId)
-                .OnDelete(DeleteBehavior.Restrict); // nese fshihet psikologu fshihet edhe takimi 
+                .OnDelete(DeleteBehavior.Restrict); // kur fshihet psikologu, takimet nuk fshihen automatikisht
 
-            //kompozim: nje pacient ka shume takime
+            // Kompozim: një pacient ka shumë takime
             modelBuilder.Entity<Appointment>()
                 .HasOne(a => a.Patient)
                 .WithMany()
                 .HasForeignKey(a => a.PatientId)
-                .OnDelete(DeleteBehavior.Cascade); // i bie qe nese fshihet pacienti fsihet edhe takimi
+                .OnDelete(DeleteBehavior.Cascade); // kur fshihet pacienti, fshihen automatikisht takimet
 
-
-            //raportet kompozim
+            // Raportet kompozim
             modelBuilder.Entity<HealthReports>()
                 .HasOne(r => r.Psikologi)
                 .WithMany()
@@ -57,6 +61,7 @@ namespace MentalHealthSystemManagement.Infrastructure.Data
                 .HasForeignKey(r => r.PatientId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+<<<<<<< Updated upstream
             // TherapySessions kompozim
             modelBuilder.Entity<TherapySession>()
                 .HasOne(t => t.Psikologi)
@@ -68,9 +73,32 @@ namespace MentalHealthSystemManagement.Infrastructure.Data
                 .HasOne(t => t.Patient)
                 .WithMany()
                 .HasForeignKey(t => t.PatientId)
+=======
+            modelBuilder.Entity<TreatmentPlan>()
+            .HasOne(tp => tp.Patient)
+            .WithMany()
+            .HasForeignKey(tp => tp.PatientId)
+            .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<TreatmentPlan>()
+                .HasOne(tp => tp.Psikolog)
+                .WithMany()
+                .HasForeignKey(tp => tp.PsikologId)
+                .OnDelete(DeleteBehavior.NoAction);
+            // TreatmentPlanUshtrimi:
+
+            modelBuilder.Entity<TreatmentPlanUshtrimi>()
+            .HasKey(tu => tu.TreatmentPlanUshtrimiId);
+
+            modelBuilder.Entity<TreatmentPlanUshtrimi>()
+                .HasOne(tu => tu.TreatmentPlan)
+                .WithMany(tp => tp.TreatmentPlanUshtrimet)
+                .HasForeignKey(tu => tu.TreatmentPlanId)
+>>>>>>> Stashed changes
                 .OnDelete(DeleteBehavior.Cascade);
 
         }
+
     }
-    
 }
+    
