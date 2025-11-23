@@ -46,6 +46,9 @@ builder.Services.AddScoped<ITherapySessionRepository, TherapySessionRepository>(
 builder.Services.AddScoped<TherapySessionService>();
 builder.Services.AddScoped<ITreatmentPlanRepository, TreatmentPlanRepository>();
 builder.Services.AddScoped<TreatmentPlanService>();
+builder.Services.AddScoped<IUshtrimiRepository, UshtrimiRepository>();
+builder.Services.AddScoped<UshtrimiService>();
+
 
 var jwtSecret = builder.Configuration["Jwt:Key"] ?? "Kjo_eshte_nje_celes_shume_sekret_per_JWT_256bit";
 builder.Services.AddSingleton(new JwtService(builder.Configuration));

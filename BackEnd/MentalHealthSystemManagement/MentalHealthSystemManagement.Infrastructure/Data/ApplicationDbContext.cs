@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using MentalHealthSystemManagement.Domain.Entities;
 
+
 namespace MentalHealthSystemManagement.Infrastructure.Data
 {
     public class ApplicationDbContext : DbContext
@@ -26,6 +27,8 @@ namespace MentalHealthSystemManagement.Infrastructure.Data
 
        public DbSet<TreatmentPlan> TreatmentPlans { get; set; }
         public DbSet<TreatmentPlanUshtrimi> TreatmentPlanUshtrimet { get; set; }
+
+        public DbSet<Ushtrimi> Ushtrimet { get; set; }
 
         //ketu i bejme te tjerat
         //
@@ -96,6 +99,15 @@ namespace MentalHealthSystemManagement.Infrastructure.Data
                 .HasForeignKey(tu => tu.TreatmentPlanId)
 
                 .OnDelete(DeleteBehavior.Cascade);
+
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Ushtrimi>().ToTable("Ushtrimet");
+
+            modelBuilder.Ignore<Patient>();
+            modelBuilder.Ignore<Psikologi>();
+            modelBuilder.Ignore<TreatmentPlan>();
+            modelBuilder.Ignore<TreatmentPlanUshtrimi>();
 
         }
 
