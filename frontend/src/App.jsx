@@ -38,6 +38,7 @@ import ShfaqTreatmentPlan from "./pages/Pacient/ShfaqTreatmentPlan";
 import EditTherapySession from "./pages/Psikolog/EditTherapySession";
 
 
+
 function App() {
   return (
     <Router>
@@ -85,7 +86,7 @@ function App() {
           <Route path="/edit-treatmentplan/:id" element={<EditTreatmentPlan />} />
           <Route path="/menaxho-treatmentplan" element={<MenaxhoTreatmentPlan />}   />
           <Route path="/shfaq-treatmentplan" element={<ShfaqTreatmentPlan />} />
-          
+         
       </Routes>
     </Router>
   );

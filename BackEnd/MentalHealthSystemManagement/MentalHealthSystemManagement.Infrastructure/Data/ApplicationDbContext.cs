@@ -104,11 +104,7 @@ namespace MentalHealthSystemManagement.Infrastructure.Data
 
             modelBuilder.Entity<Ushtrimi>().ToTable("Ushtrimet");
 
-            modelBuilder.Ignore<Patient>();
-            modelBuilder.Ignore<Psikologi>();
-            modelBuilder.Ignore<TreatmentPlan>();
-            modelBuilder.Ignore<TreatmentPlanUshtrimi>();
-
+         
         }
 
     }

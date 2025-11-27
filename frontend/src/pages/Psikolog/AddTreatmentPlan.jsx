@@ -348,25 +348,7 @@ function AddTreatmentPlan() {
                       </div>
                     </div>
 
-                    {/* Përshkrimi */}
-                    <div className="mb-4">
-                      <label htmlFor="endDate" className="form-label fw-semibold">
-                        <i className="fas fa-calendar-check me-2 text-primary"></i>
-                        Data e Mbarimit <span className="text-muted">(Opsionale)</span>
-                      </label>
-                      <input
-                        id="endDate"
-                        name="endDate"
-                        type="date"
-                        className="form-control form-control-lg"
-                        value={formData.endDate}
-                        onChange={handleChange}
-                        min={formData.startDate || new Date().toISOString().split('T')[0]}
-                      />
-                      <div className="form-text">
-                        Zgjidhni datën e planifikuar të përfundimit (mund të lihet bosh).
-                      </div>
-                    </div>
+                    
 
                     {/* Përshkrimi */}
                     <div className="mb-4">

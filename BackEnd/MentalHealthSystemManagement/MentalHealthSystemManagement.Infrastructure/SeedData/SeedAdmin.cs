@@ -8,12 +8,12 @@ namespace MentalHealthSystemManagement.Infrastructure.SeedData
     {
         public static void AddAdmin(ApplicationDbContext context)
         {
-            if (!context.Users.Any(u => u.Email == "admin01@icloud.com"))
+            if (!context.Users.Any(u => u.Email == "admin@icloud.com"))
             {
                 var admin = new User
                 {
                     Username = "Admin",
-                    Email = "admin01@icloud.com",
+                    Email = "admin@icloud.com",
                     Role = "Admin",
                     PasswordHash = BCrypt.Net.BCrypt.HashPassword("Admin123")
                 };

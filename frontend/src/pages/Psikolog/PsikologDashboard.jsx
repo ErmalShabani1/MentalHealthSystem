@@ -234,6 +234,7 @@ function PsikologDashboard() {
     </Link>
   </div>
 
+          
   <div className="mt-auto">
     <button onClick={handleLogout} className="btn btn-danger w-100">
       🚪 Logout
