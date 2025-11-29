@@ -36,7 +36,10 @@ import EditTreatmentPlan from "./pages/Psikolog/EditTreatmentPlan";
 import MenaxhoTreatmentPlan from "./pages/Psikolog/MenaxhoTreatmentPlan";
 import ShfaqTreatmentPlan from "./pages/Pacient/ShfaqTreatmentPlan";
 import EditTherapySession from "./pages/Psikolog/EditTherapySession";
-
+import AddUshtrimin from "./pages/Psikolog/AddUshtrimin";
+import EditUshtrimin from "./pages/Psikolog/EditUshtrimin";
+import MenaxhoUshtrimet from "./pages/Psikolog/MenaxhoUshtrimet";
+import ShfaqUshtrimet from "./pages/Pacient/ShfaqUshtrimet";
 
 
 function App() {
@@ -86,7 +89,11 @@ function App() {
           <Route path="/edit-treatmentplan/:id" element={<EditTreatmentPlan />} />
           <Route path="/menaxho-treatmentplan" element={<MenaxhoTreatmentPlan />}   />
           <Route path="/shfaq-treatmentplan" element={<ShfaqTreatmentPlan />} />
-         
+          {/* Ushtrimet Routes */}
+          <Route path="/add-ushtrim" element={<AddUshtrimin />} />
+          <Route path="/edit-ushtrim/:id" element={<EditUshtrimin />} />
+          <Route path="/menaxho-ushtrimet" element={<MenaxhoUshtrimet />} />
+          <Route path="/shfaq-ushtrimet" element={<ShfaqUshtrimet />} />
       </Routes>
     </Router>
   );
