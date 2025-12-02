@@ -76,6 +76,11 @@ function PacientDashboard() {
               📊 Raportet e Mia
             </Link>
           </li>
+           <li className="nav-item mb-2">
+            <Link to="/shfaq-ushtrimet" className="nav-link text-white">
+              💪 Ushtrimet e Mia
+            </Link>
+          </li>
           <li className="nav-item mb-2">
             <Link to="/shfaqTakimet" className="nav-link text-white">
               📅 Takimet e Mia

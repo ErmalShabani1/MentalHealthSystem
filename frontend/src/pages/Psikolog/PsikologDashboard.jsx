@@ -192,6 +192,33 @@ function PsikologDashboard() {
     </Link>
   </div>
 
+   <div className="mb-3">
+             <div className="text-white mb-2 px-2 py-1">
+               <small
+                 className="text-uppercase fw-semibold"
+                 style={{ fontSize: "0.75rem", letterSpacing: "0.5px" }}
+               >
+                 💪 Ushtrimet
+               </small>
+             </div>
+             <Link
+               to="/add-ushtrim"
+               className="nav-link text-white px-3 py-2 mb-1 active"
+               style={{
+                 backgroundColor: "rgba(255,255,255,0.15)",
+                 borderRadius: "4px",
+               }}
+             >
+               ➕ Shto Ushtrim
+             </Link>
+             <Link
+               to="/menaxho-ushtrimet"
+               className="nav-link text-white px-3 py-2 mb-1"
+             >
+               📊 Menaxho Ushtrimet
+             </Link>
+           </div>
+
   {/* Terapia Section */}
   <div className="mb-3">
     <div className="text-white mb-2 px-2 py-1">
