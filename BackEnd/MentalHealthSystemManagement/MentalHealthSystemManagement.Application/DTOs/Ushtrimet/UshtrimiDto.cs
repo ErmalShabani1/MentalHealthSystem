@@ -8,6 +8,6 @@ namespace MentalHealthSystemManagement.Application.DTOs.Ushtrimet
         public string Pershkrimi { get; set; } = string.Empty;
 
         public int PsikologId { get; set; }
-        public int? PatientId { get; set; }
+       
     }
 }

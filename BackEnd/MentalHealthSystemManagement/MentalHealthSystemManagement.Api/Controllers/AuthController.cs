@@ -2,6 +2,7 @@
 using MentalHealthSystemManagement.Application.Interfaces;
 using MentalHealthSystemManagement.Application.Services;
 using MentalHealthSystemManagement.Infrastructure.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -36,7 +37,7 @@ namespace MentalHealthSystemManagement.Api.Controllers
             var user = await _authservice.LoginAsync(dto);
             if (user == null) return Unauthorized("Emri ose passwordi jane dhene gabim");
 
-            // 🔹 Gjej psikologId / patientId
+            
             int? psikologId = null;
             int? patientId = null;
 
@@ -69,7 +70,7 @@ namespace MentalHealthSystemManagement.Api.Controllers
                 Expires = user.RefreshTokenExpiryTime
             });
 
-            // 🔹 Kthe gjithçka në response
+          
             return Ok(new
             {
                 message = "Login successful",
@@ -94,7 +95,7 @@ namespace MentalHealthSystemManagement.Api.Controllers
             var user = await _authservice.GetUserByRefreshTokenAsync(refreshToken);
             if (user == null || user.RefreshTokenExpiryTime <= DateTime.UtcNow) return Unauthorized("Invalid or expired refresh token");
 
-            // 🔹 Gjej psikologId / patientId për refresh token
+          
             int? psikologId = null;
             int? patientId = null;
 
@@ -143,47 +144,12 @@ namespace MentalHealthSystemManagement.Api.Controllers
         }
 
         [HttpGet("users")]
+        [Authorize(Roles ="Admin")]
         public async Task<IActionResult> GetAllUsers()
         {
             var users = await _authservice.GetAllUsersAsync();
             return Ok(users);
         }
 
-        [HttpGet("users/{id}")]
-        public async Task<IActionResult> GetUserById(int id)
-        {
-            var user = await _authservice.GetUserByIdAsync(id);
-            if (user == null) return NotFound("User not found");
-            return Ok(user);
-        }
-
-        [HttpPut("users/{id}")]
-        public async Task<IActionResult> UpdateUser(int id, [FromBody] RegisterUserDto dto)
-        {
-            var user = await _authservice.GetUserByIdAsync(id);
-            if (user == null) return NotFound("User not found");
-
-            user.Username = dto.Username;
-            user.Email = dto.Email;
-            user.Role = dto.Role;
-            
-            if (!string.IsNullOrEmpty(dto.Password))
-            {
-                user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password);
-            }
-
-            await _authservice.UpdateUserAsync(user);
-            return Ok(new { message = "User updated successfully" });
-        }
-
-        [HttpDelete("users/{id}")]
-        public async Task<IActionResult> DeleteUser(int id)
-        {
-            var user = await _authservice.GetUserByIdAsync(id);
-            if (user == null) return NotFound("User not found");
-
-            await _authservice.DeleteUserAsync(id);
-            return Ok(new { message = "User deleted successfully" });
-        }
     }
 }

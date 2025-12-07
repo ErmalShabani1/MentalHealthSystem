@@ -10,6 +10,6 @@ namespace MentalHealthSystemManagement.Application.DTOs.Ushtrimet
         public DateTime DataKrijimit { get; set; }
 
         public int PsikologId { get; set; }
-        public int? PatientId { get; set; }
+       
     }
 }

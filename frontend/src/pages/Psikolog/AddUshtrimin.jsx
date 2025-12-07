@@ -12,7 +12,7 @@ function AddUshtrimin() {
     titulli: "",
     pershkrimi: "",
     psikologId: "",
-    patientId: "",
+   
   });
 
   const [patients, setPatients] = useState([]);
@@ -77,7 +77,6 @@ function AddUshtrimin() {
         titulli: formData.titulli.trim(),
         pershkrimi: formData.pershkrimi.trim(),
         psikologId: parseInt(formData.psikologId),
-        patientId: formData.patientId ? parseInt(formData.patientId) : null,
       };
 
       console.log("🔄 Duke dërguar të dhënat:", submitData);
@@ -91,7 +90,7 @@ function AddUshtrimin() {
         titulli: "",
         pershkrimi: "",
         psikologId: formData.psikologId,
-        patientId: "",
+
       });
 
       setTimeout(() => {

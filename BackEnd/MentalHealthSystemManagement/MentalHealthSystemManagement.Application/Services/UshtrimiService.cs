@@ -29,7 +29,7 @@ namespace MentalHealthSystemManagement.Application.Services
                 Titulli = dto.Titulli,
                 Pershkrimi = dto.Pershkrimi,
                 PsikologId = dto.PsikologId,
-                PatientId = dto.PatientId,
+              
                 DataKrijimit = DateTime.Now
             };
 
@@ -43,7 +43,7 @@ namespace MentalHealthSystemManagement.Application.Services
 
             ushtrimi.Titulli = dto.Titulli;
             ushtrimi.Pershkrimi = dto.Pershkrimi;
-            ushtrimi.PatientId = dto.PatientId;
+           
 
             await _repository.UpdateAsync(ushtrimi);
         }

@@ -15,8 +15,8 @@ namespace MentalHealthSystemManagement.Domain.Entities
         public int PsikologId { get; set; }
         public Psikologi Psikolog { get; set; } = null!;
 
-       
-        public int? PatientId { get; set; }
-        public Patient? Patient { get; set; }
+
+        public ICollection<TreatmentPlanUshtrimi> TreatmentPlanUshtrimet { get; set; }
+         = new List<TreatmentPlanUshtrimi>();
     }
 }

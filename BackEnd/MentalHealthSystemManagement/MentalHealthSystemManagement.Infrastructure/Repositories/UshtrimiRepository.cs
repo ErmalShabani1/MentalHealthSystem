@@ -19,7 +19,6 @@ namespace MentalHealthSystemManagement.Infrastructure.Repositories
         {
             return await _context.Ushtrimet
                 .Include(u => u.Psikolog)
-                .Include(u => u.Patient)
                 .ToListAsync();
         }
 
@@ -39,7 +38,7 @@ namespace MentalHealthSystemManagement.Infrastructure.Repositories
                     Pershkrimi = u.Pershkrimi,
                     DataKrijimit = u.DataKrijimit,
                     PsikologId = u.PsikologId,
-                    PatientId = u.PatientId
+                   
                 })
                 .ToListAsync();
         }
@@ -57,7 +56,7 @@ namespace MentalHealthSystemManagement.Infrastructure.Repositories
 
             existing.Titulli = ushtrimi.Titulli;
             existing.Pershkrimi = ushtrimi.Pershkrimi;
-            existing.PatientId = ushtrimi.PatientId;
+          
 
             await _context.SaveChangesAsync();
         }

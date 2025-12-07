@@ -18,6 +18,7 @@ namespace MentalHealthSystemManagement.Api.Controllers
             _patientService = patientService;
         }
         [HttpPost("add")]
+        [Authorize(Roles ="Admin, Psikolog")]
         public async Task<IActionResult> AddPatient([FromBody] PatientDto dto)
         {
             try
@@ -48,6 +49,7 @@ namespace MentalHealthSystemManagement.Api.Controllers
             return Ok("Pacienti updated me sukses");
         }
         [HttpDelete("{id}")]
+        [Authorize(Roles ="Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             try

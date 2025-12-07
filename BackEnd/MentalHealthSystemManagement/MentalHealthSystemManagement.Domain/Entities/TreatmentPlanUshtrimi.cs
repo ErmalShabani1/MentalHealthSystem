@@ -10,9 +10,9 @@ namespace MentalHealthSystemManagement.Domain.Entities
     {
         public int TreatmentPlanUshtrimiId { get; set; }
         public int TreatmentPlanId { get; set; }
-       // public int UshtrimiId { get; set; }
+        public int UshtrimiId { get; set; }
 
-        public TreatmentPlan TreatmentPlan { get; set; }
-        //public Ushtrimet Ushtrimet {get;set;}
+        public TreatmentPlan? TreatmentPlan { get; set; }
+        public Ushtrimi? Ushtrimi {get;set;}
     }
 }

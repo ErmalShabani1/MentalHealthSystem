@@ -92,7 +92,7 @@ namespace MentalHealthSystemManagement.Api.Controllers
 
                 // Filtro - përdor patientId nga tabela Patients
                 var filteredUshtrimet = allUshtrimet
-                    .Where(u => u.PatientId == null || u.PatientId == patientId)
+                   
                     .Select(u => new UshtrimiReadDto
                     {
                         Id = u.Id,
@@ -100,7 +100,7 @@ namespace MentalHealthSystemManagement.Api.Controllers
                         Pershkrimi = u.Pershkrimi,
                         DataKrijimit = u.DataKrijimit,
                         PsikologId = u.PsikologId,
-                        PatientId = u.PatientId
+                       
                     })
                     .ToList();
 

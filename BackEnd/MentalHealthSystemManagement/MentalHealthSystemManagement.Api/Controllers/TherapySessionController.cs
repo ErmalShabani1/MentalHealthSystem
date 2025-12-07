@@ -18,7 +18,7 @@ namespace MentalHealthSystemManagement.Api.Controllers
             _service = service;
         }
 
-        // GET: api/TherapySession/all (Psikolog only)
+       
         [HttpGet("all")]
         [Authorize(Roles = "Psikolog,Admin")]
         public async Task<IActionResult> GetAllSessions()

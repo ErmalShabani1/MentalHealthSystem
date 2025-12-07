@@ -22,7 +22,7 @@ namespace MentalHealthSystemManagement.Api.Controllers
             _context = context;
         }
         [HttpPost("add")]
-        [Authorize(Roles = "Psikolog,Admin")]
+        [Authorize(Roles = "Psikolog")]
         public async Task<IActionResult> AddReport([FromBody] CreateHealthReportDto dto)
         {
             try

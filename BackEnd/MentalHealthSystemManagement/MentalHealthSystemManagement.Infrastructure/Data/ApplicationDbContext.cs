@@ -91,14 +91,10 @@ namespace MentalHealthSystemManagement.Infrastructure.Data
             // TreatmentPlanUshtrimi:
 
             modelBuilder.Entity<TreatmentPlanUshtrimi>()
-            .HasKey(tu => tu.TreatmentPlanUshtrimiId);
-
-            modelBuilder.Entity<TreatmentPlanUshtrimi>()
-                .HasOne(tu => tu.TreatmentPlan)
-                .WithMany(tp => tp.TreatmentPlanUshtrimet)
-                .HasForeignKey(tu => tu.TreatmentPlanId)
-
-                .OnDelete(DeleteBehavior.Cascade);
+         .HasOne(tu => tu.Ushtrimi)
+         .WithMany(u => u.TreatmentPlanUshtrimet)
+         .HasForeignKey(tu => tu.UshtrimiId)
+         .OnDelete(DeleteBehavior.Cascade);
 
             base.OnModelCreating(modelBuilder);
 
