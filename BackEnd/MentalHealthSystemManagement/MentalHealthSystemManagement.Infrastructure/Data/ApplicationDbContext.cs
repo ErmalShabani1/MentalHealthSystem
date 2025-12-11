@@ -29,9 +29,9 @@ namespace MentalHealthSystemManagement.Infrastructure.Data
         public DbSet<TreatmentPlanUshtrimi> TreatmentPlanUshtrimet { get; set; }
 
         public DbSet<Ushtrimi> Ushtrimet { get; set; }
+        public DbSet<News> News { get; set; }
 
-        //ketu i bejme te tjerat
-        //
+      
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

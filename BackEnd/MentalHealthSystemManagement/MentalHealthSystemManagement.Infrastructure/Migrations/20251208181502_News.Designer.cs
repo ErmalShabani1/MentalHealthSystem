@@ -4,6 +4,7 @@ using MentalHealthSystemManagement.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MentalHealthSystemManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251208181502_News")]
+    partial class News
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -126,12 +129,15 @@ namespace MentalHealthSystemManagement.Infrastructure.Migrations
                     b.Property<int>("PsikologId")
                         .HasColumnType("int");
 
+                    b.Property<int>("PsikologuId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PsikologId");
+                    b.HasIndex("PsikologuId");
 
                     b.ToTable("News");
                 });
@@ -488,7 +494,7 @@ namespace MentalHealthSystemManagement.Infrastructure.Migrations
                 {
                     b.HasOne("MentalHealthSystemManagement.Domain.Entities.Psikologi", "Psikologu")
                         .WithMany()
-                        .HasForeignKey("PsikologId")
+                        .HasForeignKey("PsikologuId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

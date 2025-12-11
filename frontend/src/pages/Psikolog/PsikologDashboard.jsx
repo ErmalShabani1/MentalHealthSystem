@@ -260,7 +260,21 @@ function PsikologDashboard() {
       👥 Pacientët e Mi
     </Link>
   </div>
-
+{/* News Section */}
+<div className="mb-3">
+  <div className="text-white mb-2 px-2 py-1">
+    <small className="text-uppercase fw-semibold" style={{fontSize: '0.75rem', letterSpacing: '0.5px'}}>📰 News</small>
+  </div>
+  <Link to="/add-news" className="nav-link text-white px-3 py-2 mb-1">
+    ➕ Shto News
+  </Link>
+  <Link to="/menaxhoNews" className="nav-link text-white px-3 py-2 mb-1">
+    📋 Menaxho News
+  </Link>
+  <Link to="/news" className="nav-link text-white px-3 py-2 mb-1">
+    👁️ Shiko të Gjitha
+  </Link>
+</div>
           
   <div className="mt-auto">
     <button onClick={handleLogout} className="btn btn-danger w-100">

@@ -4,6 +4,7 @@ import { getMyRaportet } from "../../services/RaportService";
 import { getMyTakimet } from "../../services/AppointmentService"; // Krijo këtë service
 import { toast } from "react-toastify";
 import { logoutUser } from "../../services/authService";
+import PatientNewsSection from "../Pacient/PatientNewsSection";
 
 function PacientDashboard() {
   const navigate = useNavigate();
@@ -71,6 +72,12 @@ function PacientDashboard() {
               🏠 Dashboard
             </Link>
           </li>
+           <li className="nav-item mb-2">
+            <Link to="/newsList" className="nav-link text-white active">
+              📰 Lajmet-Keshillat
+            </Link>
+          </li>
+          
           <li className="nav-item mb-2">
             <Link to="/shfaqRaportet" className="nav-link text-white">
               📊 Raportet e Mia
@@ -239,6 +246,8 @@ function PacientDashboard() {
                     </div>
                   </div>
                 </div>
+                {/* Lajmet e Fundit - SHTONI KËTË */}
+                   <PatientNewsSection />
 
                 {/* Takimet e Ardhshme */}
                 <div className="col-md-6 mb-4">

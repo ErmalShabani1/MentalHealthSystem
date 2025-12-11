@@ -7,8 +7,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.Extensions.FileProviders; // Shto këtë
+using System.IO; // Shto këtë
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +19,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 // ✅ Shto CORS për React
 builder.Services.AddCors(options =>
 {
@@ -31,7 +33,7 @@ builder.Services.AddCors(options =>
         });
 });
 
-// Dependency injection për repositories dhe services
+// Dependency injection
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<IPsikologRepository, PsikologRepository>();
@@ -48,7 +50,8 @@ builder.Services.AddScoped<ITreatmentPlanRepository, TreatmentPlanRepository>();
 builder.Services.AddScoped<TreatmentPlanService>();
 builder.Services.AddScoped<IUshtrimiRepository, UshtrimiRepository>();
 builder.Services.AddScoped<UshtrimiService>();
-
+builder.Services.AddScoped<INewsRepository, NewsRepository>();
+builder.Services.AddScoped<NewsService>();
 
 var jwtSecret = builder.Configuration["Jwt:Key"] ?? "Kjo_eshte_nje_celes_shume_sekret_per_JWT_256bit";
 builder.Services.AddSingleton(new JwtService(builder.Configuration));
@@ -81,13 +84,32 @@ builder.Services.AddAuthentication(options =>
         };
     });
 builder.Services.AddAuthorization();
+
 var app = builder.Build();
 
+// KRIJO FOLDERIN newsImages NËSE NUK EKZISTON
+var newsImagesPath = Path.Combine(app.Environment.ContentRootPath, "wwwroot", "newsImages");
+if (!Directory.Exists(newsImagesPath))
+{
+    Directory.CreateDirectory(newsImagesPath);
+    Console.WriteLine($"✅ Folderi 'newsImages' u krijua në: {newsImagesPath}");
+}
+
+// GJITHASHTU KRIJO FOLDERIN uploads PËR RASET E TË TILA
+var uploadsPath = Path.Combine(app.Environment.ContentRootPath, "wwwroot", "uploads");
+if (!Directory.Exists(uploadsPath))
+{
+    Directory.CreateDirectory(uploadsPath);
+    Console.WriteLine($"✅ Folderi 'uploads' u krijua në: {uploadsPath}");
+}
+
+// Seed admin data
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     MentalHealthSystemManagement.Infrastructure.SeedData.SeedAdmin.AddAdmin(context);
 }
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -97,6 +119,32 @@ if (app.Environment.IsDevelopment())
 
 // ✅ Aktivizo CORS
 app.UseCors("AllowReactApp");
+
+// ✅ KONFIGURO STATIC FILES PËR TË GJITHA FOLDERAT
+app.UseStaticFiles(); // Për wwwroot
+
+// Për folderin newsImages
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(newsImagesPath),
+    RequestPath = "/newsImages",
+    ServeUnknownFileTypes = true,
+    DefaultContentType = "image/webp" // Specifikoni content type për webp
+});
+
+// Kjo për të lejuar të gjitha llojet e imazheve
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(
+        Path.Combine(app.Environment.ContentRootPath, "wwwroot")),
+    RequestPath = "",
+    ServeUnknownFileTypes = true,
+    OnPrepareResponse = ctx =>
+    {
+        // Lejo cache për imazhet
+        ctx.Context.Response.Headers.Append("Cache-Control", "public,max-age=3600");
+    }
+});
 
 app.UseHttpsRedirection();
 app.UseAuthentication();

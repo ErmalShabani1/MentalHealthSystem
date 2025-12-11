@@ -40,6 +40,10 @@ import AddUshtrimin from "./pages/Psikolog/AddUshtrimin";
 import EditUshtrimin from "./pages/Psikolog/EditUshtrimin";
 import MenaxhoUshtrimet from "./pages/Psikolog/MenaxhoUshtrimet";
 import ShfaqUshtrimet from "./pages/Pacient/ShfaqUshtrimet";
+import AddNewsForm from "./pages/Psikolog/AddNewsForm";
+import EditNewsForm from "./pages/Psikolog/EditNewsForm";
+import MenaxhoNews from "./pages/Psikolog/MenaxhoNews";
+import NewsList from "./pages/Pacient/NewsList";
 
 
 function App() {
@@ -94,6 +98,11 @@ function App() {
           <Route path="/edit-ushtrim/:id" element={<EditUshtrimin />} />
           <Route path="/menaxho-ushtrimet" element={<MenaxhoUshtrimet />} />
           <Route path="/shfaq-ushtrimet" element={<ShfaqUshtrimet />} />
+          {/* News*/}
+          <Route path="/add-news" element={<AddNewsForm />} />
+          <Route path="/edit-news/:id" element={<EditNewsForm />} />
+          <Route path="/menaxhoNews" element={<MenaxhoNews />} />
+          <Route path="/newsList" element={<NewsList />} /> // HomeScreen
       </Routes>
     </Router>
   );
