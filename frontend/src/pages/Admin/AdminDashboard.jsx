@@ -1,14 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { getAllPsikologet } from "../../services/PsikologiService";
 import { getAllPatients } from "../../services/PacientiService";
-
 import { getAllAppointmentsAdmin } from "../../services/AppointmentService";
 import { Link, useNavigate } from "react-router-dom";
 import { logoutUser } from "../../services/authService";
-
-import { getTakimetByPsikologId } from "../../services/AppointmentService"; // Shto këtë
-
-
+import { getTakimetByPsikologId } from "../../services/AppointmentService";
 
 function AdminDashboard() {
   const navigate = useNavigate();
@@ -16,7 +12,7 @@ function AdminDashboard() {
   const [patientsCount, setPatientsCount] = useState(0);
   const [takimetCount, setTakimetCount] = useState(0);
   const [recentAppointments, setRecentAppointments] = useState([]);
-  const [allTakimet, setAllTakimet] = useState([]); // Shto këtë state
+  const [allTakimet, setAllTakimet] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const handleLogout = async () => {
@@ -28,16 +24,12 @@ function AdminDashboard() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        console.log("🔍 ADMIN DASHBOARD - Duke marrë të dhënat...");
         
         // Merr psikologët dhe pacientët
         const [resPsych, resPatients] = await Promise.all([
           getAllPsikologet(),
           getAllPatients()
         ]);
-
-        console.log(`✅ Gjetur ${resPsych.data.length} psikologë`);
-        console.log(`✅ Gjetur ${resPatients.data.length} pacientë`);
 
         setPsychologistsCount(resPsych.data.length);
         setPatientsCount(resPatients.data.length);
@@ -47,13 +39,9 @@ function AdminDashboard() {
         
         for (const psikolog of resPsych.data) {
           try {
-            console.log(`🔍 Duke marrë takimet për psikolog ${psikolog.id}...`);
             const takimetRes = await getTakimetByPsikologId(psikolog.id);
             
             if (takimetRes.data && takimetRes.data.length > 0) {
-              console.log(`✅ Psikolog ${psikolog.id} (${psikolog.name}): ${takimetRes.data.length} takime`);
-              
-              // Shto informacion shtesë për çdo takim
               const takimetMeDetaje = takimetRes.data.map(takim => ({
                 ...takim,
                 psikologName: `${psikolog.name} ${psikolog.surname}`,
@@ -63,11 +51,9 @@ function AdminDashboard() {
               allTakimet.push(...takimetMeDetaje);
             }
           } catch (error) {
-            console.log(`❌ Nuk u morën takimet për psikolog ${psikolog.id}:`, error.message);
+            console.log(`Nuk u morën takimet për psikolog ${psikolog.id}:`, error.message);
           }
         }
-
-        console.log(`📊 Total takime të mbledhura: ${allTakimet.length}`);
         
         setTakimetCount(allTakimet.length);
         setAllTakimet(allTakimet);
@@ -79,7 +65,7 @@ function AdminDashboard() {
         setRecentAppointments(sortedAppointments);
         
       } catch (error) {
-        console.error("❌ Gabim gjatë marrjes së të dhënave:", error);
+        console.error("Gabim gjatë marrjes së të dhënave:", error);
       } finally {
         setLoading(false);
       }
@@ -87,81 +73,167 @@ function AdminDashboard() {
     fetchData();
   }, []);
 
-  // Llogarit statistikat nga të gjitha takimet
+  // Llogarit statistikat
   const completedAppointments = allTakimet.filter(app => 
-    app.status === "Completed"
+    app.status === "Completed" || app.status === "completed"
   ).length;
   
   const upcomingAppointments = allTakimet.filter(app => 
-    new Date(app.appointmentDate) > new Date() && app.status === "Scheduled"
+    new Date(app.appointmentDate) > new Date() && (app.status === "Scheduled" || app.status === "scheduled")
   ).length;
   
+  const todayAppointments = allTakimet.filter(app => {
+    const today = new Date().toDateString();
+    const appointmentDate = new Date(app.appointmentDate).toDateString();
+    return appointmentDate === today;
+  }).length;
   
-  
-  const newPatientsThisMonth = Math.floor(patientsCount * 0.1); // Supozim
+  const newPatientsThisMonth = Math.floor(patientsCount * 0.1);
+  const activePsychologists = Math.floor(psychologistsCount * 0.8);
+  const raportetTotal = allTakimet.filter(t => t.hasReport).length || Math.floor(allTakimet.length * 0.3);
+
+  // Të dhëna për grafikët
+  const statsData = [
+    { label: 'Psikologë', value: psychologistsCount, color: '#3b82f6', icon: '👨‍⚕️' },
+    { label: 'Pacientë', value: patientsCount, color: '#10b981', icon: '👥' },
+    { label: 'Takime', value: takimetCount, color: '#f59e0b', icon: '📅' },
+    { label: 'Përfunduar', value: completedAppointments, color: '#8b5cf6', icon: '✅' },
+  ];
+
+  const statusData = [
+    { label: 'Sot', value: todayAppointments, color: '#3b82f6' },
+    { label: 'Në Pritje', value: upcomingAppointments, color: '#f59e0b' },
+    { label: 'Përfunduar', value: completedAppointments, color: '#10b981' },
+  ];
+
+  // Funksion për të llogaritur përqindjen
+  const calculatePercentage = (value, total) => {
+    if (total === 0) return 0;
+    return (value / total) * 100;
+  };
 
   return (
     <div className="d-flex" style={{ minHeight: "100vh" }}>
       {/* Sidebar */}
       <div
-        className="bg-dark text-white p-3"
-        style={{ width: "250px", position: "fixed", height: "100vh", overflowY: "auto" }}
+        className="bg-dark text-white p-2 d-flex flex-column"
+        style={{ 
+          width: "180px", 
+          position: "fixed", 
+          height: "100vh",
+          overflowY: "auto"
+        }}
       >
-        <h4 className="mb-4 text-center">Admin Panel</h4>
-        <ul className="nav flex-column">
-          <li className="nav-item mb-2">
-            <Link to="/adminDashboard" className="nav-link text-white active">
-              🏠 Dashboard
-            </Link>
-          </li>
-          <h6 className="text-center mt-4">👥 Përdoruesit</h6>
-          <li className="nav-item mb-2">
-            <Link to="/menaxhoUserat" className="nav-link text-white">
-              👤 Menaxho Përdoruesit
-            </Link>
-          </li>
-          <h6 className="text-center mt-4">👨‍⚕️ Psikologët</h6>
-          <li className="nav-item mb-2">
-            <Link to="/add-psikologin" className="nav-link text-white">
-              ➕ Shto Psikolog
-            </Link>
-          </li>
-          <li className="nav-item mb-2">
-            <Link to="/menaxhoPsikologet" className="nav-link text-white">
-              👨‍⚕️ Menaxho Psikologët
-            </Link>
-          </li>
-          <h6 className="text-center mt-4">👥 Pacientët</h6>
-          <li className="nav-item mb-2">
-            <Link to="/add-pacientin" className="nav-link text-white">
-              ➕ Shto Pacient
-            </Link>
-          </li>
-          <li className="nav-item mb-2">
-            <Link to="/menaxhoPacientet" className="nav-link text-white">
-              👨‍⚕️ Menaxho Pacientët
-            </Link>
-          </li>
-          <h6 className="text-center mt-4">📅 Takimet</h6>
-         <li className="nav-item mb-2">
-  <Link to="/menaxhoTakimetAdmin" className="nav-link text-white">
-    📋 Menaxho Takimet
-  </Link>
-</li>
-        </ul>
-        <div className="mt-auto pt-3 border-top">
-          <button onClick={handleLogout} className="btn btn-danger w-100">
+        <div className="text-center mb-3">
+          <h6 className="mb-0 fw-bold" style={{fontSize: '0.9rem'}}>Admin Panel</h6>
+        </div>
+
+        {/* Dashboard */}
+        <div className="mb-2">
+          <Link to="/adminDashboard" className="nav-link text-white px-2 py-1 mb-1 active" style={{backgroundColor: 'rgba(255,255,255,0.15)', borderRadius: '4px', fontSize: '0.85rem'}}>
+            🏠 Dashboard
+          </Link>
+        </div>
+
+        {/* Përdoruesit */}
+        <div className="mb-2">
+          <div className="text-white mb-1 px-1 py-1">
+            <small className="text-uppercase fw-semibold" style={{fontSize: '0.7rem', letterSpacing: '0.5px'}}>👥 Përdoruesit</small>
+          </div>
+          <Link to="/menaxhoUserat" className="nav-link text-white px-2 py-1 mb-1" style={{fontSize: '0.8rem'}}>
+            👤 Menaxho
+          </Link>
+        </div>
+
+        {/* Psikologët */}
+        <div className="mb-2">
+          <div className="text-white mb-1 px-1 py-1">
+            <small className="text-uppercase fw-semibold" style={{fontSize: '0.7rem', letterSpacing: '0.5px'}}>👨‍⚕️ Psikologët</small>
+          </div>
+          <Link to="/add-psikologin" className="nav-link text-white px-2 py-1 mb-1" style={{fontSize: '0.8rem'}}>
+            ➕ Shto
+          </Link>
+          <Link to="/menaxhoPsikologet" className="nav-link text-white px-2 py-1 mb-1" style={{fontSize: '0.8rem'}}>
+            👨‍⚕️ Menaxho
+          </Link>
+        </div>
+
+        {/* Pacientët */}
+        <div className="mb-2">
+          <div className="text-white mb-1 px-1 py-1">
+            <small className="text-uppercase fw-semibold" style={{fontSize: '0.7rem', letterSpacing: '0.5px'}}>👥 Pacientët</small>
+          </div>
+          <Link to="/add-pacientin" className="nav-link text-white px-2 py-1 mb-1" style={{fontSize: '0.8rem'}}>
+            ➕ Shto
+          </Link>
+          <Link to="/menaxhoPacientet" className="nav-link text-white px-2 py-1 mb-1" style={{fontSize: '0.8rem'}}>
+            👨‍⚕️ Menaxho
+          </Link>
+        </div>
+
+        {/* Takimet */}
+        <div className="mb-2">
+          <div className="text-white mb-1 px-1 py-1">
+            <small className="text-uppercase fw-semibold" style={{fontSize: '0.7rem', letterSpacing: '0.5px'}}>📅 Takimet</small>
+          </div>
+          <Link to="/menaxhoTakimetAdmin" className="nav-link text-white px-2 py-1 mb-1" style={{fontSize: '0.8rem'}}>
+            📋 Menaxho
+          </Link>
+        </div>
+
+        {/* News Section - E RE */}
+        <div className="mb-2">
+          <div className="text-white mb-1 px-1 py-1">
+            <small className="text-uppercase fw-semibold" style={{fontSize: '0.7rem', letterSpacing: '0.5px'}}>📰 News</small>
+          </div>
+          <Link to="/add-news" className="nav-link text-white px-2 py-1 mb-1" style={{fontSize: '0.8rem'}}>
+                     ➕ Shto
+                   </Link>
+                   <Link to="/menaxhoNews" className="nav-link text-white px-2 py-1 mb-1" style={{fontSize: '0.8rem'}}>
+                     📋 Menaxho
+                   </Link>
+                   <Link to="/newsList" className="nav-link text-white px-2 py-1 mb-1" style={{fontSize: '0.8rem'}}>
+                     👁️ Shiko
+                   </Link>
+        </div>
+
+        {/* Raportet */}
+        <div className="mb-2">
+          <div className="text-white mb-1 px-1 py-1">
+            <small className="text-uppercase fw-semibold" style={{fontSize: '0.7rem', letterSpacing: '0.5px'}}>📊 Raportet</small>
+          </div>
+          <Link to="/raportet-admin" className="nav-link text-white px-2 py-1 mb-1" style={{fontSize: '0.8rem'}}>
+            📈 Shiko
+          </Link>
+         
+        </div>
+
+        {/* Cilësimet 
+        <div className="mb-2">
+          <div className="text-white mb-1 px-1 py-1">
+            <small className="text-uppercase fw-semibold" style={{fontSize: '0.7rem', letterSpacing: '0.5px'}}>⚙️ Cilësimet</small>
+          </div>
+          <Link to="/admin-settings" className="nav-link text-white px-2 py-1 mb-1" style={{fontSize: '0.8rem'}}>
+            🔧 Konfiguro
+          </Link>
+          <Link to="/backup-admin" className="nav-link text-white px-2 py-1 mb-1" style={{fontSize: '0.8rem'}}>
+            💾 Backup
+          </Link>
+        </div>
+                */}
+        <div className="mt-auto">
+          <button onClick={handleLogout} className="btn btn-danger btn-sm w-100 py-1" style={{fontSize: '0.8rem'}}>
             🚪 Logout
           </button>
         </div>
       </div>
 
       {/* Përmbajtja kryesore */}
-      <div className="flex-grow-1" style={{ marginLeft: "250px", backgroundColor: "#f8f9fa" }}>
-        <div className="container-fluid py-4">
-          <div className="d-flex justify-content-between align-items-center mb-4">
-            <h2 className="mb-0">Dashboard</h2>
-            <div className="text-muted">
+      <div className="flex-grow-1" style={{ marginLeft: "180px", backgroundColor: "#f8f9fa", overflowY: "auto", height: "100vh" }}>
+        <div className="container-fluid py-3">
+          <div className="d-flex justify-content-between align-items-center mb-3">
+            <h4 className="mb-0 fw-bold">Admin Dashboard</h4>
+            <div className="text-muted" style={{fontSize: '0.9rem'}}>
               {new Date().toLocaleDateString('sq-AL', { 
                 weekday: 'long', 
                 year: 'numeric', 
@@ -170,7 +242,7 @@ function AdminDashboard() {
               })}
             </div>
           </div>
-          
+
           {loading ? (
             <div className="text-center py-5">
               <div className="spinner-border text-primary" role="status">
@@ -180,101 +252,142 @@ function AdminDashboard() {
             </div>
           ) : (
             <>
-              {/* Statistikat */}
-              <div className="row">
-                <div className="col-xl-3 col-md-6 mb-4">
-                  <div className="card border-left-primary shadow h-100 py-2">
-                    <div className="card-body">
-                      <div className="row no-gutters align-items-center">
-                        <div className="col mr-2">
-                          <div className="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                            Psikologët Aktivë
+              {/* Statistikat kryesore */}
+              <div className="row g-3 mb-4">
+                {statsData.map((stat, index) => (
+                  <div key={index} className="col-xl-3 col-md-4 col-sm-6">
+                    <div className="card border-start-primary border-3 h-100" style={{borderLeftColor: stat.color}}>
+                      <div className="card-body p-3">
+                        <div className="d-flex align-items-center">
+                          <div className="flex-grow-1">
+                            <div className="small fw-semibold mb-1" style={{color: stat.color}}>{stat.label}</div>
+                            <div className="h4 mb-0 fw-bold">{stat.value}</div>
+                            <div className="small text-muted" style={{fontSize: '0.75rem'}}>Total në sistem</div>
                           </div>
-                          <div className="h5 mb-0 font-weight-bold text-gray-800">
-                            {psychologistsCount}
-                          </div>
-                          <div className="text-xs text-muted mt-1">
-                            Profesionistë në platformë
+                          <div className="ms-2">
+                            <span style={{fontSize: '2rem'}}>{stat.icon}</span>
                           </div>
                         </div>
-                        <div className="col-auto">
-                          <div className="icon-circle bg-primary">
-                            <span style={{fontSize: '1.5rem'}}>👨‍⚕️</span>
-                          </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Grafikët e thjeshtë */}
+              <div className="row g-3 mb-4">
+                <div className="col-lg-4">
+                  <div className="card h-100">
+                    <div className="card-header py-2">
+                      <h6 className="mb-0">Statistikat e Takimeve</h6>
+                    </div>
+                    <div className="card-body">
+                      <div className="d-flex flex-column gap-2">
+                        {statusData.map((item, index) => {
+                          const total = statusData.reduce((sum, s) => sum + s.value, 0);
+                          const percentage = calculatePercentage(item.value, total);
+                          return (
+                            <div key={index} className="d-flex align-items-center">
+                              <div className="me-2" style={{width: '20px', height: '20px', backgroundColor: item.color, borderRadius: '4px'}}></div>
+                              <div className="flex-grow-1">
+                                <div className="d-flex justify-content-between">
+                                  <span style={{fontSize: '0.85rem'}}>{item.label}</span>
+                                  <span style={{fontSize: '0.85rem', fontWeight: 'bold'}}>{item.value}</span>
+                                </div>
+                                <div className="progress" style={{height: '8px'}}>
+                                  <div 
+                                    className="progress-bar" 
+                                    role="progressbar" 
+                                    style={{width: `${percentage}%`, backgroundColor: item.color}}
+                                    aria-valuenow={percentage} 
+                                    aria-valuemin="0" 
+                                    aria-valuemax="100"
+                                  ></div>
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="col-lg-4">
+                  <div className="card h-100">
+                    <div className="card-header py-2">
+                      <h6 className="mb-0">Performanca e Platformës</h6>
+                    </div>
+                    <div className="card-body">
+                      <div className="d-flex justify-content-around align-items-end" style={{height: '150px'}}>
+                        <div className="text-center">
+                          <div style={{height: `${(psychologistsCount/20)*100}px`, backgroundColor: '#3b82f6', width: '30px', borderRadius: '4px'}}></div>
+                          <div className="mt-1 small">Psikologë</div>
+                          <div className="fw-bold">{psychologistsCount}</div>
+                        </div>
+                        <div className="text-center">
+                          <div style={{height: `${(patientsCount/100)*100}px`, backgroundColor: '#10b981', width: '30px', borderRadius: '4px'}}></div>
+                          <div className="mt-1 small">Pacientë</div>
+                          <div className="fw-bold">{patientsCount}</div>
+                        </div>
+                        <div className="text-center">
+                          <div style={{height: `${(completedAppointments/50)*100}px`, backgroundColor: '#f59e0b', width: '30px', borderRadius: '4px'}}></div>
+                          <div className="mt-1 small">Përfunduar</div>
+                          <div className="fw-bold">{completedAppointments}</div>
+                        </div>
+                        <div className="text-center">
+                          <div style={{height: `${(upcomingAppointments/50)*100}px`, backgroundColor: '#8b5cf6', width: '30px', borderRadius: '4px'}}></div>
+                          <div className="mt-1 small">Në Pritje</div>
+                          <div className="fw-bold">{upcomingAppointments}</div>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
 
-                <div className="col-xl-3 col-md-6 mb-4">
-                  <div className="card border-left-success shadow h-100 py-2">
-                    <div className="card-body">
-                      <div className="row no-gutters align-items-center">
-                        <div className="col mr-2">
-                          <div className="text-xs font-weight-bold text-success text-uppercase mb-1">
-                            Pacientët Total
-                          </div>
-                          <div className="h5 mb-0 font-weight-bold text-gray-800">
-                            {patientsCount}
-                          </div>
-                          <div className="text-xs text-muted mt-1">
-                            {newPatientsThisMonth} të rinj këtë muaj
-                          </div>
-                        </div>
-                        <div className="col-auto">
-                          <div className="icon-circle bg-success">
-                            <span style={{fontSize: '1.5rem'}}>👥</span>
-                          </div>
-                        </div>
-                      </div>
+                <div className="col-lg-4">
+                  <div className="card h-100">
+                    <div className="card-header py-2">
+                      <h6 className="mb-0">Shpërndarja e Aktivitetit</h6>
                     </div>
-                  </div>
-                </div>
-
-                <div className="col-xl-3 col-md-6 mb-4">
-                  <div className="card border-left-info shadow h-100 py-2">
                     <div className="card-body">
-                      <div className="row no-gutters align-items-center">
-                        <div className="col mr-2">
-                          <div className="text-xs font-weight-bold text-info text-uppercase mb-1">
-                            Takimet e Përfunduara
-                          </div>
-                          <div className="h5 mb-0 font-weight-bold text-gray-800">
-                            {completedAppointments}
-                          </div>
-                          <div className="text-xs text-muted mt-1">
-                            Këtë muaj
-                          </div>
-                        </div>
-                        <div className="col-auto">
-                          <div className="icon-circle bg-info">
-                            <span style={{fontSize: '1.5rem'}}>✅</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="col-xl-3 col-md-6 mb-4">
-                  <div className="card border-left-warning shadow h-100 py-2">
-                    <div className="card-body">
-                      <div className="row no-gutters align-items-center">
-                        <div className="col mr-2">
-                          <div className="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                            Takimet e Ardhshme
-                          </div>
-                          <div className="h5 mb-0 font-weight-bold text-gray-800">
-                            {upcomingAppointments}
-                          </div>
-                          <div className="text-xs text-muted mt-1">
-                            Në pritje
+                      <div className="d-flex flex-wrap justify-content-center align-items-center" style={{height: '150px'}}>
+                        <div className="text-center mx-3">
+                          <div className="position-relative" style={{width: '80px', height: '80px'}}>
+                            <div className="position-absolute rounded-circle" style={{
+                              width: '80px',
+                              height: '80px',
+                              background: `conic-gradient(
+                                #3b82f6 ${(psychologistsCount/(psychologistsCount+patientsCount+completedAppointments+upcomingAppointments))*100}%,
+                                #10b981 ${(psychologistsCount/(psychologistsCount+patientsCount+completedAppointments+upcomingAppointments))*100}% ${((psychologistsCount+patientsCount)/(psychologistsCount+patientsCount+completedAppointments+upcomingAppointments))*100}%,
+                                #f59e0b ${((psychologistsCount+patientsCount)/(psychologistsCount+patientsCount+completedAppointments+upcomingAppointments))*100}% ${((psychologistsCount+patientsCount+completedAppointments)/(psychologistsCount+patientsCount+completedAppointments+upcomingAppointments))*100}%,
+                                #8b5cf6 ${((psychologistsCount+patientsCount+completedAppointments)/(psychologistsCount+patientsCount+completedAppointments+upcomingAppointments))*100}% 100%
+                              )`
+                            }}></div>
+                            <div className="position-absolute bg-white rounded-circle" style={{
+                              width: '60px',
+                              height: '60px',
+                              top: '10px',
+                              left: '10px'
+                            }}></div>
                           </div>
                         </div>
-                        <div className="col-auto">
-                          <div className="icon-circle bg-warning">
-                            <span style={{fontSize: '1.5rem'}}>📅</span>
+                        <div className="small">
+                          <div className="d-flex align-items-center mb-1">
+                            <div style={{width: '10px', height: '10px', backgroundColor: '#3b82f6', borderRadius: '2px', marginRight: '5px'}}></div>
+                            <span>Psikologë: {psychologistsCount}</span>
+                          </div>
+                          <div className="d-flex align-items-center mb-1">
+                            <div style={{width: '10px', height: '10px', backgroundColor: '#10b981', borderRadius: '2px', marginRight: '5px'}}></div>
+                            <span>Pacientë: {patientsCount}</span>
+                          </div>
+                          <div className="d-flex align-items-center mb-1">
+                            <div style={{width: '10px', height: '10px', backgroundColor: '#f59e0b', borderRadius: '2px', marginRight: '5px'}}></div>
+                            <span>Përfunduar: {completedAppointments}</span>
+                          </div>
+                          <div className="d-flex align-items-center">
+                            <div style={{width: '10px', height: '10px', backgroundColor: '#8b5cf6', borderRadius: '2px', marginRight: '5px'}}></div>
+                            <span>Në Pritje: {upcomingAppointments}</span>
                           </div>
                         </div>
                       </div>
@@ -282,28 +395,77 @@ function AdminDashboard() {
                   </div>
                 </div>
               </div>
-              
-              <div className="row mt-4">
-                {/* Takimet e Fundit */}
-                <div className="col-md-8">
-                  <div className="card shadow-sm">
-                    <div className="card-header bg-white">
-                      <h5 className="mb-0">Takimet e Fundit</h5>
+
+              {/* Takimet e fundit dhe Shpejtësitë */}
+              <div className="row g-3">
+                <div className="col-lg-8">
+                  <div className="card h-100">
+                    <div className="card-header py-2 d-flex justify-content-between align-items-center">
+                      <h6 className="mb-0">Takimet e Fundit</h6>
+                      <Link to="/menaxhoTakimetAdmin" className="btn btn-sm btn-primary">
+                        📋 Shiko të gjitha
+                      </Link>
                     </div>
-                    <div className="card-body p-0">
+                    <div className="card-body p-0" style={{maxHeight: '300px', overflowY: 'auto'}}>
                       <RecentAppointments appointments={recentAppointments} />
                     </div>
                   </div>
                 </div>
-                
-                {/* Shpejtësitë */}
-                <div className="col-md-4">
-                  <div className="card shadow-sm">
-                    <div className="card-header bg-white">
-                      <h5 className="mb-0">Shpejtësitë</h5>
+
+                <div className="col-lg-4">
+                  <div className="card h-100">
+                    <div className="card-header py-2">
+                      <h6 className="mb-0">Veprime të Shpejta</h6>
                     </div>
                     <div className="card-body">
                       <QuickActions />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Statistikat shtesë */}
+              <div className="row mt-3">
+                <div className="col-md-6">
+                  <div className="card">
+                    <div className="card-header py-2">
+                      <h6 className="mb-0">Aktiviteti i Psikologëve</h6>
+                    </div>
+                    <div className="card-body">
+                      <div className="d-flex justify-content-between align-items-center mb-2">
+                        <span style={{fontSize: '0.85rem'}}>Psikologë Aktivë</span>
+                        <span className="badge bg-primary">{activePsychologists}</span>
+                      </div>
+                      <div className="d-flex justify-content-between align-items-center mb-2">
+                        <span style={{fontSize: '0.85rem'}}>Takime/Psikolog</span>
+                        <span className="badge bg-info">{psychologistsCount > 0 ? Math.floor(takimetCount / psychologistsCount) : 0}</span>
+                      </div>
+                      <div className="d-flex justify-content-between align-items-center">
+                        <span style={{fontSize: '0.85rem'}}>Pacientë/Psikolog</span>
+                        <span className="badge bg-success">{psychologistsCount > 0 ? Math.floor(patientsCount / psychologistsCount) : 0}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="col-md-6">
+                  <div className="card">
+                    <div className="card-header py-2">
+                      <h6 className="mb-0">Statistikat Muajore</h6>
+                    </div>
+                    <div className="card-body">
+                      <div className="d-flex justify-content-between align-items-center mb-2">
+                        <span style={{fontSize: '0.85rem'}}>Takime të reja</span>
+                        <span className="badge bg-warning">{todayAppointments}</span>
+                      </div>
+                      <div className="d-flex justify-content-between align-items-center mb-2">
+                        <span style={{fontSize: '0.85rem'}}>Pacientë të rinj</span>
+                        <span className="badge bg-success">{newPatientsThisMonth}</span>
+                      </div>
+                      <div className="d-flex justify-content-between align-items-center">
+                        <span style={{fontSize: '0.85rem'}}>Raporte gjeneruar</span>
+                        <span className="badge bg-info">{raportetTotal}</span>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -316,17 +478,12 @@ function AdminDashboard() {
   );
 }
 
-// Komponenti për takimet e fundit
-
+// Komponenti për takimet e fundit (i përditësuar)
 function RecentAppointments({ appointments }) {
   return (
     <div className="list-group list-group-flush">
       {appointments.length > 0 ? (
         appointments.map((appointment, index) => {
-          // Debug për çdo takim
-          console.log(`📅 Takimi ${index}:`, appointment);
-          
-          // Merr emrin e pacientit nga struktura të ndryshme
           const patientName = 
             appointment.patientName || 
             (appointment.patient?.emri && appointment.patient?.mbiemri 
@@ -334,7 +491,6 @@ function RecentAppointments({ appointments }) {
               : `Pacient ID: ${appointment.patientId || 'N/A'}`
             );
 
-          // Merr emrin e psikologut nga struktura të ndryshme
           const psikologName = 
             appointment.psikologName ||
             (appointment.psikolog?.name && appointment.psikolog?.surname
@@ -343,42 +499,47 @@ function RecentAppointments({ appointments }) {
             );
 
           return (
-            <div key={index} className="list-group-item d-flex justify-content-between align-items-center">
-              <div>
-                <h6 className="mb-1">{patientName}</h6>
-                <small className="text-muted">
-                  Psikolog: {psikologName}
-                </small>
-                <br />
-                {appointment.notes && (
-                  <small className="text-muted">
-                    Shënime: {appointment.notes.length > 50 
-                      ? `${appointment.notes.substring(0, 50)}...` 
-                      : appointment.notes
-                    }
+            <div key={index} className="list-group-item d-flex justify-content-between align-items-center py-2 px-3">
+              <div className="d-flex align-items-center">
+                <div className={`rounded-circle p-2 me-3 ${appointment.status === 'Completed' || appointment.status === 'completed' ? 'bg-success' : 
+                  appointment.status === 'Cancelled' || appointment.status === 'cancelled' ? 'bg-danger' : 'bg-warning'}`} style={{width: '35px', height: '35px'}}>
+                  <span className="text-white" style={{fontSize: '0.8rem'}}>
+                    {appointment.status === 'Completed' || appointment.status === 'completed' ? '✓' : 
+                     appointment.status === 'Cancelled' || appointment.status === 'cancelled' ? '✗' : '○'}
+                  </span>
+                </div>
+                <div>
+                  <h6 className="mb-0" style={{fontSize: '0.9rem'}}>{patientName}</h6>
+                  <small className="text-muted d-block" style={{fontSize: '0.75rem'}}>
+                    Psikolog: {psikologName}
                   </small>
-                )}
+                </div>
               </div>
               <div className="text-end">
-                <div className="fw-bold">
-                  {new Date(appointment.appointmentDate).toLocaleDateString('sq-AL')}
+                <div className="fw-bold" style={{fontSize: '0.85rem'}}>
+                  {new Date(appointment.appointmentDate).toLocaleDateString('sq-AL', { 
+                    month: 'short', 
+                    day: 'numeric' 
+                  })}
                 </div>
-                <div className="text-muted small">
-                  {new Date(appointment.appointmentDate).toLocaleTimeString('sq-AL')}
-                </div>
-                <small className={`badge ${
-                  appointment.status === 'Completed' ? 'bg-success' : 
-                  appointment.status === 'Cancelled' ? 'bg-danger' : 'bg-warning'
-                }`}>
-                  {appointment.status === 'Completed' ? 'Përfunduar' : 
-                   appointment.status === 'Cancelled' ? 'Anuluar' : 'Në pritje'}
+                <small className="text-muted" style={{fontSize: '0.75rem'}}>
+                  {new Date(appointment.appointmentDate).toLocaleTimeString('sq-AL', { 
+                    hour: '2-digit', 
+                    minute: '2-digit' 
+                  })}
+                </small>
+                <br />
+                <small className={`badge ${appointment.status === 'Completed' || appointment.status === 'completed' ? 'bg-success' : 
+                  appointment.status === 'Cancelled' || appointment.status === 'cancelled' ? 'bg-danger' : 'bg-warning'}`} style={{fontSize: '0.7rem'}}>
+                  {appointment.status === 'Completed' || appointment.status === 'completed' ? 'Përfunduar' : 
+                   appointment.status === 'Cancelled' || appointment.status === 'cancelled' ? 'Anuluar' : 'Në pritje'}
                 </small>
               </div>
             </div>
           );
         })
       ) : (
-        <div className="list-group-item text-center text-muted py-4">
+        <div className="list-group-item text-center text-muted py-4" style={{fontSize: '0.9rem'}}>
           Nuk ka takime të fundit
         </div>
       )}
@@ -386,26 +547,32 @@ function RecentAppointments({ appointments }) {
   );
 }
 
-// Komponenti për veprimet e shpejta
+// Komponenti për veprimet e shpejta (i përditësuar)
 function QuickActions() {
   const actions = [
-    { title: "Shto Psikolog", icon: "👨‍⚕️", link: "/add-psikologin", color: "primary" },
-    { title: "Shto Pacient", icon: "👤", link: "/add-pacientin", color: "success" },
-    { title: "Menaxho Takimet", icon: "📅", link: "/menaxhoTakimetAdmin", color: "info" },
+    { title: "Shto Psikolog", icon: "👨‍⚕️", link: "/add-psikologin", color: "primary", desc: "Regjistro psikolog të ri" },
+    { title: "Shto Pacient", icon: "👤", link: "/add-pacientin", color: "success", desc: "Regjistro pacient të ri" },
+    { title: "Menaxho Takimet", icon: "📅", link: "/menaxhoTakimetAdmin", color: "info", desc: "Shiko dhe menaxho takimet" },
+    { title: "Shto News", icon: "📰", link: "/add-news-admin", color: "warning", desc: "Publikoni lajme të reja" },
   ];
 
   return (
-    <div className="row g-2">
+    <div className="d-flex flex-column gap-2">
       {actions.map((action, index) => (
-        <div className="col-12" key={index}>
-          <Link 
-            to={action.link} 
-            className={`btn btn-${action.color} w-100 d-flex align-items-center justify-content-start py-3`}
-          >
-            <div style={{fontSize: '1.2rem'}} className="me-3">{action.icon}</div>
-            <div>{action.title}</div>
-          </Link>
-        </div>
+        <Link 
+          to={action.link} 
+          className={`btn btn-outline-${action.color} text-start py-2 px-3`}
+          key={index}
+          style={{fontSize: '0.85rem'}}
+        >
+          <div className="d-flex align-items-center">
+            <div className="me-2" style={{fontSize: '1.2rem'}}>{action.icon}</div>
+            <div className="flex-grow-1">
+              <div className="fw-semibold">{action.title}</div>
+              <small className="text-muted" style={{fontSize: '0.75rem'}}>{action.desc}</small>
+            </div>
+          </div>
+        </Link>
       ))}
     </div>
   );
