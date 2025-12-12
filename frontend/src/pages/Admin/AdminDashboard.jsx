@@ -208,6 +208,16 @@ function AdminDashboard() {
          
         </div>
 
+        {/* Notifications Section */}
+        <div className="mb-2">
+          <div className="text-white mb-1 px-1 py-1">
+            <small className="text-uppercase fw-semibold" style={{fontSize: '0.7rem', letterSpacing: '0.5px'}}>🔔 Njoftimet</small>
+          </div>
+          <Link to="/admin-notifications" className="nav-link text-white px-2 py-1 mb-1" style={{fontSize: '0.8rem'}}>
+            📋 Menaxho
+          </Link>
+        </div>
+
         {/* Cilësimet 
         <div className="mb-2">
           <div className="text-white mb-1 px-1 py-1">

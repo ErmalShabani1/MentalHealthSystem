@@ -14,7 +14,11 @@ using System.IO; // Shto këtë
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+    });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -52,6 +56,8 @@ builder.Services.AddScoped<IUshtrimiRepository, UshtrimiRepository>();
 builder.Services.AddScoped<UshtrimiService>();
 builder.Services.AddScoped<INewsRepository, NewsRepository>();
 builder.Services.AddScoped<NewsService>();
+builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
+builder.Services.AddScoped<NotificationService>();
 
 var jwtSecret = builder.Configuration["Jwt:Key"] ?? "Kjo_eshte_nje_celes_shume_sekret_per_JWT_256bit";
 builder.Services.AddSingleton(new JwtService(builder.Configuration));

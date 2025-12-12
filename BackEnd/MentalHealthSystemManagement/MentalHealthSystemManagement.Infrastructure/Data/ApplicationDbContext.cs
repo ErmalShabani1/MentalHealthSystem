@@ -30,6 +30,7 @@ namespace MentalHealthSystemManagement.Infrastructure.Data
 
         public DbSet<Ushtrimi> Ushtrimet { get; set; }
         public DbSet<News> News { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
 
       
 
@@ -95,6 +96,19 @@ namespace MentalHealthSystemManagement.Infrastructure.Data
          .WithMany(u => u.TreatmentPlanUshtrimet)
          .HasForeignKey(tu => tu.UshtrimiId)
          .OnDelete(DeleteBehavior.Cascade);
+
+            // Notification kompozim
+            modelBuilder.Entity<Notification>()
+                .HasOne(n => n.Psikologi)
+                .WithMany()
+                .HasForeignKey(n => n.PsikologId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Notification>()
+                .HasOne(n => n.Patient)
+                .WithMany()
+                .HasForeignKey(n => n.PatientId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             base.OnModelCreating(modelBuilder);
 

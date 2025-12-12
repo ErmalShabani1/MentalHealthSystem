@@ -96,58 +96,16 @@ function MenaxhoTreatmentPlan() {
           </Link>
         </div>
 
-        {/* Psikologët Section */}
-        <div className="mb-3">
-          <div className="text-white mb-2 px-2 py-1">
-            <small className="text-uppercase fw-semibold" style={{fontSize: '0.75rem', letterSpacing: '0.5px'}}>👨‍⚕️ Psikologët</small>
-          </div>
-          <Link to="/add-takimet" className="nav-link text-white px-3 py-2 mb-1">
-            ➕ Shto Takim
-          </Link>
-          <Link to="/menaxhoTakimet" className="nav-link text-white px-3 py-2 mb-1">
-            📋 Menaxho Takimet
-          </Link>
-        </div>
-
-        {/* Terapia Section */}
-        <div className="mb-3">
-          <div className="text-white mb-2 px-2 py-1">
-            <small className="text-uppercase fw-semibold" style={{fontSize: '0.75rem', letterSpacing: '0.5px'}}>🧘 Terapia</small>
-          </div>
-          <Link to="/add-terapine" className="nav-link text-white px-3 py-2 mb-1">
-            ➕ Shto Seancë
-          </Link>
-          <Link to="/menaxhoTerapine" className="nav-link text-white px-3 py-2 mb-1">
-            📋 Menaxho Seanca
-          </Link>
-        </div>
-
-        {/* Pacientët Section */}
-        <div className="mb-3">
-          <div className="text-white mb-2 px-2 py-1">
-            <small className="text-uppercase fw-semibold" style={{fontSize: '0.75rem', letterSpacing: '0.5px'}}>📖 Pacientët</small>
-          </div>
-          <Link to="/add-raportin" className="nav-link text-white px-3 py-2 mb-1">
-            ➕ Shto Raport
-          </Link>
-          <Link to="/menaxhoRaportet" className="nav-link text-white px-3 py-2 mb-1">
-            👨‍⚕️ Menaxho Raportet
-          </Link>
-          <Link to="/pacientetEMi" className="nav-link text-white px-3 py-2 mb-1">
-            👥 Pacientët e Mi
-          </Link>
-        </div>
-
         {/* Treatment Plan Section */}
         <div className="mb-3">
           <div className="text-white mb-2 px-2 py-1">
             <small className="text-uppercase fw-semibold" style={{fontSize: '0.75rem', letterSpacing: '0.5px'}}>📋 Treatment Plan</small>
           </div>
-          <Link to="/add-treatmentplan" className="nav-link text-white px-3 py-2 mb-1">
-            ➕ Shto Plan
-          </Link>
           <Link to="/menaxho-treatmentplan" className="nav-link text-white px-3 py-2 mb-1 active" style={{backgroundColor: 'rgba(255,255,255,0.15)', borderRadius: '4px'}}>
             📊 Menaxho Planet
+          </Link>
+          <Link to="/add-treatmentplan" className="nav-link text-white px-3 py-2 mb-1">
+            ➕ Shto Plan
           </Link>
         </div>
         

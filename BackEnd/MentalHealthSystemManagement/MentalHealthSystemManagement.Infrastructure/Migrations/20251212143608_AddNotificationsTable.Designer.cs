@@ -4,6 +4,7 @@ using MentalHealthSystemManagement.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MentalHealthSystemManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251212143608_AddNotificationsTable")]
+    partial class AddNotificationsTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -134,54 +137,6 @@ namespace MentalHealthSystemManagement.Infrastructure.Migrations
                     b.HasIndex("PsikologId");
 
                     b.ToTable("News");
-                });
-
-            modelBuilder.Entity("MentalHealthSystemManagement.Domain.Entities.Notification", b =>
-                {
-                    b.Property<int>("NotificationId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("NotificationId"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsRead")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Message")
-                        .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
-
-                    b.Property<int>("PatientId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PsikologId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("ReadAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("SentAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("NotificationId");
-
-                    b.HasIndex("PatientId");
-
-                    b.HasIndex("PsikologId");
-
-                    b.ToTable("Notifications");
                 });
 
             modelBuilder.Entity("MentalHealthSystemManagement.Domain.Entities.Patient", b =>
@@ -541,25 +496,6 @@ namespace MentalHealthSystemManagement.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Psikologu");
-                });
-
-            modelBuilder.Entity("MentalHealthSystemManagement.Domain.Entities.Notification", b =>
-                {
-                    b.HasOne("MentalHealthSystemManagement.Domain.Entities.Patient", "Patient")
-                        .WithMany()
-                        .HasForeignKey("PatientId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("MentalHealthSystemManagement.Domain.Entities.Psikologi", "Psikologi")
-                        .WithMany()
-                        .HasForeignKey("PsikologId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Patient");
-
-                    b.Navigation("Psikologi");
                 });
 
             modelBuilder.Entity("MentalHealthSystemManagement.Domain.Entities.Patient", b =>

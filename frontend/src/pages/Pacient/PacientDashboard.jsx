@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { getMyRaportet } from "../../services/RaportService";
 import { getMyTakimet } from "../../services/AppointmentService";
+import { getUnreadCount } from "../../services/NotificationService";
 import { toast } from "react-toastify";
 import { logoutUser } from "../../services/authService";
 import PatientNewsSection from "../Pacient/PatientNewsSection";
@@ -10,6 +11,7 @@ function PacientDashboard() {
   const navigate = useNavigate();
   const [raportet, setRaportet] = useState([]);
   const [takimet, setTakimet] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [patientName, setPatientName] = useState("");
 
@@ -28,7 +30,7 @@ function PacientDashboard() {
         setPatientName(storedName);
         
         // Merr të dhënat e pacientit
-        const [raportetRes, takimetRes] = await Promise.all([
+        const [raportetRes, takimetRes, unreadCountRes] = await Promise.all([
           getMyRaportet().catch(err => { 
             console.log("Raportet nuk u morën:", err); 
             return { data: [] }; 
@@ -36,11 +38,16 @@ function PacientDashboard() {
           getMyTakimet().catch(err => { 
             console.log("Takimet nuk u morën:", err); 
             return { data: [] }; 
+          }),
+          getUnreadCount().catch(err => {
+            console.log("Unread count nuk u mor:", err);
+            return 0;
           })
         ]);
 
         setRaportet(raportetRes.data || []);
         setTakimet(takimetRes.data || []);
+        setUnreadCount(unreadCountRes || 0);
       } catch (error) {
         console.error("Gabim gjatë marrjes së të dhënave:", error);
         toast.error("Gabim gjatë ngarkimit të të dhënave");
@@ -112,13 +119,6 @@ function PacientDashboard() {
           overflowY: "auto"
         }}
       >
-        <div className="text-center mb-3 py-2">
-          <h6 className="mb-0 fw-bold" style={{fontSize: '0.9rem'}}>👤 Pacient Panel</h6>
-          <small className="text-muted" style={{fontSize: '0.7rem'}}>
-            {patientName}
-          </small>
-        </div>
-
         {/* Dashboard */}
         <div className="mb-2">
           <Link to="/pacientDashboard" className="nav-link text-white px-2 py-1 mb-1 active" style={{backgroundColor: 'rgba(255,255,255,0.15)', borderRadius: '4px', fontSize: '0.85rem'}}>
@@ -200,6 +200,21 @@ function PacientDashboard() {
          
         </div>
 
+        {/* Njoftimet */}
+        <div className="mb-2">
+          <div className="text-white mb-1 px-1 py-1">
+            <small className="text-uppercase fw-semibold" style={{fontSize: '0.7rem', letterSpacing: '0.5px'}}>🔔 Njoftimet</small>
+          </div>
+          <Link to="/my-notifications" className="nav-link text-white px-2 py-1 mb-1 d-flex align-items-center justify-content-between" style={{fontSize: '0.8rem'}}>
+            <span>📬 Njoftimet e mia</span>
+            {unreadCount > 0 && (
+              <span className="badge bg-danger rounded-circle" style={{fontSize: '0.7rem', padding: '0.25rem 0.5rem'}}>
+                {unreadCount}
+              </span>
+            )}
+          </Link>
+        </div>
+
         {/* Cilësimet 
         <div className="mb-2">
           <div className="text-white mb-1 px-1 py-1">
@@ -215,7 +230,7 @@ function PacientDashboard() {
                 */}
         <div className="mt-auto">
           <button onClick={handleLogout} className="btn btn-danger btn-sm w-100 py-1" style={{fontSize: '0.8rem'}}>
-            🚪 Dil
+            🚪 Logout
           </button>
         </div>
       </div>
@@ -267,6 +282,36 @@ function PacientDashboard() {
                     </div>
                   </div>
                 ))}
+              </div>
+
+              {/* Njoftimet */}
+              <div className="row g-3 mb-4">
+                <div className="col-12">
+                  <div className={`card ${unreadCount > 0 ? 'border-warning' : 'border-primary'}`}>
+                    <div className={`card-header ${unreadCount > 0 ? 'bg-warning bg-opacity-10' : 'bg-primary bg-opacity-10'} py-2 d-flex justify-content-between align-items-center`}>
+                      <h6 className="mb-0">
+                        {unreadCount > 0 && <span className="badge bg-danger me-2">{unreadCount}</span>}
+                        🔔 Njoftimet e Mia
+                      </h6>
+                      <Link to="/my-notifications" className={`btn btn-sm ${unreadCount > 0 ? 'btn-warning' : 'btn-primary'}`}>
+                        📬 Shiko njoftimet
+                      </Link>
+                    </div>
+                    <div className="card-body py-3">
+                      {unreadCount > 0 ? (
+                        <div className="alert alert-warning mb-0 d-flex align-items-center">
+                          <span className="me-2" style={{fontSize: '1.5rem'}}>🔔</span>
+                          <span>Keni <strong>{unreadCount}</strong> njoftim{unreadCount > 1 ? 'e' : ''} të palexuar nga psikologu juaj. Klikoni "Shiko njoftimet" për t'i lexuar.</span>
+                        </div>
+                      ) : (
+                        <div className="alert alert-info mb-0 d-flex align-items-center">
+                          <span className="me-2" style={{fontSize: '1.5rem'}}>✅</span>
+                          <span>Nuk keni njoftime të reja. Të gjitha njoftimet janë të lexuara.</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
               </div>
 
               {/* Grafikët e thjeshtë */}

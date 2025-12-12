@@ -44,6 +44,11 @@ import AddNewsForm from "./pages/Psikolog/AddNewsForm";
 import EditNewsForm from "./pages/Psikolog/EditNewsForm";
 import MenaxhoNews from "./pages/Psikolog/MenaxhoNews";
 import NewsList from "./pages/Pacient/NewsList";
+import AdminNotifications from "./pages/Admin/AdminNotifications";
+import MenaxhoNotifications from "./pages/Psikolog/MenaxhoNotifications";
+import AddNotification from "./pages/Psikolog/AddNotification";
+import EditNotification from "./pages/Psikolog/EditNotification";
+import MyNotifications from "./pages/Pacient/MyNotifications";
 
 
 function App() {
@@ -103,6 +108,12 @@ function App() {
           <Route path="/edit-news/:id" element={<EditNewsForm />} />
           <Route path="/menaxhoNews" element={<MenaxhoNews />} />
           <Route path="/newsList" element={<NewsList />} /> // HomeScreen
+          {/* Notifications */}
+          <Route path="/admin-notifications" element={<AdminNotifications />} />
+          <Route path="/menaxho-notifications" element={<MenaxhoNotifications />} />
+          <Route path="/add-notification" element={<AddNotification />} />
+          <Route path="/edit-notification/:id" element={<EditNotification />} />
+          <Route path="/my-notifications" element={<MyNotifications />} />
       </Routes>
     </Router>
   );
