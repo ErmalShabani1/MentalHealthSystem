@@ -24,7 +24,21 @@ function AddPacientinForm() {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
+const getCookie = (name) => {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop().split(";").shift();
+  return null;
+};
+const navigateByRole = () => {
+  const role = getCookie("role");
 
+  if (role === "Admin") {
+    navigate("/adminDashboard");
+  } else  {
+    navigate("/psikologDashboard");
+  }
+};
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -35,7 +49,7 @@ function AddPacientinForm() {
       
       // Navigo direkt në adminDashboard pas 1.5 sekondash
       setTimeout(() => {
-        navigate("/adminDashboard");
+        navigateByRole();
       }, 1500);
       
     } catch (error) {
@@ -47,7 +61,7 @@ function AddPacientinForm() {
   };
 
   const handleGoBack = () => {
-    navigate("/adminDashboard");
+    navigateByRole();
   };
 
   return (

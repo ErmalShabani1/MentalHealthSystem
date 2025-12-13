@@ -27,16 +27,12 @@ namespace MentalHealthSystemManagement.Api.Controllers
         {
             try
             {
-                var userId = User.FindFirst("UserId")?.Value;
+                // Merr psikologId nga token direkt
+                var psikologIdClaim = User.FindFirst("PsikologId")?.Value;
+                if (string.IsNullOrEmpty(psikologIdClaim))
+                    return BadRequest("PsikologId is missing in token");
 
-                // Gjej psikologun sipas UserId
-                var psikolog = await _context.Psikologet
-        .FirstOrDefaultAsync(p => p.UserId == int.Parse(userId));
-
-                if (psikolog == null)
-                    return BadRequest("Psikologu nuk ekziston!");
-
-                dto.PsikologId = psikolog.Id;
+                dto.PsikologId = int.Parse(psikologIdClaim);
 
                 await _service.AddReportAsync(dto);
                 return Ok("Report added successfully");

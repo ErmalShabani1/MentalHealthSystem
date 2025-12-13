@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { getAllNews, deleteNews, getNewsByPsikologId } from "../../services/newsService";
+import { getAllNews, deleteNews, getMyNews } from "../../services/newsService";
 import { logoutUser } from "../../services/authService";
 import axios from "axios";
 
@@ -10,54 +10,33 @@ function MenaxhoNews() {
   const [newsList, setNewsList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [psikologInfo, setPsikologInfo] = useState(null);
-
+const API_BASE_URL = "https://localhost:7062";
   const handleLogout = async () => {
     await logoutUser();
     navigate("/");
   };
 
   useEffect(() => {
-    fetchPsikologInfo();
+    fetchMyNews();
   }, []);
 
-  const fetchPsikologInfo = async () => {
-    try {
-      const userId = localStorage.getItem("userId");
-      if (userId) {
-        const response = await axios.get(`https://localhost:7062/api/Psikolog/user/${userId}`, {
-          withCredentials: true,
-        });
-        setPsikologInfo(response.data);
-        fetchNewsByPsikolog(response.data.id);
-      }
-    } catch (error) {
-      console.error("Gabim gjatë marrjes së të dhënave të psikologit:", error);
-      toast.error("Gabim gjatë ngarkimit të të dhënave");
-    }
-  };
+  
 
-  const fetchNewsByPsikolog = async (psikologId) => {
-    try {
-      setLoading(true);
-      const response = await getNewsByPsikologId(psikologId);
-      console.log("📰 News të psikologit:", response.data);
-      setNewsList(response.data);
-    } catch (error) {
-      console.error("Gabim gjatë marrjes së news:", error);
-      toast.error("Gabim gjatë marrjes së news");
-    } finally {
-      setLoading(false);
-    }
-  };
+ const fetchMyNews = async () => {
+  try {
+    const response = await getMyNews();
+    setNewsList(response.data || []);
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleDelete = async (id) => {
     if (window.confirm("A jeni i sigurt që doni ta fshini këtë news?")) {
       try {
         await deleteNews(id);
         toast.success("News u fshi me sukses!");
-        if (psikologInfo) {
-          fetchNewsByPsikolog(psikologInfo.id);
-        }
+          fetchMyNews();
       } catch (error) {
         toast.error("Gabim gjatë fshirjes së news!");
       }
@@ -73,7 +52,7 @@ function MenaxhoNews() {
       return newsDate.getMonth() === now.getMonth() && 
              newsDate.getFullYear() === now.getFullYear();
     }).length,
-    hasImage: newsList.filter(n => n.imageUrl && n.imageUrl !== "").length,
+   hasImage: newsList.filter(n => n.imageUrl?.trim()).length,
   };
 
   return (
@@ -253,13 +232,20 @@ function MenaxhoNews() {
                         <tr key={news.id}>
                           <td>
                             {news.imageUrl ? (
-                              <img 
-                                src={news.imageUrl} 
-                                alt="News" 
-                                className="img-thumbnail"
-                                style={{ width: "80px", height: "80px", objectFit: "cover" }}
-                              />
-                            ) : (
+  <img
+    src={
+      news.imageUrl.startsWith("http")
+        ? news.imageUrl
+        : `${API_BASE_URL}${news.imageUrl}`
+    }
+    alt="News"
+    className="img-thumbnail"
+    style={{ width: "80px", height: "80px", objectFit: "cover" }}
+    onError={(e) => {
+      e.target.src = "/no-image.png"; // opsionale
+    }}
+  />
+) : (
                               <div className="img-thumbnail d-flex align-items-center justify-content-center"
                                    style={{ width: "80px", height: "80px", backgroundColor: "#f8f9fa" }}>
                                 <i className="fas fa-image text-muted"></i>

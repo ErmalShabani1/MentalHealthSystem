@@ -48,8 +48,16 @@ namespace MentalHealthSystemManagement.Application.Services
 
             await _repository.AddAsync(appointment);
         }
-        public async Task UpdateAsync(Appointment appointment)
+        public async Task Update(int id, UpdateAppointmentDto dto)
         {
+            var appointment = await _repository.GetByIdAsync(id);
+            if (appointment == null) throw new Exception("Appointment nuk u gjet");
+
+            appointment.PatientId = dto.PatientId;
+            appointment.AppointmentDate = dto.AppointmentDate;
+            appointment.Notes = dto.Notes ?? string.Empty;
+            appointment.Status = dto.Status;
+
             await _repository.UpdateAsync(appointment);
         }
         public async Task DeleteAsync(int id)

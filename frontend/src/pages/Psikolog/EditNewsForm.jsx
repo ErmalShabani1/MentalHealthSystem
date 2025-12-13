@@ -26,6 +26,7 @@ function EditNewsForm() {
   const [news, setNews] = useState(null);
   const [fetchLoading, setFetchLoading] = useState(true);
   const [psikologInfo, setPsikologInfo] = useState(null);
+  const API_BASE_URL = "https://localhost:7062";
 
   useEffect(() => {
     const fetchData = async () => {
@@ -43,18 +44,15 @@ function EditNewsForm() {
         });
         
         if (response.data.imageUrl) {
-          setCurrentImageUrl(response.data.imageUrl);
-          setImagePreview(response.data.imageUrl);
-        }
+  const fullImageUrl = response.data.imageUrl.startsWith("http")
+    ? response.data.imageUrl
+    : `${API_BASE_URL}${response.data.imageUrl}`;
 
-        // Merr të dhënat e psikologit
-        const userId = localStorage.getItem("userId");
-        if (userId) {
-          const psikologRes = await axios.get(`https://localhost:7062/api/Psikolog/user/${userId}`, {
-            withCredentials: true,
-          });
-          setPsikologInfo(psikologRes.data);
-        }
+  setCurrentImageUrl(fullImageUrl);
+  setImagePreview(fullImageUrl);
+}
+
+      
       } catch (error) {
         console.error("❌ Gabim gjatë marrjes së news:", error);
         
@@ -107,10 +105,7 @@ function EditNewsForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (!psikologInfo) {
-      toast.error("Nuk u gjet informacioni i psikologit!");
-      return;
-    }
+  
 
     if (!formData.description || formData.description.trim() === "") {
       toast.error("Përshkrimi është i detyrueshëm!");

@@ -59,12 +59,10 @@ namespace MentalHealthSystemManagement.Api.Controllers
 
         [HttpPut("{id}")]
         [Authorize(Roles = "Psikolog,Admin")]
-        public async Task<IActionResult> UpdateAppointment(int id, Appointment appointment)
+        public async Task<IActionResult> Update(int id, [FromBody] UpdateAppointmentDto dto)
         {
-            if (id != appointment.Id)
-                return BadRequest("Id not the same");
-            await _service.UpdateAsync(appointment);
-            return Ok("Appointment Updated successfully");
+            await _service.Update(id, dto);
+            return Ok("Appointment u perditesua me sukses");
         }
         [HttpDelete("{id}")]
         [Authorize(Roles = "Psikolog,Admin")]

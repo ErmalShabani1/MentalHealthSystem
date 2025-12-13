@@ -49,6 +49,7 @@ import MenaxhoNotifications from "./pages/Psikolog/MenaxhoNotifications";
 import AddNotification from "./pages/Psikolog/AddNotification";
 import EditNotification from "./pages/Psikolog/EditNotification";
 import MyNotifications from "./pages/Pacient/MyNotifications";
+import MenaxhoPacientetPsikolog from "./pages/Psikolog/MenaxhoPacientetPsikolog";
 
 
 function App() {
@@ -80,6 +81,7 @@ function App() {
           < Route path="/edit-pacientin/:id" element={<EditPacientinForm/>}/>
           <Route path="/menaxhoPacientet" element={<MenaxhoPacientet/>}/>
           <Route path="/pacientetEMi" element={<PacientetEMi/>}/>
+          <Route path="/menaxhoPacientet-Psikolog" element={<MenaxhoPacientetPsikolog/>}/>
            {/* HealthReports Routes */}
              <Route path="/add-raportin" element={<AddRaportinForm />} />
           < Route path="/edit-raportin/:id" element={<EditRaportinForm/>}/>

@@ -23,14 +23,12 @@ export const createNews = async (formData) => {
 };
 
 // Përditëso news (për psikologët)
-export const updateNews = async (id, formData) => {
-  return await axios.put(`${API_URL}/update/${id}`, formData, { 
-    withCredentials: true,
+export const updateNews = (id, formData) =>
+  axios.put(`${API_URL}/update/${id}`, formData, {
     headers: {
-      'Content-Type': 'multipart/form-data'
+      "Content-Type": "multipart/form-data"
     }
   });
-};
 
 // Fshi news (për psikologët)
 export const deleteNews = async (id) => {
@@ -40,4 +38,7 @@ export const deleteNews = async (id) => {
 // Merr news për një psikolog specifik
 export const getNewsByPsikologId = async (psikologId) => {
   return await axios.get(`${API_URL}/psikolog/${psikologId}`, { withCredentials: true });
+};
+export const getMyNews = async () => {
+  return await axios.get(`${API_URL}/my-news`, { withCredentials: true });
 };

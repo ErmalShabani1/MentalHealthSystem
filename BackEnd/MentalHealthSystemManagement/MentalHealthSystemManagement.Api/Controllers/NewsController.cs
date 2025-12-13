@@ -56,14 +56,48 @@ namespace MentalHealthSystemManagement.Api.Controllers
             var list = await _service.GetAllAsync();
             return Ok(list);
         }
-        [HttpPut("update/{id}")]
+        [HttpGet("my-news")]
         [Authorize(Roles = "Psikolog")]
-
-        public async Task<IActionResult> Update(int id, [FromBody] UpdateNewsDto dto)
+        public async Task<IActionResult> GetMyNews()
         {
+            var psikologId = GetPsikologId();
 
+            var news = await _context.News
+                .Where(n => n.PsikologId == psikologId)
+                .OrderByDescending(n => n.CreatedAt)
+                .ToListAsync();
+
+            return Ok(news);
+        }
+        [HttpGet("{id}")]
+        [Authorize(Roles = "Psikolog")]
+        public async Task<IActionResult> GetNewsById(int id)
+        {
+            var psikologId = GetPsikologId();
+
+            var news = await _context.News
+                .Where(n => n.Id == id && n.PsikologId == psikologId)
+                .Select(n => new {
+                    n.Id,
+                    n.Description,
+                    n.ImageUrl,
+                    n.CreatedAt,
+                    n.UpdatedAt,
+                    PsikologName = n.Psikologu.Name + " " + n.Psikologu.Surname
+                })
+                .FirstOrDefaultAsync();
+
+            if (news == null)
+                return NotFound("News nuk u gjet ose nuk keni qasje.");
+
+            return Ok(news);
+        }
+
+        [HttpPut("update/{id}")]
+        public async Task<IActionResult> Update(int id, [FromForm] UpdateNewsDto dto)
+        {
             await _service.UpdateAsync(id, dto);
-            return Ok("News updated sucessfully");
+            return Ok("News updated successfully");
         }
         [HttpDelete("{id}")]
         [Authorize(Roles = "Psikolog")]

@@ -176,16 +176,16 @@ function PsikologDashboard() {
           </Link>
         </div>
 
-        {/* Psikologët Section */}
+        {/* Takimet Section */}
         <div className="mb-2">
           <div className="text-white mb-1 px-1 py-1">
-            <small className="text-uppercase fw-semibold" style={{fontSize: '0.7rem', letterSpacing: '0.5px'}}>👨‍⚕️ Psikologët</small>
+            <small className="text-uppercase fw-semibold" style={{fontSize: '0.7rem', letterSpacing: '0.5px'}}>📅 Takimet</small>
           </div>
           <Link to="/add-takimet" className="nav-link text-white px-2 py-1 mb-1" style={{fontSize: '0.8rem'}}>
             ➕ Shto Takim
           </Link>
           <Link to="/menaxhoTakimet" className="nav-link text-white px-2 py-1 mb-1" style={{fontSize: '0.8rem'}}>
-            👨‍⚕️ Menaxho
+            📅 Menaxho Takimet
           </Link>
         </div>
 
@@ -228,16 +228,27 @@ function PsikologDashboard() {
             📊 Menaxho
           </Link>
         </div>
-
+        {/* Raportet Section */}
+        <div className="mb-2">
+          <div className="text-white mb-1 px-1 py-1">
+            <small className="text-uppercase fw-semibold" style={{fontSize: '0.7rem', letterSpacing: '0.5px'}}>📖 Raportet</small>
+          </div>
+          <Link to="/add-raportin" className="nav-link text-white px-2 py-1 mb-1" style={{fontSize: '0.8rem'}}>
+            ➕ Shto raport
+          </Link>
+          <Link to="/menaxhoRaportet" className="nav-link text-white px-2 py-1 mb-1" style={{fontSize: '0.8rem'}}>
+             📖 Menaxho 
+          </Link>
+        </div>
         {/* Pacientët Section */}
         <div className="mb-2">
           <div className="text-white mb-1 px-1 py-1">
             <small className="text-uppercase fw-semibold" style={{fontSize: '0.7rem', letterSpacing: '0.5px'}}>📖 Pacientët</small>
           </div>
-          <Link to="/add-raportin" className="nav-link text-white px-2 py-1 mb-1" style={{fontSize: '0.8rem'}}>
-            ➕ Raport
+          <Link to="/add-pacientin" className="nav-link text-white px-2 py-1 mb-1" style={{fontSize: '0.8rem'}}>
+            ➕ Shto pacient
           </Link>
-          <Link to="/menaxhoRaportet" className="nav-link text-white px-2 py-1 mb-1" style={{fontSize: '0.8rem'}}>
+          <Link to="/menaxhoPacientet-Psikolog" className="nav-link text-white px-2 py-1 mb-1" style={{fontSize: '0.8rem'}}>
             👨‍⚕️ Menaxho
           </Link>
           <Link to="/pacientetEMi" className="nav-link text-white px-2 py-1 mb-1" style={{fontSize: '0.8rem'}}>

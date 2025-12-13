@@ -54,12 +54,21 @@ namespace MentalHealthSystemManagement.Application.Services
             var news = await _repository.GetByIdAsync(id);
             if (news == null) throw new Exception("News not found!");
 
+            // Përditëso përshkrimin
             news.Description = dto.Description;
-            news.ImageUrl = dto.ImageUrl;
+
+            // Nëse ka një foto të re, ruaje atë
+            if (dto.Image != null && dto.Image.Length > 0)
+            {
+                var imagePath = await SaveNewsImage(dto.Image);
+                news.ImageUrl = imagePath; // Përditëso ImageUrl me foton e re
+            }
+
             news.UpdatedAt = DateTime.UtcNow;
 
             await _repository.SaveChangesAsync();
         }
+
         public async Task DeleteAsync(int id)
         {
             await _repository.DeleteAsync(id);
@@ -73,7 +82,7 @@ namespace MentalHealthSystemManagement.Application.Services
                 Directory.CreateDirectory(uploadsFolder);
             }
 
-            // Krijo emrin e file
+            // Krijo emrin unik të file
             var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(imageFile.FileName);
             var filePath = Path.Combine(uploadsFolder, uniqueFileName);
 
@@ -84,7 +93,8 @@ namespace MentalHealthSystemManagement.Application.Services
             }
 
             // Kthe URL relative (JO absolute path)
-            return $"/newsImages/{uniqueFileName}"; // Kjo është e rëndësishme
+            return $"/newsImages/{uniqueFileName}";
         }
+
     }
 }

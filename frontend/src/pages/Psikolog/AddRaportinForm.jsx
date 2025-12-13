@@ -81,11 +81,11 @@ function AddRaportinForm() {
   // Transformo të dhënat për backend (PascalCase)
   const dataToSend = {
     PatientId: parseInt(formData.patientId),
-    Title: formData.title,
-    Description: formData.description || "",
-    Diagnoza: formData.diagnoza,
+    Title: formData.title.trim(),
+    Description: formData.description?.trim() || "",
+    Diagnoza: formData.diagnoza.trim(),
     AppointmentId: formData.appointmentId ? parseInt(formData.appointmentId) : null
-  };
+};
 
   console.log("🔍 Duke dërguar të dhënat:", dataToSend);
 
