@@ -60,9 +60,9 @@ function AdminNotifications() {
         <div className="d-flex" style={{ minHeight: "100vh" }}>
             {/* Sidebar */}
             <div
-                className="bg-dark text-white p-2 d-flex flex-column"
+                className="bg-dark text-white p-3 d-flex flex-column"
                 style={{ 
-                    width: "180px", 
+                    width: "250px", 
                     position: "fixed", 
                     height: "100vh",
                     overflowY: "auto"
@@ -96,7 +96,7 @@ function AdminNotifications() {
             </div>
 
             {/* Përmbajtja kryesore */}
-            <div className="flex-grow-1" style={{ marginLeft: "180px", backgroundColor: "#f8f9fa", overflowY: "auto", minHeight: "100vh" }}>
+            <div className="flex-grow-1" style={{ marginLeft: "250px", backgroundColor: "#f8f9fa", overflowY: "auto", minHeight: "100vh" }}>
                 <div className="container-fluid py-4">
                     <div className="d-flex justify-content-between align-items-center mb-4">
                         <h2 className="mb-0">Të Gjitha Njoftimet</h2>

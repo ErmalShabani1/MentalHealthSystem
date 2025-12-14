@@ -38,8 +38,8 @@ function EditPacientinForm() {
         setFormData({
           emri: patient.emri || "",
           mbiemri: patient.mbiemri || "",
-          username: patient.username || "",
-          email: patient.email || "",
+          username: patient.username || patient.user?.username || "",
+          email: patient.email || patient.user?.email || "",
           mosha: patient.mosha || "",
           gjinia: patient.gjinia || "",
           diagnoza: patient.diagnoza || "",
@@ -75,9 +75,15 @@ function EditPacientinForm() {
       await updatePacientin(id, formData);
       toast.success("Pacienti u përditësua me sukses!");
       
-      // Navigo pas 1 sekonde
+      // Merr role-in dhe navigo në faqen e duhur
+      const role = localStorage.getItem("role") || JSON.parse(localStorage.getItem("user") || '{}').role;
+      
       setTimeout(() => {
-        navigate("/menaxhoPacientet");
+        if (role === "Admin") {
+          navigate("/menaxhoPacientet");
+        } else if (role === "Psikolog") {
+          navigate("/menaxhoPacientet-Psikolog");
+        }
       }, 1000);
       
     } catch (error) {
@@ -89,7 +95,12 @@ function EditPacientinForm() {
   };
 
   const handleGoBack = () => {
-    navigate("/menaxhoPacientet");
+    const role = localStorage.getItem("role") || JSON.parse(localStorage.getItem("user") || '{}').role;
+    if (role === "Admin") {
+      navigate("/menaxhoPacientet");
+    } else if (role === "Psikolog") {
+      navigate("/menaxhoPacientet-Psikolog");
+    }
   };
 
   if (initialLoading) {

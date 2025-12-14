@@ -92,7 +92,7 @@ function ShfaqTreatmentPlan() {
           </li>
           <li className="nav-item mb-2">
             <Link to="/shfaqPsikologet" className="nav-link text-white">
-              👨‍⚕️ Psikologët
+              �‍⚕️ Psikologët
             </Link>
           </li>
         </ul>
@@ -100,7 +100,7 @@ function ShfaqTreatmentPlan() {
           <button onClick={handleLogout} className="btn btn-danger w-100 mb-2">
             🚪 Logout
           </button>
-          <button onClick={() => navigate(-1)} className="btn btn-secondary w-100">
+          <button onClick={() => navigate('/pacientDashboard')} className="btn btn-secondary w-100">
             ← Kthehu
           </button>
         </div>

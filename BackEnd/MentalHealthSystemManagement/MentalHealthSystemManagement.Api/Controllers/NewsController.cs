@@ -40,7 +40,7 @@ namespace MentalHealthSystemManagement.Api.Controllers
             return Ok("News added successfully");
         }
         [HttpGet("all")]
-        [Authorize(Roles = "Admin, Psikolog")]
+        [Authorize(Roles = "Admin, Psikolog, Pacient")]
         public async Task<IActionResult> GetAll()
         {
             var list = await _service.GetAllAsync();

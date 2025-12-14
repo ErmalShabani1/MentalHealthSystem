@@ -115,7 +115,7 @@ function ShfaqUshtrimet() {
           </li>
           <li className="nav-item mb-2">
             <Link to="/shfaqPsikologet" className="nav-link text-white">
-              👨‍⚕️ Psikologët
+              �‍⚕️ Psikologët
             </Link>
           </li>
         </ul>

@@ -84,6 +84,7 @@ function EditTakimin() {
           className="form-control mb-2"
           value={formData.patientId}
           onChange={handleChange}
+          disabled
         >
           <option value="">Zgjidh Pacientin</option>
           {patients.map((p) => (
@@ -120,8 +121,15 @@ function EditTakimin() {
           <option value="Cancelled">Cancelled</option>
         </select>
 
-        <button type="submit" className="btn btn-success w-100">
+        <button type="submit" className="btn btn-success w-100 mb-2">
           Ruaj Ndryshimet
+        </button>
+        <button 
+          type="button" 
+          className="btn btn-secondary w-100"
+          onClick={() => navigate('/menaxhoTakimet')}
+        >
+          ← Kthehu
         </button>
       </form>
     </div>

@@ -20,48 +20,115 @@ function AddPacientinForm() {
 
   const [loading, setLoading] = useState(false);
 
+  const getRole = () => {
+    // Përpjek të marrësh role direkt
+    let role = localStorage.getItem("role");
+    
+    // Nëse nuk ekziston, merr nga user object
+    if (!role) {
+      const user = localStorage.getItem("user");
+      if (user) {
+        try {
+          const userData = JSON.parse(user);
+          role = userData.role;
+        } catch (e) {
+          console.error("Error parsing user data:", e);
+        }
+      }
+    }
+    
+    return role;
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
-const getCookie = (name) => {
-  const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) return parts.pop().split(";").shift();
-  return null;
-};
-const navigateByRole = () => {
-  const role = getCookie("role");
 
-  if (role === "Admin") {
-    navigate("/adminDashboard");
-  } else  {
-    navigate("/psikologDashboard");
-  }
-};
+  const navigateToDashboard = () => {
+    const role = getRole();
+    console.log("📍 navigateToDashboard - Role:", role);
+    console.log("📍 localStorage contents:", {
+      role: localStorage.getItem("role"),
+      user: localStorage.getItem("user"),
+      psikologId: localStorage.getItem("psikologId")
+    });
+
+    if (role === "Admin") {
+      console.log("➡️ Navigating to adminDashboard");
+      navigate("/adminDashboard");
+    } else if (role === "Psikolog") {
+      console.log("➡️ Navigating to psikologDashboard");
+      navigate("/psikologDashboard");
+    } else {
+      console.log("⚠️ No role found, navigating to login");
+      navigate("/");
+    }
+  };
+
+  const navigateToPacientet = () => {
+    const role = getRole();
+    console.log("📍 navigateToPacientet - Role:", role);
+
+    if (role === "Admin") {
+      console.log("➡️ Navigating to menaxhoPacientet");
+      navigate("/menaxhoPacientet");
+    } else if (role === "Psikolog") {
+      console.log("➡️ Navigating to menaxhoPacientet-Psikolog");
+      navigate("/menaxhoPacientet-Psikolog");
+    } else {
+      console.log("⚠️ No role found, navigating to login");
+      navigate("/");
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     
+    const dataToSend = {
+      ...formData,
+      isDeleted: false
+    };
+    
     try {
-      await axios.post(API_URL, formData, { withCredentials: true });
+      await axios.post(API_URL, dataToSend);
       toast.success("Pacienti u shtua me sukses!");
       
-      // Navigo direkt në adminDashboard pas 1.5 sekondash
+      // Navigo direkt në dashboard pas 1.5 sekondash
       setTimeout(() => {
-        navigateByRole();
+        navigateToDashboard();
       }, 1500);
       
     } catch (error) {
       console.error("Gabim:", error);
-      toast.error(error.response?.data || "Gabim gjatë shtimit të pacientit!");
+      console.error("Error response:", error.response);
+      console.error("Error data:", error.response?.data);
+      console.error("Error status:", error.response?.status);
+      console.error("Data që u dërgua:", dataToSend);
+      
+      // Përcakto mesazhin e gabimit
+      let errorMessage = "Gabim gjatë shtimit të pacientit!";
+      
+      if (error.response?.data) {
+        // Nëse është string direkt
+        if (typeof error.response.data === 'string') {
+          errorMessage = error.response.data;
+        } 
+        // Nëse është objekt me message property
+        else if (error.response.data.message) {
+          errorMessage = error.response.data.message;
+        }
+      }
+      
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
   };
 
   const handleGoBack = () => {
-    navigateByRole();
+    navigateToPacientet();
   };
 
   return (

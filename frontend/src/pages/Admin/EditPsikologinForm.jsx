@@ -37,8 +37,8 @@ function EditPsikologinForm() {
         setFormData({
           name: psych.name || psych.emri || "",
           surname: psych.surname || psych.mbiemri || "",
-          username: psych.username || "",
-          email: psych.email || "",
+          username: psych.username || psych.user?.username || "",
+          email: psych.email || psych.user?.email || "",
           specialization: psych.specialization || psych.specializimi || "",
           experienceLevel: psych.experienceLevel || psych.experience || "",
         });

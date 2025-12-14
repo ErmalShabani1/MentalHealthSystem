@@ -70,7 +70,7 @@ function MenaxhoTakimetAdmin() {
           <button onClick={handleLogout} className="btn btn-danger w-100 mb-2">
             🚪 Logout
           </button>
-          <button onClick={() => navigate(-1)} className="btn btn-secondary w-100">
+          <button onClick={() => navigate('/adminDashboard')} className="btn btn-secondary w-100">
             ← Kthehu
           </button>
         </div>
@@ -94,7 +94,6 @@ function MenaxhoTakimetAdmin() {
                     <th>Data dhe Koha</th>
                     <th>Statusi</th>
                     <th>Shënime</th>
-                    <th>Veprime</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -108,8 +107,8 @@ function MenaxhoTakimetAdmin() {
                     }
                   </td>
                   <td>
-                    {takimi.psikologi?.emri && takimi.psikologi?.mbiemri 
-                      ? `${takimi.psikologi.emri} ${takimi.psikologi.mbiemri}`
+                    {takimi.psikolog?.name && takimi.psikolog?.surname 
+                      ? `${takimi.psikolog.name} ${takimi.psikolog.surname}`
                       : "N/A"
                     }
                   </td>
@@ -139,22 +138,6 @@ function MenaxhoTakimetAdmin() {
                     ) : (
                       <span className="text-muted">Nuk ka shënime</span>
                     )}
-                  </td>
-                  <td>
-                    <div className="btn-group btn-group-sm">
-                      <Link 
-                        to={`/edit-takimin-admin/${takimi.id}`} 
-                        className="btn btn-warning"
-                      >
-                        ✏️ Edit
-                      </Link>
-                      <button 
-                        onClick={() => handleDelete(takimi.id)}
-                        className="btn btn-danger"
-                      >
-                        🗑️ Fshi
-                      </button>
-                    </div>
                   </td>
                 </tr>
               ))}

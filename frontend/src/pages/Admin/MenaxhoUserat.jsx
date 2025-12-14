@@ -81,17 +81,12 @@ function MenaxhoUserat() {
               👤 Menaxho Përdoruesit
             </Link>
           </li>
-          <li className="nav-item mb-2">
-            <Link to="/add-user" className="nav-link btn btn-success text-white">
-              ➕ Shto Përdorues
-            </Link>
-          </li>
         </ul>
         <div className="mt-auto pt-3 border-top">
           <button onClick={handleLogout} className="btn btn-danger w-100 mb-2">
             🚪 Logout
           </button>
-          <button onClick={() => navigate(-1)} className="btn btn-secondary w-100">
+          <button onClick={() => navigate('/adminDashboard')} className="btn btn-secondary w-100">
             ← Kthehu
           </button>
         </div>

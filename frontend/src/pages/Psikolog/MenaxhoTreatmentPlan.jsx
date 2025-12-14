@@ -113,7 +113,7 @@ function MenaxhoTreatmentPlan() {
           <button onClick={handleLogout} className="btn btn-danger w-100 mb-2">
             🚪 Logout
           </button>
-          <button onClick={() => navigate(-1)} className="btn btn-secondary w-100">
+          <button onClick={() => navigate('/psikologDashboard')} className="btn btn-secondary w-100">
             ← Kthehu
           </button>
         </div>
@@ -306,14 +306,6 @@ function MenaxhoTreatmentPlan() {
                                 <i className="fas fa-trash me-1"></i>
                                 Fshi
                               </button>
-
-                              <Link
-                                to={`/view-treatmentplan/${plan.treatmentPlanId}`}
-                                className="btn btn-sm btn-outline-info"
-                              >
-                                <i className="fas fa-eye me-1"></i>
-                                Shiko
-                              </Link>
                             </div>
                           </td>
                         </tr>

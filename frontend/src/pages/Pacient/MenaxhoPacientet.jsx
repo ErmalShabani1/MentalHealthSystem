@@ -87,7 +87,7 @@ function MenaxhoPacientet() {
           <button onClick={handleLogout} className="btn btn-danger w-100 mb-2">
             🚪 Logout
           </button>
-          <button onClick={() => navigate(-1)} className="btn btn-secondary w-100">
+          <button onClick={() => navigate('/adminDashboard')} className="btn btn-secondary w-100">
             ← Kthehu
           </button>
         </div>

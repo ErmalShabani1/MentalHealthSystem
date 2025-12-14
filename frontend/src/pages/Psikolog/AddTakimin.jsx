@@ -142,16 +142,16 @@ function AddTakimin() {
           </Link>
         </div>
 
-        {/* Psikologët Section */}
+        {/* Takimet Section */}
         <div className="mb-3">
           <div className="text-white mb-2 px-2 py-1">
-            <small className="text-uppercase fw-semibold" style={{fontSize: '0.75rem', letterSpacing: '0.5px'}}>👨‍⚕️ Psikologët</small>
+            <small className="text-uppercase fw-semibold" style={{fontSize: '0.75rem', letterSpacing: '0.5px'}}>📅 Takimet</small>
           </div>
           <Link to="/add-takimet" className="nav-link text-white px-3 py-2 mb-1 active" style={{backgroundColor: 'rgba(255,255,255,0.15)', borderRadius: '4px'}}>
             ➕ Shto Takim
           </Link>
           <Link to="/menaxhoTakimet" className="nav-link text-white px-3 py-2 mb-1">
-            📋 Menaxho Takimet
+             Menaxho Takimet
           </Link>
         </div>
         
@@ -159,7 +159,7 @@ function AddTakimin() {
           <button onClick={handleLogout} className="btn btn-danger w-100 mb-2">
             🚪 Logout
           </button>
-          <button onClick={() => navigate(-1)} className="btn btn-secondary w-100">
+          <button onClick={() => navigate('/psikologDashboard')} className="btn btn-secondary w-100">
             ← Kthehu
           </button>
         </div>

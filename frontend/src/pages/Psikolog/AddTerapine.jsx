@@ -145,7 +145,7 @@ function AddTerapine() {
             ➕ Shto Seancë
           </Link>
           <Link to="/menaxhoTerapine" className="nav-link text-white px-3 py-2 mb-1">
-            📋 Menaxho Seanca
+            � Menaxho Seanca
           </Link>
         </div>
         
@@ -153,7 +153,7 @@ function AddTerapine() {
           <button onClick={handleLogout} className="btn btn-danger w-100 mb-2">
             🚪 Logout
           </button>
-          <button onClick={() => navigate(-1)} className="btn btn-secondary w-100">
+          <button onClick={() => navigate('/psikologDashboard')} className="btn btn-secondary w-100">
             ← Kthehu
           </button>
         </div>
@@ -329,27 +329,32 @@ function AddTerapine() {
                     </div>
 
                     {/* Buttons */}
-                    <div className="d-flex gap-2">
+                    <div className="d-grid gap-2 d-md-flex justify-content-between mt-4">
+                      <button 
+                        type="button"
+                        onClick={() => navigate("/menaxhoTerapine")}
+                        className="btn btn-outline-secondary btn-lg py-3 fw-semibold order-md-1"
+                      >
+                        <i className="fas fa-arrow-left me-2"></i>
+                        Anulo
+                      </button>
+                      
                       <button 
                         type="submit" 
-                        className="btn btn-primary flex-grow-1"
+                        className="btn btn-primary btn-lg py-3 fw-semibold order-md-2 flex-grow-1 ms-md-2"
                         disabled={loading}
                       >
                         {loading ? (
                           <>
-                            <span className="spinner-border spinner-border-sm me-2" />
+                            <span className="spinner-border spinner-border-sm me-2" role="status"></span>
                             Duke ruajtur...
                           </>
                         ) : (
-                          "✅ Ruaj Seancën"
+                          <>
+                            <i className="fas fa-save me-2"></i>
+                            ✅ Ruaj Seancën
+                          </>
                         )}
-                      </button>
-                      <button 
-                        type="button" 
-                        onClick={() => navigate("/menaxhoTerapine")} 
-                        className="btn btn-secondary"
-                      >
-                        Anulo
                       </button>
                     </div>
                   </form>

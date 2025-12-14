@@ -49,6 +49,7 @@ const navigate = useNavigate();
     }
 
     localStorage.setItem("user", JSON.stringify(userData));
+    localStorage.setItem("role", userData.role);
 
     toast.success(`Mire se erdhe ${userData.username}!`, {
       autoClose: 3000,

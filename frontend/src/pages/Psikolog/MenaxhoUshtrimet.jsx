@@ -131,7 +131,7 @@ function MenaxhoUshtrimet() {
             🚪 Logout
           </button>
           <button
-            onClick={() => navigate(-1)}
+            onClick={() => navigate('/psikologDashboard')}
             className="btn btn-secondary w-100"
           >
             ← Kthehu
@@ -326,14 +326,6 @@ function MenaxhoUshtrimet() {
                                 <i className="fas fa-trash me-1"></i>
                                 Fshi
                               </button>
-
-                              <Link
-                                to={`/view-ushtrim/${ushtrimi.id}`}
-                                className="btn btn-sm btn-outline-info"
-                              >
-                                <i className="fas fa-eye me-1"></i>
-                                Shiko
-                              </Link>
                             </div>
                           </td>
                         </tr>
