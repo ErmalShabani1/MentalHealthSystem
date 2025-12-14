@@ -140,6 +140,7 @@ namespace MentalHealthSystemManagement.Api.Controllers
         public IActionResult Logout()
         {
             Response.Cookies.Delete("jwt");
+            Response.Cookies.Delete("refreshToken");
             return Ok(new { message = "Logged out successfullt" });
         }
 

@@ -5,6 +5,7 @@ import { getAllAppointmentsAdmin } from "../../services/AppointmentService";
 import { Link, useNavigate } from "react-router-dom";
 import { logoutUser } from "../../services/authService";
 import { getTakimetByPsikologId } from "../../services/AppointmentService";
+import { getAllRaportet } from "../../services/RaportService";
 
 function AdminDashboard() {
   const navigate = useNavigate();
@@ -13,6 +14,7 @@ function AdminDashboard() {
   const [takimetCount, setTakimetCount] = useState(0);
   const [recentAppointments, setRecentAppointments] = useState([]);
   const [allTakimet, setAllTakimet] = useState([]);
+  const [raportetCount, setRaportetCount] = useState(0);
   const [loading, setLoading] = useState(true);
 
   const handleLogout = async () => {
@@ -63,6 +65,12 @@ function AdminDashboard() {
           .sort((a, b) => new Date(b.appointmentDate) - new Date(a.appointmentDate))
           .slice(0, 5);
         setRecentAppointments(sortedAppointments);
+        try {
+  const raportetRes = await getAllRaportet();
+  setRaportetCount(raportetRes.data.length);
+} catch (error) {
+  console.error("Gabim gjatë marrjes së raporteve:", error);
+}
         
       } catch (error) {
         console.error("Gabim gjatë marrjes së të dhënave:", error);
@@ -90,20 +98,20 @@ function AdminDashboard() {
   
   const newPatientsThisMonth = Math.floor(patientsCount * 0.1);
   const activePsychologists = Math.floor(psychologistsCount * 0.8);
-  const raportetTotal = allTakimet.filter(t => t.hasReport).length || Math.floor(allTakimet.length * 0.3);
+  const raportetTotal = allTakimet.filter(t => t.hasReport === true).length;
 
   // Të dhëna për grafikët
   const statsData = [
     { label: 'Psikologë', value: psychologistsCount, color: '#3b82f6', icon: '👨‍⚕️' },
     { label: 'Pacientë', value: patientsCount, color: '#10b981', icon: '👥' },
     { label: 'Takime', value: takimetCount, color: '#f59e0b', icon: '📅' },
-    { label: 'Përfunduar', value: completedAppointments, color: '#8b5cf6', icon: '✅' },
+    { label: 'Raporte', value: raportetCount, color: '#8b5cf6', icon: '📋' },
   ];
 
   const statusData = [
-    { label: 'Sot', value: todayAppointments, color: '#3b82f6' },
-    { label: 'Në Pritje', value: upcomingAppointments, color: '#f59e0b' },
-    { label: 'Përfunduar', value: completedAppointments, color: '#10b981' },
+    { label: 'Takimet Sot', value: todayAppointments, color: '#3b82f6' },
+    { label: 'Takimet Në Pritje', value: upcomingAppointments, color: '#f59e0b' },
+    { label: 'Takimet e Përfunduara', value: completedAppointments, color: '#10b981' },
   ];
 
   // Funksion për të llogaritur përqindjen
@@ -181,21 +189,7 @@ function AdminDashboard() {
           </Link>
         </div>
 
-        {/* News Section - E RE */}
-        <div className="mb-2">
-          <div className="text-white mb-1 px-1 py-1">
-            <small className="text-uppercase fw-semibold" style={{fontSize: '0.7rem', letterSpacing: '0.5px'}}>📰 News</small>
-          </div>
-          <Link to="/add-news" className="nav-link text-white px-2 py-1 mb-1" style={{fontSize: '0.8rem'}}>
-                     ➕ Shto
-                   </Link>
-                   <Link to="/menaxhoNews" className="nav-link text-white px-2 py-1 mb-1" style={{fontSize: '0.8rem'}}>
-                     📋 Menaxho
-                   </Link>
-                   <Link to="/newsList" className="nav-link text-white px-2 py-1 mb-1" style={{fontSize: '0.8rem'}}>
-                     👁️ Shiko
-                   </Link>
-        </div>
+       
 
         {/* Raportet */}
         <div className="mb-2">
@@ -218,19 +212,7 @@ function AdminDashboard() {
           </Link>
         </div>
 
-        {/* Cilësimet 
-        <div className="mb-2">
-          <div className="text-white mb-1 px-1 py-1">
-            <small className="text-uppercase fw-semibold" style={{fontSize: '0.7rem', letterSpacing: '0.5px'}}>⚙️ Cilësimet</small>
-          </div>
-          <Link to="/admin-settings" className="nav-link text-white px-2 py-1 mb-1" style={{fontSize: '0.8rem'}}>
-            🔧 Konfiguro
-          </Link>
-          <Link to="/backup-admin" className="nav-link text-white px-2 py-1 mb-1" style={{fontSize: '0.8rem'}}>
-            💾 Backup
-          </Link>
-        </div>
-                */}
+                
         <div className="mt-auto">
           <button onClick={handleLogout} className="btn btn-danger btn-sm w-100 py-1" style={{fontSize: '0.8rem'}}>
             🚪 Logout
@@ -264,25 +246,25 @@ function AdminDashboard() {
             <>
               {/* Statistikat kryesore */}
               <div className="row g-3 mb-4">
-                {statsData.map((stat, index) => (
-                  <div key={index} className="col-xl-3 col-md-4 col-sm-6">
-                    <div className="card border-start-primary border-3 h-100" style={{borderLeftColor: stat.color}}>
-                      <div className="card-body p-3">
-                        <div className="d-flex align-items-center">
-                          <div className="flex-grow-1">
-                            <div className="small fw-semibold mb-1" style={{color: stat.color}}>{stat.label}</div>
-                            <div className="h4 mb-0 fw-bold">{stat.value}</div>
-                            <div className="small text-muted" style={{fontSize: '0.75rem'}}>Total në sistem</div>
-                          </div>
-                          <div className="ms-2">
-                            <span style={{fontSize: '2rem'}}>{stat.icon}</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
+  {statsData.map((stat, index) => (
+    <div key={index} className="col-xl-3 col-md-4 col-sm-6">
+      <div className="card border-start-primary border-3 h-100" style={{borderLeftColor: stat.color}}>
+        <div className="card-body p-3">
+          <div className="d-flex align-items-center">
+            <div className="flex-grow-1">
+              <div className="small fw-semibold mb-1" style={{color: stat.color}}>{stat.label}</div>
+              <div className="h4 mb-0 fw-bold">{stat.value}</div>
+              <div className="small text-muted" style={{fontSize: '0.75rem'}}>Total në sistem</div>
+            </div>
+            <div className="ms-2">
+              <span style={{fontSize: '2rem'}}>{stat.icon}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  ))}
+</div>
 
               {/* Grafikët e thjeshtë */}
               <div className="row g-3 mb-4">
@@ -461,7 +443,7 @@ function AdminDashboard() {
                 <div className="col-md-6">
                   <div className="card">
                     <div className="card-header py-2">
-                      <h6 className="mb-0">Statistikat Muajore</h6>
+                      <h6 className="mb-0">Statistikat Mujore</h6>
                     </div>
                     <div className="card-body">
                       <div className="d-flex justify-content-between align-items-center mb-2">
@@ -474,7 +456,7 @@ function AdminDashboard() {
                       </div>
                       <div className="d-flex justify-content-between align-items-center">
                         <span style={{fontSize: '0.85rem'}}>Raporte gjeneruar</span>
-                        <span className="badge bg-info">{raportetTotal}</span>
+                        <span className="badge bg-info">{raportetCount}</span>
                       </div>
                     </div>
                   </div>
@@ -563,7 +545,8 @@ function QuickActions() {
     { title: "Shto Psikolog", icon: "👨‍⚕️", link: "/add-psikologin", color: "primary", desc: "Regjistro psikolog të ri" },
     { title: "Shto Pacient", icon: "👤", link: "/add-pacientin", color: "success", desc: "Regjistro pacient të ri" },
     { title: "Menaxho Takimet", icon: "📅", link: "/menaxhoTakimetAdmin", color: "info", desc: "Shiko dhe menaxho takimet" },
-    { title: "Shto News", icon: "📰", link: "/add-news-admin", color: "warning", desc: "Publikoni lajme të reja" },
+    {title: "Menaxho Njoftimet", icon:"🔔", link:"/admin-notifications",color: "primary", desc:"Shiko dhe menaxho njoftimet"},
+    {title: "Gjenero raporte", icon:"📋", link:"/raportet-admin",color: "primary", desc:"Shiko dhe gjenero raporte"},
   ];
 
   return (

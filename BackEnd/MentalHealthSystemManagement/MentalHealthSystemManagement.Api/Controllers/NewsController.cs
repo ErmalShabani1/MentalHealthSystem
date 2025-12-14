@@ -20,13 +20,8 @@ namespace MentalHealthSystemManagement.Api.Controllers
         public NewsController(NewsService service, ApplicationDbContext context)
         {
             _service = service;
-            _context = context; 
+            _context = context;
         }
-        private int GetUserId() =>
-            int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-
-        private string GetRole() =>
-            User.FindFirst(ClaimTypes.Role).Value;
         private int GetPsikologId()
         {
             var claim = User.FindFirst("PsikologId");
@@ -35,13 +30,7 @@ namespace MentalHealthSystemManagement.Api.Controllers
             return int.Parse(claim.Value);
 
         }
-        private int GetPatientId()
-        {
-            var claim = User.FindFirst("PatientId");
-            if (claim == null)
-                throw new Exception("PatientId claim missing from token.");
-            return int.Parse(claim.Value);
-        }
+
         [HttpPost("add")]
         [Authorize(Roles = "Psikolog")]
         public async Task<IActionResult> AddNews([FromForm] CreateNewsDto dto)
@@ -51,6 +40,7 @@ namespace MentalHealthSystemManagement.Api.Controllers
             return Ok("News added successfully");
         }
         [HttpGet("all")]
+        [Authorize(Roles = "Admin, Psikolog")]
         public async Task<IActionResult> GetAll()
         {
             var list = await _service.GetAllAsync();
@@ -70,14 +60,15 @@ namespace MentalHealthSystemManagement.Api.Controllers
             return Ok(news);
         }
         [HttpGet("{id}")]
-        [Authorize(Roles = "Psikolog")]
+        [Authorize(Roles = "Psikolog,Admin")]
         public async Task<IActionResult> GetNewsById(int id)
         {
             var psikologId = GetPsikologId();
 
             var news = await _context.News
                 .Where(n => n.Id == id && n.PsikologId == psikologId)
-                .Select(n => new {
+                .Select(n => new
+                {
                     n.Id,
                     n.Description,
                     n.ImageUrl,
@@ -94,6 +85,7 @@ namespace MentalHealthSystemManagement.Api.Controllers
         }
 
         [HttpPut("update/{id}")]
+        [Authorize(Roles = "Admin, Psikolog")]
         public async Task<IActionResult> Update(int id, [FromForm] UpdateNewsDto dto)
         {
             await _service.UpdateAsync(id, dto);
@@ -107,20 +99,6 @@ namespace MentalHealthSystemManagement.Api.Controllers
             await _service.DeleteAsync(id);
             return Ok("News deleted successfully");
         }
-        [HttpGet("me")]
-        [Authorize(Roles = "Psikolog")]
-        public async Task<IActionResult> GetCurrentPsikolog()
-        {
-            var psikologId = GetPsikologId();
-            var psikolog = await _context.Psikologet
-                .Where(p => p.Id == psikologId)
-                .Select(p => new { p.Id, p.Name, p.Surname })
-                .FirstOrDefaultAsync();
-
-            if (psikolog == null)
-                return NotFound("Psikologu nuk u gjet");
-
-            return Ok(psikolog);
-        }
     }
 }
+        

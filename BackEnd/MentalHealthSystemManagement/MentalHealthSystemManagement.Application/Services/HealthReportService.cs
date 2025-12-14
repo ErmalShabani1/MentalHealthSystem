@@ -92,6 +92,16 @@ namespace MentalHealthSystemManagement.Application.Services
 
             await _repository.UpdateAsync(report);
         }
+        public async Task<HealthReportStatsDto> GetStatsAsync()
+        {
+            return new HealthReportStatsDto
+            {
+                TotalReports = await _repository.CountAllAsync(),
+                ThisMonthReports = await _repository.CountThisMonthAsync(),
+                ReportsByDiagnosis = await _repository.CountByDiagnosisAsync(),
+                ReportsByPsikolog = await _repository.CountByPsikologAsync()
+            };
+        }
         public async Task DeleteAsync(int id)
         {
             await _repository.DeleteAsync(id);

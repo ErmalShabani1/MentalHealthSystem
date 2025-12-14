@@ -56,6 +56,13 @@ namespace MentalHealthSystemManagement.Api.Controllers
             if (report == null) return NotFound("Raporti nuk u gjet");
             return Ok(report);
         }
+        [HttpGet("stats")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetStatistics()
+        {
+            var stats = await _service.GetStatsAsync();
+            return Ok(stats);
+        }
         [HttpGet("my-reports")]
         [Authorize(Roles = "Pacient")]
         public async Task<IActionResult> GetMyReports()

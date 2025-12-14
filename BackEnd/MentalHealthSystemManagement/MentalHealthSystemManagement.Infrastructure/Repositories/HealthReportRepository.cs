@@ -55,6 +55,34 @@ namespace MentalHealthSystemManagement.Infrastructure.Repositories
                 await _context.SaveChangesAsync();
             }
         }
+        public async Task<int> CountAllAsync()
+        {
+            return await _context.HealthReports.CountAsync();
+        }
+
+        public async Task<int> CountThisMonthAsync()
+        {
+            var now = DateTime.UtcNow;
+            return await _context.HealthReports
+                .CountAsync(r => r.CreatedAt.Month == now.Month && r.CreatedAt.Year == now.Year);
+        }
+
+        public async Task<Dictionary<string, int>> CountByDiagnosisAsync()
+        {
+            return await _context.HealthReports
+                .GroupBy(r => r.Diagnoza)
+                .Select(g => new { Diagnoza = g.Key, Count = g.Count() })
+                .ToDictionaryAsync(x => x.Diagnoza, x => x.Count);
+        }
+
+        public async Task<Dictionary<string, int>> CountByPsikologAsync()
+        {
+            return await _context.HealthReports
+                .Include(r => r.Psikologi)
+                .GroupBy(r => r.Psikologi.Name + " " + r.Psikologi.Surname)
+                .Select(g => new { Name = g.Key, Count = g.Count() })
+                .ToDictionaryAsync(x => x.Name, x => x.Count);
+        }
         public async Task SaveChangesAsync()
         {
             await _context.SaveChangesAsync();

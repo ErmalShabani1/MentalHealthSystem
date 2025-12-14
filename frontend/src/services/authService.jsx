@@ -21,4 +21,6 @@ export const logoutUser = async () => {
     }
     localStorage.removeItem("user");
     localStorage.removeItem("psikologId");
+
+    window.location.href = "/login";
 }

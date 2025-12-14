@@ -15,6 +15,10 @@ namespace MentalHealthSystemManagement.Application.Interfaces
         Task<List<HealthReports>> GetByPatientIdAsync(int patientId);
         Task UpdateAsync(HealthReports report);
         Task DeleteAsync(int id);
+        Task<int> CountAllAsync();
+        Task<int> CountThisMonthAsync();
+        Task<Dictionary<string, int>> CountByDiagnosisAsync();
+        Task<Dictionary<string, int>> CountByPsikologAsync();
         Task SaveChangesAsync();
     }
 }

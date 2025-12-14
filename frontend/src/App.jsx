@@ -50,6 +50,9 @@ import AddNotification from "./pages/Psikolog/AddNotification";
 import EditNotification from "./pages/Psikolog/EditNotification";
 import MyNotifications from "./pages/Pacient/MyNotifications";
 import MenaxhoPacientetPsikolog from "./pages/Psikolog/MenaxhoPacientetPsikolog";
+import RaportetAdmin from "./pages/Admin/RaportetAdmin";
+
+
 
 
 function App() {
@@ -86,6 +89,7 @@ function App() {
              <Route path="/add-raportin" element={<AddRaportinForm />} />
           < Route path="/edit-raportin/:id" element={<EditRaportinForm/>}/>
           <Route path="/menaxhoRaportet" element={<MenaxhoRaportet/>}/>
+           <Route path="/raportet-admin" element={<RaportetAdmin/>}/>
            {/* Per shfaqjen e komponenteve ne pacientDashboard Routes */}
           <Route path="/shfaqRaportet" element={<ShfaqRaportet/>}/>
           <Route path="/shfaqTakimet" element={<ShfaqTakimet/>}/>
@@ -109,7 +113,8 @@ function App() {
           <Route path="/add-news" element={<AddNewsForm />} />
           <Route path="/edit-news/:id" element={<EditNewsForm />} />
           <Route path="/menaxhoNews" element={<MenaxhoNews />} />
-          <Route path="/newsList" element={<NewsList />} /> // HomeScreen
+          <Route path="/newsList" element={<NewsList />} /> 
+ 
           {/* Notifications */}
           <Route path="/admin-notifications" element={<AdminNotifications />} />
           <Route path="/menaxho-notifications" element={<MenaxhoNotifications />} />
