@@ -74,28 +74,31 @@ namespace MentalHealthSystemManagement.Infrastructure.Data
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<TherapySession>()
-                .HasOne(t => t.Patient)
-                .WithMany()
-                .HasForeignKey(t => t.PatientId);
+     .HasOne(t => t.Patient)
+     .WithMany()
+     .HasForeignKey(t => t.PatientId)
+     .OnDelete(DeleteBehavior.Restrict);
 
+            // Patient → TreatmentPlan (KOMPOZIM)
             modelBuilder.Entity<TreatmentPlan>()
-            .HasOne(tp => tp.Patient)
-            .WithMany()
-            .HasForeignKey(tp => tp.PatientId)
-            .OnDelete(DeleteBehavior.NoAction);
+                .HasOne(tp => tp.Patient)
+                .WithMany()
+                .HasForeignKey(tp => tp.PatientId)
+                .OnDelete(DeleteBehavior.Restrict);
 
+            // Psikolog → TreatmentPlan (AGREGIM)
             modelBuilder.Entity<TreatmentPlan>()
                 .HasOne(tp => tp.Psikolog)
                 .WithMany()
                 .HasForeignKey(tp => tp.PsikologId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.Restrict);
             // TreatmentPlanUshtrimi:
 
             modelBuilder.Entity<TreatmentPlanUshtrimi>()
          .HasOne(tu => tu.Ushtrimi)
          .WithMany(u => u.TreatmentPlanUshtrimet)
          .HasForeignKey(tu => tu.UshtrimiId)
-         .OnDelete(DeleteBehavior.Cascade);
+         .OnDelete(DeleteBehavior.Restrict);
 
             // Notification kompozim
             modelBuilder.Entity<Notification>()
@@ -108,7 +111,7 @@ namespace MentalHealthSystemManagement.Infrastructure.Data
                 .HasOne(n => n.Patient)
                 .WithMany()
                 .HasForeignKey(n => n.PatientId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
 
             base.OnModelCreating(modelBuilder);
 

@@ -14,11 +14,25 @@ namespace MentalHealthSystemManagement.Application.Services
     {
         private readonly IPatientRepository _patientRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IHealthReportRepository _healthReportRepository;
+        private readonly ITherapySessionRepository _therapySessionRepository;
+        private readonly ITreatmentPlanRepository _treatmentPlanRepository;
+        private readonly INotificationRepository _notificationRepository;
 
-        public PatientService(IPatientRepository patientRepository, IUserRepository userRepository)
+        public PatientService(
+            IPatientRepository patientRepository,
+            IUserRepository userRepository,
+            IHealthReportRepository healthReportRepository,
+            ITherapySessionRepository therapySessionRepository,
+            ITreatmentPlanRepository treatmentPlanRepository,
+            INotificationRepository notificationRepository)
         {
             _patientRepository = patientRepository;
             _userRepository = userRepository;
+            _healthReportRepository = healthReportRepository;
+            _therapySessionRepository = therapySessionRepository;
+            _treatmentPlanRepository = treatmentPlanRepository;
+            _notificationRepository = notificationRepository;
         }
         public async Task AddPatientAsync(string username, string email, string password, string emri, string mbiemri, int mosha, string gjinia, string diagnoza, bool IsDeleted)
         {
@@ -63,15 +77,28 @@ namespace MentalHealthSystemManagement.Application.Services
         }
         public async Task DeleteAsync(int id)
         {
-            // Merr pacientin nga repository
             var patient = await _patientRepository.GetByIdAsync(id);
-            if (patient == null) throw new Exception("Pacienti nuk u gjet");
+            if (patient == null)
+                throw new Exception("Pacienti nuk u gjet");
 
-            // Soft delete
+            // 1. HealthReports
+            await _healthReportRepository.DeleteByPatientIdAsync(id);
+
+            // 2. TherapySessions
+            await _therapySessionRepository.DeleteByPatientIdAsync(id);
+
+            // 3. TreatmentPlans (+ ushtrimet brenda)
+            await _treatmentPlanRepository.DeleteByPatientIdAsync(id);
+
+            // 4. Notifications
+            await _notificationRepository.DeleteByPatientIdAsync(id);
+
+            // 5. Soft delete Patient
             patient.IsDeleted = true;
-
-            // Përditëso pacientin në databazë
             await _patientRepository.UpdateAsync(patient);
+
+            // 6. Commit
+            await _patientRepository.SaveChangesAsync();
         }
         public async Task SaveChanges()
         {

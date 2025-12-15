@@ -15,6 +15,7 @@ namespace MentalHealthSystemManagement.Application.Interfaces
         Task<List<HealthReports>> GetByPatientIdAsync(int patientId);
         Task UpdateAsync(HealthReports report);
         Task DeleteAsync(int id);
+        Task DeleteByPatientIdAsync(int patientId);
         Task<int> CountAllAsync();
         Task<int> CountThisMonthAsync();
         Task<Dictionary<string, int>> CountByDiagnosisAsync();

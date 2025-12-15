@@ -74,5 +74,13 @@ namespace MentalHealthSystemManagement.Infrastructure.Repositories
             await _context.SaveChangesAsync();
             return true;
         }
+        public async Task DeleteByPatientIdAsync(int patientId)
+        {
+            var sessions = _context.TherapySessions
+                .Where(r => r.PatientId == patientId);
+
+            _context.TherapySessions.RemoveRange(sessions);
+        }
+
     }
 }

@@ -15,6 +15,7 @@ namespace MentalHealthSystemManagement.Application.Interfaces
         Task<IEnumerable<TreatmentPlan>> GetAllForPatientAsync(int patientId);
         Task UpdateAsync(TreatmentPlan plan);
         Task DeleteAsync(int id);
+        Task DeleteByPatientIdAsync(int patientId);
 
     }
 }

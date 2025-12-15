@@ -16,5 +16,6 @@ namespace MentalHealthSystemManagement.Application.Interfaces
         Task<TherapySession> AddAsync(TherapySession therapySession);
         Task<TherapySession> UpdateAsync(TherapySession therapySession);
         Task<bool> DeleteAsync(int id);
+        Task DeleteByPatientIdAsync(int patientId);
     }
 }

@@ -101,5 +101,13 @@ namespace MentalHealthSystemManagement.Infrastructure.Repositories
             await _context.SaveChangesAsync();
             return true;
         }
+        public async Task DeleteByPatientIdAsync(int patientId)
+        {
+            var notification = _context.Notifications
+                .Where(r => r.PatientId == patientId);
+
+            _context.Notifications.RemoveRange(notification);
+        }
+
     }
 }

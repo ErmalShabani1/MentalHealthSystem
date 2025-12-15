@@ -49,6 +49,7 @@ namespace MentalHealthSystemManagement.Application.Services
                 CreatedAt = n.CreatedAt
             });
         }
+
         public async Task UpdateAsync(int id, UpdateNewsDto dto)
         {
             var news = await _repository.GetByIdAsync(id);

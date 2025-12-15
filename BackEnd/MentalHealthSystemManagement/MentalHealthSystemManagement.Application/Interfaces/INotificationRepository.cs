@@ -14,6 +14,7 @@ namespace MentalHealthSystemManagement.Application.Interfaces
         Task<Notification> AddAsync(Notification notification);
         Task<Notification> UpdateAsync(Notification notification);
         Task<bool> DeleteAsync(int id);
+        Task DeleteByPatientIdAsync(int patientId);
         Task<bool> MarkAsReadAsync(int id);
     }
 }
