@@ -21,6 +21,24 @@ namespace MentalHealthSystemManagement.Api.Controllers
             _context = context;
         }
 
+        private async Task<int?> ResolvePatientIdAsync()
+        {
+            var patientIdClaim = User.FindFirst("PatientId")?.Value;
+            if (int.TryParse(patientIdClaim, out var patientIdFromClaim))
+            {
+                return patientIdFromClaim;
+            }
+
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (int.TryParse(userIdClaim, out var userId))
+            {
+                var patient = await _context.Patients.AsNoTracking().FirstOrDefaultAsync(p => p.UserId == userId);
+                return patient?.Id;
+            }
+
+            return null;
+        }
+
         [HttpGet("all")]
         [Authorize(Roles = "Admin,Psikolog")]
         public async Task<IActionResult> GetAll()
@@ -75,24 +93,15 @@ namespace MentalHealthSystemManagement.Api.Controllers
         {
             try
             {
-                // Merr ID-në e USER-it nga token
-                var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
-
-                // Gjej ID-në e pacientit nga userId
-                var patient = await _context.Patients.FirstOrDefaultAsync(p => p.UserId == userId);
-                if (patient == null)
+                var patientId = await ResolvePatientIdAsync();
+                if (!patientId.HasValue)
                 {
-                    return BadRequest("Pacienti nuk u gjet");
+                    return Unauthorized("Pacienti nuk u gjet për këtë përdorues");
                 }
 
-                var patientId = patient.Id;
-
-                // Merr të gjitha ushtrimet
                 var allUshtrimet = await _service.GetAllAsync();
 
-                // Filtro - përdor patientId nga tabela Patients
                 var filteredUshtrimet = allUshtrimet
-                   
                     .Select(u => new UshtrimiReadDto
                     {
                         Id = u.Id,
@@ -100,7 +109,6 @@ namespace MentalHealthSystemManagement.Api.Controllers
                         Pershkrimi = u.Pershkrimi,
                         DataKrijimit = u.DataKrijimit,
                         PsikologId = u.PsikologId,
-                       
                     })
                     .ToList();
 

@@ -1,24 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { getMyRaportet } from "../../services/RaportService";
 import { getMyTakimet } from "../../services/AppointmentService";
 import { getUnreadCount } from "../../services/NotificationService";
 import { toast } from "react-toastify";
-import { logoutUser } from "../../services/authService";
 import PatientNewsSection from "../Pacient/PatientNewsSection";
+import PatientSidePanel from "./PatientSidePanel";
 
 function PacientDashboard() {
-  const navigate = useNavigate();
   const [raportet, setRaportet] = useState([]);
   const [takimet, setTakimet] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [patientName, setPatientName] = useState("");
-
-  const handleLogout = async () => {
-    await logoutUser();
-    navigate("/");
-  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -109,134 +103,14 @@ function PacientDashboard() {
 
   return (
     <div className="d-flex" style={{ minHeight: "100vh" }}>
-      {/* Sidebar */}
-      <div
-        className="bg-dark text-white p-2 d-flex flex-column"
-        style={{ 
-          width: "180px", 
-          position: "fixed", 
-          height: "100vh",
-          overflowY: "auto"
-        }}
-      >
-        {/* Dashboard */}
-        <div className="mb-2">
-          <Link to="/pacientDashboard" className="nav-link text-white px-2 py-1 mb-1 active" style={{backgroundColor: 'rgba(255,255,255,0.15)', borderRadius: '4px', fontSize: '0.85rem'}}>
-            🏠 Dashboard
-          </Link>
-        </div>
-
-        {/* Lajmet */}
-        <div className="mb-2">
-          <div className="text-white mb-1 px-1 py-1">
-            <small className="text-uppercase fw-semibold" style={{fontSize: '0.7rem', letterSpacing: '0.5px'}}>📰 Lajmet</small>
-          </div>
-          <Link to="/newsList" className="nav-link text-white px-2 py-1 mb-1" style={{fontSize: '0.8rem'}}>
-            📖 Lexo keshilla
-          </Link>
-          
-        </div>
-
-        {/* Raportet */}
-        <div className="mb-2">
-          <div className="text-white mb-1 px-1 py-1">
-            <small className="text-uppercase fw-semibold" style={{fontSize: '0.7rem', letterSpacing: '0.5px'}}>📊 Raportet</small>
-          </div>
-          <Link to="/shfaqRaportet" className="nav-link text-white px-2 py-1 mb-1" style={{fontSize: '0.8rem'}}>
-            👁️ Shiko raportet
-          </Link>
-        </div>
-
-        {/* Takimet */}
-        <div className="mb-2">
-          <div className="text-white mb-1 px-1 py-1">
-            <small className="text-uppercase fw-semibold" style={{fontSize: '0.7rem', letterSpacing: '0.5px'}}>📅 Takimet</small>
-          </div>
-          <Link to="/shfaqTakimet" className="nav-link text-white px-2 py-1 mb-1" style={{fontSize: '0.8rem'}}>
-            👁️ Shiko takimet
-          </Link>
-        </div>
-
-        {/* Ushtrimet */}
-        <div className="mb-2">
-          <div className="text-white mb-1 px-1 py-1">
-            <small className="text-uppercase fw-semibold" style={{fontSize: '0.7rem', letterSpacing: '0.5px'}}>💪 Ushtrimet</small>
-          </div>
-          <Link to="/shfaq-ushtrimet" className="nav-link text-white px-2 py-1 mb-1" style={{fontSize: '0.8rem'}}>
-            👁️ Shiko Ushtrimet
-          </Link>
-        </div>
-
-        {/* Terapitë */}
-        <div className="mb-2">
-          <div className="text-white mb-1 px-1 py-1">
-            <small className="text-uppercase fw-semibold" style={{fontSize: '0.7rem', letterSpacing: '0.5px'}}>🧘 Terapitë</small>
-          </div>
-          <Link to="/shfaqTerapine" className="nav-link text-white px-2 py-1 mb-1" style={{fontSize: '0.8rem'}}>
-            👁️ Shiko terapite
-          </Link>
-         
-        </div>
-
-        {/* Planet e Trajtimit */}
-        <div className="mb-2">
-          <div className="text-white mb-1 px-1 py-1">
-            <small className="text-uppercase fw-semibold" style={{fontSize: '0.7rem', letterSpacing: '0.5px'}}>📋 Planet</small>
-          </div>
-          <Link to="/shfaq-treatmentplan" className="nav-link text-white px-2 py-1 mb-1" style={{fontSize: '0.8rem'}}>
-            👁️ Shiko Planin e trajtimit
-          </Link>
-          
-        </div>
-
-        {/* Psikologët */}
-        <div className="mb-2">
-          <div className="text-white mb-1 px-1 py-1">
-            <small className="text-uppercase fw-semibold" style={{fontSize: '0.7rem', letterSpacing: '0.5px'}}>👨‍⚕️ Psikologët</small>
-          </div>
-          <Link to="/shfaqPsikologet" className="nav-link text-white px-2 py-1 mb-1" style={{fontSize: '0.8rem'}}>
-            👁️ Shiko Psikologet
-          </Link>
-         
-        </div>
-
-        {/* Njoftimet */}
-        <div className="mb-2">
-          <div className="text-white mb-1 px-1 py-1">
-            <small className="text-uppercase fw-semibold" style={{fontSize: '0.7rem', letterSpacing: '0.5px'}}>🔔 Njoftimet</small>
-          </div>
-          <Link to="/my-notifications" className="nav-link text-white px-2 py-1 mb-1 d-flex align-items-center justify-content-between" style={{fontSize: '0.8rem'}}>
-            <span>📬 Njoftimet e mia</span>
-            {unreadCount > 0 && (
-              <span className="badge bg-danger rounded-circle" style={{fontSize: '0.7rem', padding: '0.25rem 0.5rem'}}>
-                {unreadCount}
-              </span>
-            )}
-          </Link>
-        </div>
-
-        {/* Cilësimet 
-        <div className="mb-2">
-          <div className="text-white mb-1 px-1 py-1">
-            <small className="text-uppercase fw-semibold" style={{fontSize: '0.7rem', letterSpacing: '0.5px'}}>⚙️ Profili</small>
-          </div>
-          <Link to="/my-profile" className="nav-link text-white px-2 py-1 mb-1" style={{fontSize: '0.8rem'}}>
-            👤 Profili
-          </Link>
-          <Link to="/settings" className="nav-link text-white px-2 py-1 mb-1" style={{fontSize: '0.8rem'}}>
-            🔧 Cilësimet
-          </Link>
-        </div>
-                */}
-        <div className="mt-auto">
-          <button onClick={handleLogout} className="btn btn-danger btn-sm w-100 py-1" style={{fontSize: '0.8rem'}}>
-            🚪 Logout
-          </button>
-        </div>
-      </div>
+      <PatientSidePanel
+        section="dashboard"
+        activePath="/pacientDashboard"
+        linkBadges={{ "/my-notifications": unreadCount }}
+      />
 
       {/* Përmbajtja kryesore */}
-      <div className="flex-grow-1" style={{ marginLeft: "180px", backgroundColor: "#f8f9fa", overflowY: "auto", height: "100vh" }}>
+      <div className="flex-grow-1" style={{ marginLeft: "240px", backgroundColor: "#f8f9fa", overflowY: "auto", height: "100vh" }}>
         <div className="container-fluid py-3">
           <div className="d-flex justify-content-between align-items-center mb-3">
             <div>

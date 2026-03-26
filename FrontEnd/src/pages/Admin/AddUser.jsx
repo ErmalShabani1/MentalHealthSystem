@@ -44,8 +44,8 @@ function AddUser() {
     <div className="container mt-5">
       <div className="row justify-content-center">
         <div className="col-md-6">
-          <div className="card shadow">
-            <div className="card-header bg-success text-white">
+            <div className="card shadow">
+              <div className="card-header bg-success text-white">
               <h4 className="mb-0">Shto Përdorues të Ri</h4>
             </div>
             <div className="card-body">
@@ -126,6 +126,7 @@ function AddUser() {
                   </button>
                 </div>
               </form>
+            </div>
             </div>
           </div>
         </div>

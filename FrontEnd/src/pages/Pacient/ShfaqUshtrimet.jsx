@@ -1,27 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { getMyUshtrimet } from "../../services/UshtrimiService";
-import { logoutUser } from "../../services/authService";
+import PatientSidePanel from "./PatientSidePanel";
 
 function ShfaqUshtrimet() {
-  const navigate = useNavigate();
   const [ushtrimet, setUshtrimet] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  const handleLogout = async () => {
-    await logoutUser();
-    navigate("/");
-  };
-
-  const handleBack = () => {
-    if (window.history.length > 1) {
-      navigate(-1);
-      return;
-    }
-
-    navigate("/pacientDashboard");
-  };
 
   useEffect(() => {
     fetchUshtrimet();
@@ -85,63 +69,12 @@ function ShfaqUshtrimet() {
 
   return (
     <div className="d-flex" style={{ minHeight: "100vh" }}>
-      {/* Sidebar - Pacient Dashboard */}
-      <div
-        className="bg-dark text-white p-3"
-        style={{
-          width: "250px",
-          position: "fixed",
-          height: "100vh",
-          overflowY: "auto",
-        }}
-      >
-        <h4 className="mb-4 text-center">Pacient Panel</h4>
-        <ul className="nav flex-column">
-          <li className="nav-item mb-2">
-            <Link to="/pacientDashboard" className="nav-link text-white">
-              🏠 Dashboard
-            </Link>
-          </li>
-          <li className="nav-item mb-2">
-            <Link to="/shfaqRaportet" className="nav-link text-white">
-              📊 Raportet e Mia
-            </Link>
-          </li>
-          <li className="nav-item mb-2">
-            <Link to="/shfaqTakimet" className="nav-link text-white">
-              📅 Takimet e Mia
-            </Link>
-          </li>
-          <li className="nav-item mb-2">
-            <Link to="/shfaqTerapine" className="nav-link text-white">
-              🧘 Terapitë e Mija
-            </Link>
-          </li>
-          <li className="nav-item mb-2">
-            <Link to="/shfaq-ushtrimet" className="nav-link text-white active">
-              💪 Ushtrimet e Mia
-            </Link>
-          </li>
-          <li className="nav-item mb-2">
-            <Link to="/shfaqPsikologet" className="nav-link text-white">
-              👨‍⚕️ Psikologët
-            </Link>
-          </li>
-        </ul>
-        <div className="mt-auto pt-3 border-top">
-          <button onClick={handleLogout} className="btn btn-danger w-100 mb-2">
-            🚪 Logout
-          </button>
-          <button onClick={handleBack} className="btn btn-secondary w-100">
-            ← Kthehu
-          </button>
-        </div>
-      </div>
+      <PatientSidePanel section="ushtrime" activePath="/shfaq-ushtrimet" />
 
       {/* Përmbajtja kryesore */}
       <div
         className="flex-grow-1"
-        style={{ marginLeft: "250px", backgroundColor: "#f8f9fa" }}
+        style={{ marginLeft: "240px", backgroundColor: "#f8f9fa" }}
       >
         <div className="container-fluid py-4">
           <div className="d-flex justify-content-between align-items-center mb-4">

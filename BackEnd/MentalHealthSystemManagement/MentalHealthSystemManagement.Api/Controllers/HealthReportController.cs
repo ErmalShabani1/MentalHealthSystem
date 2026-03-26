@@ -21,6 +21,24 @@ namespace MentalHealthSystemManagement.Api.Controllers
             _service = service;
             _context = context;
         }
+
+        private async Task<int?> ResolvePatientIdAsync()
+        {
+            var patientIdClaim = User.FindFirst("PatientId")?.Value;
+            if (int.TryParse(patientIdClaim, out var patientIdFromClaim))
+            {
+                return patientIdFromClaim;
+            }
+
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (int.TryParse(userIdClaim, out var userId))
+            {
+                var patient = await _context.Patients.AsNoTracking().FirstOrDefaultAsync(p => p.UserId == userId);
+                return patient?.Id;
+            }
+
+            return null;
+        }
         [HttpPost("add")]
         [Authorize(Roles = "Psikolog")]
         public async Task<IActionResult> AddReport([FromBody] CreateHealthReportDto dto)
@@ -69,18 +87,16 @@ namespace MentalHealthSystemManagement.Api.Controllers
         {
             try
             {
-                var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+                var patientId = await ResolvePatientIdAsync();
+                if (!patientId.HasValue)
+                    return Unauthorized("Pacienti nuk u gjet për këtë përdorues");
 
-                var pacienti = await _context.Patients.FirstOrDefaultAsync(p => p.UserId == userId);
-                if (pacienti == null)
-                    return BadRequest("Pacienti nuk ekziston!");
-
-                var raportet = await _service.GetByPatientIdAsync(pacienti.Id);
+                var raportet = await _service.GetByPatientIdAsync(patientId.Value);
                 return Ok(raportet);
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(ex.InnerException?.Message ?? ex.Message);
             }
         }
         [HttpPut("update/{id}")]

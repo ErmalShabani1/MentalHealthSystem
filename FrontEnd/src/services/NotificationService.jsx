@@ -1,25 +1,14 @@
 import axios from 'axios';
 
-const API_URL = 'https://localhost:7062/api/Notification';
-
-// Get JWT token from cookies
-const getAuthToken = () => {
-    const token = document.cookie
-        .split('; ')
-        .find(row => row.startsWith('jwt='))
-        ?.split('=')[1];
-    return token;
-};
+const notificationApi = axios.create({
+    baseURL: 'https://localhost:7062/api/Notification',
+    withCredentials: true,
+});
 
 // Get all notifications (Admin only)
 export const getAllNotifications = async () => {
     try {
-        const token = getAuthToken();
-        const response = await axios.get(`${API_URL}/all`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        });
+        const response = await notificationApi.get('/all');
         return response.data;
     } catch (error) {
         console.error('Error fetching all notifications:', error);
@@ -30,12 +19,7 @@ export const getAllNotifications = async () => {
 // Get notification by ID (All authenticated)
 export const getNotificationById = async (id) => {
     try {
-        const token = getAuthToken();
-        const response = await axios.get(`${API_URL}/${id}`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        });
+        const response = await notificationApi.get(`/${id}`);
         return response.data;
     } catch (error) {
         console.error(`Error fetching notification ${id}:`, error);
@@ -46,12 +30,7 @@ export const getNotificationById = async (id) => {
 // Get my notifications (Pacient only)
 export const getMyNotifications = async () => {
     try {
-        const token = getAuthToken();
-        const response = await axios.get(`${API_URL}/my-notifications`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        });
+        const response = await notificationApi.get('/my-notifications');
         return response.data;
     } catch (error) {
         console.error('Error fetching my notifications:', error);
@@ -62,12 +41,7 @@ export const getMyNotifications = async () => {
 // Get unread count (Pacient only)
 export const getUnreadCount = async () => {
     try {
-        const token = getAuthToken();
-        const response = await axios.get(`${API_URL}/unread-count`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        });
+        const response = await notificationApi.get('/unread-count');
         return response.data.count;
     } catch (error) {
         console.error('Error fetching unread count:', error);
@@ -78,12 +52,7 @@ export const getUnreadCount = async () => {
 // Get notifications by psikolog (Psikolog only)
 export const getNotificationsByPsikolog = async () => {
     try {
-        const token = getAuthToken();
-        const response = await axios.get(`${API_URL}/by-psikolog`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        });
+        const response = await notificationApi.get('/by-psikolog');
         return response.data;
     } catch (error) {
         console.error('Error fetching notifications by psikolog:', error);
@@ -94,13 +63,8 @@ export const getNotificationsByPsikolog = async () => {
 // Create notification (Psikolog only)
 export const createNotification = async (notificationData) => {
     try {
-        const token = getAuthToken();
         console.log('Sending:', JSON.stringify(notificationData));
-        const response = await axios.post(`${API_URL}/add`, notificationData, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        });
+        const response = await notificationApi.post('/add', notificationData);
         return response.data;
     } catch (error) {
         console.error('Error creating notification:', error);
@@ -113,13 +77,7 @@ export const createNotification = async (notificationData) => {
 // Update notification (Psikolog/Admin)
 export const updateNotification = async (id, notificationData) => {
     try {
-        const token = getAuthToken();
-        const response = await axios.put(`${API_URL}/${id}`, notificationData, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            }
-        });
+        const response = await notificationApi.put(`/${id}`, notificationData);
         return response.data;
     } catch (error) {
         console.error(`Error updating notification ${id}:`, error);
@@ -130,12 +88,7 @@ export const updateNotification = async (id, notificationData) => {
 // Mark notification as read (Pacient only)
 export const markNotificationAsRead = async (id) => {
     try {
-        const token = getAuthToken();
-        const response = await axios.put(`${API_URL}/mark-read/${id}`, {}, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        });
+        const response = await notificationApi.put(`/mark-read/${id}`);
         return response.data;
     } catch (error) {
         console.error(`Error marking notification ${id} as read:`, error);
@@ -146,12 +99,7 @@ export const markNotificationAsRead = async (id) => {
 // Delete notification (Psikolog/Admin)
 export const deleteNotification = async (id) => {
     try {
-        const token = getAuthToken();
-        const response = await axios.delete(`${API_URL}/${id}`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        });
+        const response = await notificationApi.delete(`/${id}`);
         return response.data;
     } catch (error) {
         console.error(`Error deleting notification ${id}:`, error);

@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import { getAllPsikologet } from "../../services/PsikologiService";
 import { getAllPatients } from "../../services/PacientiService";
 import { Link, useNavigate } from "react-router-dom";
-import { logoutUser } from "../../services/authService";
 import { getTakimetByPsikologId } from "../../services/AppointmentService";
 import { getAllRaportet } from "../../services/RaportService";
+import { logoutUser } from "../../services/authService";
 
 function AdminDashboard() {
   const navigate = useNavigate();
@@ -15,11 +15,6 @@ function AdminDashboard() {
   const [allTakimet, setAllTakimet] = useState([]);
   const [raportetCount, setRaportetCount] = useState(0);
   const [loading, setLoading] = useState(true);
-
-  const handleLogout = async () => {
-    await logoutUser();
-    navigate("/");
-  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -117,108 +112,123 @@ function AdminDashboard() {
     return (value / total) * 100;
   };
 
+  const handleLogout = async () => {
+    await logoutUser();
+    navigate("/");
+  };
+
+  const handleBack = () => {
+    if (window.history.length > 1) {
+      navigate(-1);
+      return;
+    }
+
+    navigate("/");
+  };
+
   return (
     <div className="d-flex" style={{ minHeight: "100vh" }}>
-      {/* Sidebar */}
       <div
-        className="bg-dark text-white p-2 d-flex flex-column"
-        style={{ 
-          width: "180px", 
-          position: "fixed", 
-          height: "100vh",
-          overflowY: "auto"
-        }}
+        className="bg-dark text-white p-3 d-flex flex-column"
+        style={{ width: "240px", position: "fixed", height: "100vh", overflowY: "auto" }}
       >
         <div className="text-center mb-3">
-          <h6 className="mb-0 fw-bold" style={{fontSize: '0.9rem'}}>Admin Panel</h6>
+          <h6 className="mb-0 fw-bold" style={{ fontSize: "0.9rem" }}>Admin Panel</h6>
         </div>
 
-        {/* Dashboard */}
         <div className="mb-2">
-          <Link to="/adminDashboard" className="nav-link text-white px-2 py-1 mb-1 active" style={{backgroundColor: 'rgba(255,255,255,0.15)', borderRadius: '4px', fontSize: '0.85rem'}}>
+          <Link
+            to="/adminDashboard"
+            className="nav-link text-white px-2 py-1 mb-1 active"
+            style={{ backgroundColor: "rgba(255,255,255,0.15)", borderRadius: "4px", fontSize: "0.85rem" }}
+          >
             🏠 Dashboard
           </Link>
         </div>
 
-        {/* Përdoruesit */}
         <div className="mb-2">
           <div className="text-white mb-1 px-1 py-1">
-            <small className="text-uppercase fw-semibold" style={{fontSize: '0.7rem', letterSpacing: '0.5px'}}>👥 Përdoruesit</small>
+            <small className="text-uppercase fw-semibold" style={{ fontSize: "0.7rem", letterSpacing: "0.5px" }}>
+              👥 Përdoruesit
+            </small>
           </div>
-          <Link to="/menaxhoUserat" className="nav-link text-white px-2 py-1 mb-1" style={{fontSize: '0.8rem'}}>
+          <Link to="/menaxhoUserat" className="nav-link text-white px-2 py-1 mb-1" style={{ fontSize: "0.8rem" }}>
             👤 Menaxho
           </Link>
         </div>
 
-        {/* Psikologët */}
         <div className="mb-2">
           <div className="text-white mb-1 px-1 py-1">
-            <small className="text-uppercase fw-semibold" style={{fontSize: '0.7rem', letterSpacing: '0.5px'}}>👨‍⚕️ Psikologët</small>
+            <small className="text-uppercase fw-semibold" style={{ fontSize: "0.7rem", letterSpacing: "0.5px" }}>
+              👨‍⚕️ Psikologët
+            </small>
           </div>
-          <Link to="/add-psikologin" className="nav-link text-white px-2 py-1 mb-1" style={{fontSize: '0.8rem'}}>
+          <Link to="/add-psikologin" className="nav-link text-white px-2 py-1 mb-1" style={{ fontSize: "0.8rem" }}>
             ➕ Shto
           </Link>
-          <Link to="/menaxhoPsikologet" className="nav-link text-white px-2 py-1 mb-1" style={{fontSize: '0.8rem'}}>
+          <Link to="/menaxhoPsikologet" className="nav-link text-white px-2 py-1 mb-1" style={{ fontSize: "0.8rem" }}>
             👨‍⚕️ Menaxho
           </Link>
         </div>
 
-        {/* Pacientët */}
         <div className="mb-2">
           <div className="text-white mb-1 px-1 py-1">
-            <small className="text-uppercase fw-semibold" style={{fontSize: '0.7rem', letterSpacing: '0.5px'}}>👥 Pacientët</small>
+            <small className="text-uppercase fw-semibold" style={{ fontSize: "0.7rem", letterSpacing: "0.5px" }}>
+              👥 Pacientët
+            </small>
           </div>
-          <Link to="/add-pacientin" className="nav-link text-white px-2 py-1 mb-1" style={{fontSize: '0.8rem'}}>
+          <Link to="/add-pacientin" className="nav-link text-white px-2 py-1 mb-1" style={{ fontSize: "0.8rem" }}>
             ➕ Shto
           </Link>
-          <Link to="/menaxhoPacientet" className="nav-link text-white px-2 py-1 mb-1" style={{fontSize: '0.8rem'}}>
+          <Link to="/menaxhoPacientet" className="nav-link text-white px-2 py-1 mb-1" style={{ fontSize: "0.8rem" }}>
             👨‍⚕️ Menaxho
           </Link>
         </div>
 
-        {/* Takimet */}
         <div className="mb-2">
           <div className="text-white mb-1 px-1 py-1">
-            <small className="text-uppercase fw-semibold" style={{fontSize: '0.7rem', letterSpacing: '0.5px'}}>📅 Takimet</small>
+            <small className="text-uppercase fw-semibold" style={{ fontSize: "0.7rem", letterSpacing: "0.5px" }}>
+              📅 Takimet
+            </small>
           </div>
-          <Link to="/menaxhoTakimetAdmin" className="nav-link text-white px-2 py-1 mb-1" style={{fontSize: '0.8rem'}}>
+          <Link to="/menaxhoTakimetAdmin" className="nav-link text-white px-2 py-1 mb-1" style={{ fontSize: "0.8rem" }}>
             📋 Menaxho
           </Link>
         </div>
 
-       
-
-        {/* Raportet */}
         <div className="mb-2">
           <div className="text-white mb-1 px-1 py-1">
-            <small className="text-uppercase fw-semibold" style={{fontSize: '0.7rem', letterSpacing: '0.5px'}}>📊 Raportet</small>
+            <small className="text-uppercase fw-semibold" style={{ fontSize: "0.7rem", letterSpacing: "0.5px" }}>
+              📊 Raportet
+            </small>
           </div>
-          <Link to="/raportet-admin" className="nav-link text-white px-2 py-1 mb-1" style={{fontSize: '0.8rem'}}>
+          <Link to="/raportet-admin" className="nav-link text-white px-2 py-1 mb-1" style={{ fontSize: "0.8rem" }}>
             📈 Shiko
           </Link>
-         
         </div>
 
-        {/* Notifications Section */}
         <div className="mb-2">
           <div className="text-white mb-1 px-1 py-1">
-            <small className="text-uppercase fw-semibold" style={{fontSize: '0.7rem', letterSpacing: '0.5px'}}>🔔 Njoftimet</small>
+            <small className="text-uppercase fw-semibold" style={{ fontSize: "0.7rem", letterSpacing: "0.5px" }}>
+              🔔 Njoftimet
+            </small>
           </div>
-          <Link to="/admin-notifications" className="nav-link text-white px-2 py-1 mb-1" style={{fontSize: '0.8rem'}}>
+          <Link to="/admin-notifications" className="nav-link text-white px-2 py-1 mb-1" style={{ fontSize: "0.8rem" }}>
             📋 Menaxho
           </Link>
         </div>
 
-                
-        <div className="mt-auto">
-          <button onClick={handleLogout} className="btn btn-danger btn-sm w-100 py-1" style={{fontSize: '0.8rem'}}>
+        <div className="mt-auto pt-3 border-top">
+          <button onClick={handleLogout} className="btn btn-danger w-100 mb-2">
             🚪 Logout
+          </button>
+          <button onClick={handleBack} className="btn btn-secondary w-100">
+            ← Kthehu
           </button>
         </div>
       </div>
 
-      {/* Përmbajtja kryesore */}
-      <div className="flex-grow-1" style={{ marginLeft: "180px", backgroundColor: "#f8f9fa", overflowY: "auto", height: "100vh" }}>
+      <div className="flex-grow-1" style={{ marginLeft: "240px", backgroundColor: "#f8f9fa", overflowY: "auto", height: "100vh" }}>
         <div className="container-fluid py-3">
           <div className="d-flex justify-content-between align-items-center mb-3">
             <h4 className="mb-0 fw-bold">Admin Dashboard</h4>

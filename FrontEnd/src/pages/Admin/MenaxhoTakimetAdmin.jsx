@@ -45,10 +45,9 @@ function MenaxhoTakimetAdmin() {
 
   return (
     <div className="d-flex" style={{ minHeight: "100vh" }}>
-      {/* Sidebar */}
       <div
-        className="bg-dark text-white p-3"
-        style={{ width: "250px", position: "fixed", height: "100vh" }}
+        className="bg-dark text-white p-3 d-flex flex-column"
+        style={{ width: "240px", position: "fixed", height: "100vh" }}
       >
         <h4 className="mb-4 text-center">Admin Panel</h4>
         <ul className="nav flex-column">
@@ -73,8 +72,7 @@ function MenaxhoTakimetAdmin() {
         </div>
       </div>
 
-      {/* Përmbajtja kryesore */}
-      <div className="flex-grow-1" style={{ marginLeft: "250px" }}>
+      <div className="flex-grow-1" style={{ marginLeft: "240px" }}>
         <div className="container mt-5">
           <h2 className="mb-4">Menaxho Takimet - Admin</h2>
 

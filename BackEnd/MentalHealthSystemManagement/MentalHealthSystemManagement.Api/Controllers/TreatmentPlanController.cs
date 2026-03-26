@@ -18,11 +18,13 @@ namespace MentalHealthSystemManagement.Api.Controllers
     public class TreatmentPlanController : ControllerBase
     {
         private readonly TreatmentPlanService _service;
+        private readonly ApplicationDbContext _context;
 
-        public TreatmentPlanController(TreatmentPlanService service)
+        public TreatmentPlanController(TreatmentPlanService service, ApplicationDbContext context)
         {
 
             _service = service;
+            _context = context;
         }
         private int GetUserId() =>
             int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
@@ -37,12 +39,22 @@ namespace MentalHealthSystemManagement.Api.Controllers
             return int.Parse(claim.Value);
 
         }
-        private int GetPatientId()
+        private async Task<int?> ResolvePatientIdAsync()
         {
             var claim = User.FindFirst("PatientId");
-            if (claim == null)
-                throw new Exception("PatientId claim missing from token.");
-            return int.Parse(claim.Value);
+            if (claim != null && int.TryParse(claim.Value, out var patientIdFromClaim))
+            {
+                return patientIdFromClaim;
+            }
+
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (int.TryParse(userIdClaim, out var userId))
+            {
+                var patient = await _context.Patients.AsNoTracking().FirstOrDefaultAsync(p => p.UserId == userId);
+                return patient?.Id;
+            }
+
+            return null;
         }
 
         [HttpPost("add")]
@@ -134,7 +146,13 @@ namespace MentalHealthSystemManagement.Api.Controllers
         [Authorize(Roles = "Pacient")]
         public async Task<IActionResult> GetForPatient()
         {
-            return Ok(await _service.GetAllForPatientAsync(GetPatientId()));
+            var patientId = await ResolvePatientIdAsync();
+            if (!patientId.HasValue)
+            {
+                return Unauthorized("Pacienti nuk u gjet për këtë përdorues");
+            }
+
+            return Ok(await _service.GetAllForPatientAsync(patientId.Value));
         }
     }
 }

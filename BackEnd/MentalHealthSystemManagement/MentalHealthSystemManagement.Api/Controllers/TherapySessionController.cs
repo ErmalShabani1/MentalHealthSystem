@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Authorization;
 using MentalHealthSystemManagement.Application.Services;
 using MentalHealthSystemManagement.Application.DTOs.TherapySessions;
 using System.Security.Claims;
+using MentalHealthSystemManagement.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace MentalHealthSystemManagement.Api.Controllers
 {
@@ -12,10 +14,30 @@ namespace MentalHealthSystemManagement.Api.Controllers
     public class TherapySessionController : ControllerBase
     {
         private readonly TherapySessionService _service;
+        private readonly ApplicationDbContext _context;
 
-        public TherapySessionController(TherapySessionService service)
+        public TherapySessionController(TherapySessionService service, ApplicationDbContext context)
         {
             _service = service;
+            _context = context;
+        }
+
+        private async Task<int?> ResolvePatientIdAsync()
+        {
+            var patientIdClaim = User.FindFirst("PatientId")?.Value;
+            if (int.TryParse(patientIdClaim, out var patientIdFromClaim))
+            {
+                return patientIdFromClaim;
+            }
+
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (int.TryParse(userIdClaim, out var userId))
+            {
+                var patient = await _context.Patients.AsNoTracking().FirstOrDefaultAsync(p => p.UserId == userId);
+                return patient?.Id;
+            }
+
+            return null;
         }
 
        
@@ -76,11 +98,11 @@ namespace MentalHealthSystemManagement.Api.Controllers
         {
             try
             {
-                var patientIdClaim = User.FindFirst("PatientId")?.Value;
-                if (string.IsNullOrEmpty(patientIdClaim) || !int.TryParse(patientIdClaim, out int patientId))
-                    return Unauthorized("PatientId nuk u gjet në token");
+                var patientId = await ResolvePatientIdAsync();
+                if (!patientId.HasValue)
+                    return Unauthorized("Pacienti nuk u gjet për këtë përdorues");
 
-                var sessions = await _service.GetSessionsByPatientIdAsync(patientId);
+                var sessions = await _service.GetSessionsByPatientIdAsync(patientId.Value);
                 return Ok(sessions);
             }
             catch (Exception ex)

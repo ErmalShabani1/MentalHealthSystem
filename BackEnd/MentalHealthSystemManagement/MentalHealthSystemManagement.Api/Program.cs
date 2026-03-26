@@ -3,6 +3,7 @@ using MentalHealthSystemManagement.Application.Services;
 using MentalHealthSystemManagement.Domain.Entities;
 using MentalHealthSystemManagement.Infrastructure.Data;
 using MentalHealthSystemManagement.Infrastructure.Repositories;
+using MentalHealthSystemManagement.Infrastructure.SeedData;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -112,8 +113,24 @@ if (!Directory.Exists(uploadsPath))
 // Seed admin data
 using (var scope = app.Services.CreateScope())
 {
-    var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    MentalHealthSystemManagement.Infrastructure.SeedData.SeedAdmin.AddAdmin(context);
+    var services = scope.ServiceProvider;
+    var context = services.GetRequiredService<ApplicationDbContext>();
+    var configuration = services.GetRequiredService<IConfiguration>();
+
+    SeedAdmin.AddAdmin(context);
+
+    var resetSection = configuration.GetSection("AdminPasswordReset");
+    if (resetSection.GetValue<bool>("Enabled"))
+    {
+        var email = resetSection["Email"];
+        var newPassword = resetSection["NewPassword"];
+        var username = resetSection["Username"] ?? "Admin";
+
+        if (!string.IsNullOrWhiteSpace(email) && !string.IsNullOrWhiteSpace(newPassword))
+        {
+            SeedAdmin.EnsureCredentials(context, email, newPassword, username);
+        }
+    }
 }
 
 // Configure the HTTP request pipeline.

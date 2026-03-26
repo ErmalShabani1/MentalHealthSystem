@@ -8,27 +8,12 @@ import { logoutUser } from "../../services/authService";
 
 function RaportetAdmin() {
   const navigate = useNavigate();
-
   const [raportet, setRaportet] = useState([]);
   const [filteredRaportet, setFilteredRaportet] = useState([]);
   const [showThisMonth, setShowThisMonth] = useState(false);
 
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
-
-  const handleLogout = async () => {
-    await logoutUser();
-    navigate("/");
-  };
-
-  const handleBack = () => {
-    if (window.history.length > 1) {
-      navigate(-1);
-      return;
-    }
-
-    navigate("/adminDashboard");
-  };
 
   useEffect(() => {
     fetchRaportet();
@@ -113,12 +98,25 @@ autoTable(doc, {
 
   const reportsToShow = showThisMonth ? filteredRaportet : raportet;
 
+  const handleLogout = async () => {
+    await logoutUser();
+    navigate("/");
+  };
+
+  const handleBack = () => {
+    if (window.history.length > 1) {
+      navigate(-1);
+      return;
+    }
+
+    navigate("/adminDashboard");
+  };
+
   return (
     <div className="d-flex" style={{ minHeight: "100vh" }}>
-      {/* Sidebar */}
       <div
-        className="bg-dark text-white p-3"
-        style={{ width: "250px", position: "fixed", height: "100vh" }}
+        className="bg-dark text-white p-3 d-flex flex-column"
+        style={{ width: "240px", position: "fixed", height: "100vh" }}
       >
         <h4 className="mb-4 text-center">Admin Panel</h4>
 
@@ -145,8 +143,7 @@ autoTable(doc, {
         </div>
       </div>
 
-      {/* Content */}
-      <div className="flex-grow-1" style={{ marginLeft: "250px", backgroundColor: "#f8f9fa" }}>
+      <div className="flex-grow-1" style={{ marginLeft: "240px", backgroundColor: "#f8f9fa" }}>
         <div className="container-fluid py-4">
 
           {/* Header */}

@@ -39,6 +39,18 @@ function AdminNotifications() {
         }
     };
 
+    const formatDate = (dateString) => {
+        if (!dateString) return 'N/A';
+        const date = new Date(dateString);
+        return date.toLocaleString('sq-AL', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    };
+
     const handleLogout = () => {
         document.cookie = 'jwt=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
         navigate('/login');
@@ -53,38 +65,23 @@ function AdminNotifications() {
         navigate('/adminDashboard');
     };
 
-    const formatDate = (dateString) => {
-        if (!dateString) return 'N/A';
-        const date = new Date(dateString);
-        return date.toLocaleString('sq-AL', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit'
-        });
-    };
-
     return (
         <div className="d-flex" style={{ minHeight: "100vh" }}>
-            {/* Sidebar */}
             <div
                 className="bg-dark text-white p-3 d-flex flex-column"
                 style={{ 
-                    width: "250px", 
+                    width: "240px", 
                     position: "fixed", 
                     height: "100vh",
                     overflowY: "auto"
                 }}
             >
-                {/* Dashboard */}
                 <div className="mb-2">
                     <Link to="/adminDashboard" className="nav-link text-white px-2 py-1 mb-1" style={{fontSize: '0.85rem'}}>
                         🏠 Dashboard
                     </Link>
                 </div>
 
-                {/* Notifications Section */}
                 <div className="mb-2">
                     <div className="text-white mb-1 px-1 py-1">
                         <small className="text-uppercase fw-semibold" style={{fontSize: '0.7rem', letterSpacing: '0.5px'}}>🔔 Njoftimet</small>
@@ -94,18 +91,17 @@ function AdminNotifications() {
                     </Link>
                 </div>
 
-                <div className="mt-auto">
-                    <button onClick={handleLogout} className="btn btn-danger btn-sm w-100 py-1 mb-2" style={{fontSize: '0.8rem'}}>
+                <div className="mt-auto pt-3 border-top">
+                    <button onClick={handleLogout} className="btn btn-danger w-100 mb-2">
                         🚪 Logout
                     </button>
-                    <button onClick={handleBack} className="btn btn-secondary btn-sm w-100 py-1" style={{fontSize: '0.8rem'}}>
+                    <button onClick={handleBack} className="btn btn-secondary w-100">
                         ← Kthehu
                     </button>
                 </div>
             </div>
 
-            {/* Përmbajtja kryesore */}
-            <div className="flex-grow-1" style={{ marginLeft: "250px", backgroundColor: "#f8f9fa", overflowY: "auto", minHeight: "100vh" }}>
+            <div className="flex-grow-1" style={{ marginLeft: "240px", backgroundColor: "#f8f9fa", overflowY: "auto", minHeight: "100vh" }}>
                 <div className="container-fluid py-4">
                     <div className="d-flex justify-content-between align-items-center mb-4">
                         <h2 className="mb-0">Të Gjitha Njoftimet</h2>

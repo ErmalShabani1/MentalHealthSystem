@@ -6,6 +6,8 @@ using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Text.Json;
+using MentalHealthSystemManagement.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace MentalHealthSystemManagement.Api.Controllers
 {
@@ -14,10 +16,30 @@ namespace MentalHealthSystemManagement.Api.Controllers
     public class NotificationController : ControllerBase
     {
         private readonly NotificationService _service;
+        private readonly ApplicationDbContext _context;
 
-        public NotificationController(NotificationService service)
+        public NotificationController(NotificationService service, ApplicationDbContext context)
         {
             _service = service;
+            _context = context;
+        }
+
+        private async Task<int?> ResolvePatientIdAsync()
+        {
+            var patientIdClaim = User.FindFirst("PatientId")?.Value;
+            if (int.TryParse(patientIdClaim, out var patientIdFromClaim))
+            {
+                return patientIdFromClaim;
+            }
+
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (int.TryParse(userIdClaim, out var userId))
+            {
+                var patient = await _context.Patients.AsNoTracking().FirstOrDefaultAsync(p => p.UserId == userId);
+                return patient?.Id;
+            }
+
+            return null;
         }
 
         // GET: api/Notification/all (Admin only)
@@ -62,11 +84,11 @@ namespace MentalHealthSystemManagement.Api.Controllers
         {
             try
             {
-                var patientIdClaim = User.FindFirst("PatientId")?.Value;
-                if (string.IsNullOrEmpty(patientIdClaim) || !int.TryParse(patientIdClaim, out int patientId))
-                    return Unauthorized("PatientId nuk u gjet në token");
+                var patientId = await ResolvePatientIdAsync();
+                if (!patientId.HasValue)
+                    return Unauthorized("Pacienti nuk u gjet për këtë përdorues");
 
-                var notifications = await _service.GetNotificationsByPatientIdAsync(patientId);
+                var notifications = await _service.GetNotificationsByPatientIdAsync(patientId.Value);
                 return Ok(notifications);
             }
             catch (Exception ex)
@@ -82,11 +104,11 @@ namespace MentalHealthSystemManagement.Api.Controllers
         {
             try
             {
-                var patientIdClaim = User.FindFirst("PatientId")?.Value;
-                if (string.IsNullOrEmpty(patientIdClaim) || !int.TryParse(patientIdClaim, out int patientId))
-                    return Unauthorized("PatientId nuk u gjet në token");
+                var patientId = await ResolvePatientIdAsync();
+                if (!patientId.HasValue)
+                    return Unauthorized("Pacienti nuk u gjet për këtë përdorues");
 
-                var count = await _service.GetUnreadCountAsync(patientId);
+                var count = await _service.GetUnreadCountAsync(patientId.Value);
                 return Ok(new { count });
             }
             catch (Exception ex)

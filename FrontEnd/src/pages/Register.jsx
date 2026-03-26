@@ -88,6 +88,16 @@ function Register() {
           <button type="submit" className="btn btn-primary w-100">
             Register
           </button>
+          <div className="text-center mt-3">
+            <p className="mb-2">Ke llogari?</p>
+            <button
+              type="button"
+              className="btn btn-success"
+              onClick={() => navigate("/login")}
+            >
+              Kyçu
+            </button>
+          </div>
         </form>
       </div>
       

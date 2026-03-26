@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom"; // Shto këtë import
+import { useNavigate } from "react-router-dom";
 
 const API_URL = "https://localhost:7062/api/Psikologi/add";
 
 function AddPsikologinForm() {
-  const navigate = useNavigate(); // Shto këtë
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -26,16 +26,14 @@ function AddPsikologinForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    
+
     try {
       await axios.post(API_URL, formData, { withCredentials: true });
       toast.success("Psikologu u shtua me sukses!");
-      
-      // Navigo direkt në adminDashboard pas 1.5 sekondash
+
       setTimeout(() => {
         navigate("/adminDashboard");
       }, 1500);
-      
     } catch (error) {
       console.error("Gabim:", error);
       toast.error(error.response?.data || "Gabim gjatë shtimit të psikologut!");
@@ -44,7 +42,6 @@ function AddPsikologinForm() {
     }
   };
 
-  // Butoni për tu kthyer në dashboard pa pritur
   const handleGoBack = () => {
     navigate("/adminDashboard");
   };
@@ -60,7 +57,7 @@ function AddPsikologinForm() {
                   <i className="fas fa-user-md me-2"></i>
                   Shto Psikolog të Ri
                 </h4>
-                <button 
+                <button
                   onClick={handleGoBack}
                   className="btn btn-light btn-sm"
                   type="button"
@@ -70,10 +67,9 @@ function AddPsikologinForm() {
                 </button>
               </div>
             </div>
-            
+
             <div className="card-body p-4">
               <form onSubmit={handleSubmit}>
-                {/* Rreshti 1: Emri dhe Mbiemri */}
                 <div className="row">
                   <div className="col-md-6 mb-3">
                     <label htmlFor="name" className="form-label fw-semibold">
@@ -91,7 +87,7 @@ function AddPsikologinForm() {
                       required
                     />
                   </div>
-                  
+
                   <div className="col-md-6 mb-3">
                     <label htmlFor="surname" className="form-label fw-semibold">
                       <i className="fas fa-user me-2 text-primary"></i>
@@ -110,7 +106,6 @@ function AddPsikologinForm() {
                   </div>
                 </div>
 
-                {/* Rreshti 2: Username dhe Email */}
                 <div className="row">
                   <div className="col-md-6 mb-3">
                     <label htmlFor="username" className="form-label fw-semibold">
@@ -128,7 +123,7 @@ function AddPsikologinForm() {
                       required
                     />
                   </div>
-                  
+
                   <div className="col-md-6 mb-3">
                     <label htmlFor="email" className="form-label fw-semibold">
                       <i className="fas fa-envelope me-2 text-primary"></i>
@@ -147,28 +142,26 @@ function AddPsikologinForm() {
                   </div>
                 </div>
 
-                {/* Rreshti 3: Fjalëkalimi */}
                 <div className="mb-3">
                   <label htmlFor="password" className="form-label fw-semibold">
                     <i className="fas fa-lock me-2 text-primary"></i>
                     Fjalëkalimi *
                   </label>
-                    <input
-                      id="password"
-                      name="password"
-                      type="password"
-                      className="form-control form-control-lg"
-                      placeholder="Fjalëkalimi i ri"
-                      value={formData.password}
-                      onChange={handleChange}
-                      required
-                    />
+                  <input
+                    id="password"
+                    name="password"
+                    type="password"
+                    className="form-control form-control-lg"
+                    placeholder="Fjalëkalimi i ri"
+                    value={formData.password}
+                    onChange={handleChange}
+                    required
+                  />
                   <div className="form-text">
                     Fjalëkalimi duhet të jetë të paktën 6 karaktere.
                   </div>
                 </div>
 
-                {/* Rreshti 4: Specializimi dhe Eksperienca */}
                 <div className="row">
                   <div className="col-md-6 mb-3">
                     <label htmlFor="specialization" className="form-label fw-semibold">
@@ -194,7 +187,7 @@ function AddPsikologinForm() {
                       <option value="Të tjera">Të tjera</option>
                     </select>
                   </div>
-                  
+
                   <div className="col-md-6 mb-3">
                     <label htmlFor="experienceLevel" className="form-label fw-semibold">
                       <i className="fas fa-chart-line me-2 text-primary"></i>
@@ -217,9 +210,8 @@ function AddPsikologinForm() {
                   </div>
                 </div>
 
-                {/* Butonat */}
                 <div className="d-grid gap-2 d-md-flex justify-content-between mt-4">
-                  <button 
+                  <button
                     type="button"
                     onClick={handleGoBack}
                     className="btn btn-outline-secondary btn-lg py-3 fw-semibold order-md-1"
@@ -227,9 +219,9 @@ function AddPsikologinForm() {
                     <i className="fas fa-arrow-left me-2"></i>
                     Kthehu në Dashboard
                   </button>
-                  
-                  <button 
-                    type="submit" 
+
+                  <button
+                    type="submit"
                     className="btn btn-primary btn-lg py-3 fw-semibold order-md-2 flex-grow-1 ms-md-2"
                     disabled={loading}
                   >
@@ -247,7 +239,6 @@ function AddPsikologinForm() {
                   </button>
                 </div>
 
-                {/* Informacion shtesë */}
                 <div className="mt-3 text-center">
                   <small className="text-muted">
                     * Fushat e shënuara me yll janë të detyrueshme
