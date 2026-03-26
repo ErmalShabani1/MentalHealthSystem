@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getAllPsikologet } from "../../services/PsikologiService";
 import { getAllPatients } from "../../services/PacientiService";
-import { getAllAppointmentsAdmin } from "../../services/AppointmentService";
 import { Link, useNavigate } from "react-router-dom";
 import { logoutUser } from "../../services/authService";
 import { getTakimetByPsikologId } from "../../services/AppointmentService";
@@ -98,8 +97,6 @@ function AdminDashboard() {
   
   const newPatientsThisMonth = Math.floor(patientsCount * 0.1);
   const activePsychologists = Math.floor(psychologistsCount * 0.8);
-  const raportetTotal = allTakimet.filter(t => t.hasReport === true).length;
-
   // Të dhëna për grafikët
   const statsData = [
     { label: 'Psikologë', value: psychologistsCount, color: '#3b82f6', icon: '👨‍⚕️' },

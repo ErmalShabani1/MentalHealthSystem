@@ -5,8 +5,10 @@ import "react-toastify/dist/ReactToastify.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/auth.css";
  import { ToastContainer } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 function Register() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -23,7 +25,16 @@ function Register() {
     try {
       await registerUser(formData);
       toast.success("Regjistrimi u krye me sukses!");
+
+      // Përdoruesi i ri mbetet me rolin User deri në autorizim nga admini
+      localStorage.setItem(
+        "user",
+        JSON.stringify({ username: formData.username, role: "User" })
+      );
+      localStorage.setItem("role", "User");
+
       setFormData({ username: "", email: "", password: "", role: "User" });
+      navigate("/pending-authorization");
     } catch (err) {
       toast.error(err.response?.data || "Gabim gjate regjistrimit!");
     }

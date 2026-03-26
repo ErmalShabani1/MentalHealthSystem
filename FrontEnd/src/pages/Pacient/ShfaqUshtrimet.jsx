@@ -14,6 +14,15 @@ function ShfaqUshtrimet() {
     navigate("/");
   };
 
+  const handleBack = () => {
+    if (window.history.length > 1) {
+      navigate(-1);
+      return;
+    }
+
+    navigate("/pacientDashboard");
+  };
+
   useEffect(() => {
     fetchUshtrimet();
   }, []);
@@ -115,7 +124,7 @@ function ShfaqUshtrimet() {
           </li>
           <li className="nav-item mb-2">
             <Link to="/shfaqPsikologet" className="nav-link text-white">
-              �‍⚕️ Psikologët
+              👨‍⚕️ Psikologët
             </Link>
           </li>
         </ul>
@@ -123,10 +132,7 @@ function ShfaqUshtrimet() {
           <button onClick={handleLogout} className="btn btn-danger w-100 mb-2">
             🚪 Logout
           </button>
-          <button
-            onClick={() => navigate(-1)}
-            className="btn btn-secondary w-100"
-          >
+          <button onClick={handleBack} className="btn btn-secondary w-100">
             ← Kthehu
           </button>
         </div>

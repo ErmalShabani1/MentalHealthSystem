@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getTakimetByPsikologId, updateTakimin } from "../../services/AppointmentService";
+import { getAppointmentById, getTakimetByPsikologId, updateTakimin } from "../../services/AppointmentService";
 import { toast } from "react-toastify";
 import axios from "axios";
 
@@ -17,6 +17,31 @@ function EditTakimin() {
 
   const [patients, setPatients] = useState([]);
 
+  const resolvePatientIdFromAppointment = (takimi, patientList) => {
+    const directId =
+      takimi?.patientId ?? takimi?.pacientId ?? takimi?.patientID ?? takimi?.PatientId ?? null;
+
+    if (directId) {
+      return String(directId);
+    }
+
+    const appointmentPatientName = (takimi?.patientName || takimi?.pacientName || "")
+      .toString()
+      .trim()
+      .toLowerCase();
+
+    if (!appointmentPatientName) {
+      return "";
+    }
+
+    const matchedPatient = (patientList || []).find((p) => {
+      const fullName = `${p.emri || ""} ${p.mbiemri || ""}`.trim().toLowerCase();
+      return fullName === appointmentPatientName;
+    });
+
+    return matchedPatient ? String(matchedPatient.id) : "";
+  };
+
   useEffect(() => {
     // Merr pacientët për dropdown
     const fetchPatients = async () => {
@@ -31,29 +56,45 @@ function EditTakimin() {
   }, []);
 
   useEffect(() => {
+    if (patients.length === 0) {
+      return;
+    }
+
     const fetchTakimi = async () => {
       try {
-        const psikologId = localStorage.getItem("psikologId");
-        const res = await getTakimetByPsikologId(psikologId);
-        const takimi = res.data.find((t) => t.id === parseInt(id));
+        let takimi = null;
+
+        try {
+          const byIdRes = await getAppointmentById(id);
+          takimi = byIdRes?.data || null;
+        } catch {
+          const psikologId = localStorage.getItem("psikologId");
+          const res = await getTakimetByPsikologId(psikologId);
+          takimi = (res.data || []).find((t) => Number(t.id) === Number(id));
+        }
+
         if (takimi) {
+          const selectedPatientId = resolvePatientIdFromAppointment(takimi, patients);
+
           setFormData({
-            patientId: takimi.patientId || "",
-            appointmentDate: takimi.appointmentDate.slice(0, 16), // format për datetime-local
+            patientId: selectedPatientId,
+            appointmentDate: takimi.appointmentDate ? takimi.appointmentDate.slice(0, 16) : "",
             notes: takimi.notes || "",
             status: takimi.status || "Scheduled",
           });
+        } else {
+          toast.error("Takimi nuk u gjet.");
         }
       } catch (error) {
         console.error("Gabim gjatë marrjes së takimit:", error);
+        toast.error("Gabim gjatë marrjes së takimit.");
       }
     };
     fetchTakimi();
-  }, [id]);
+  }, [id, patients]);
 
   const handleChange = (e) => {
-    const value = e.target.name === "patientId" ? parseInt(e.target.value) : e.target.value;
-    setFormData({ ...formData, [e.target.name]: value });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
@@ -64,7 +105,7 @@ function EditTakimin() {
   }
 
   try {
-    const updatedData = { ...formData, id: parseInt(id) }; 
+    const updatedData = { ...formData, id: parseInt(id), patientId: parseInt(formData.patientId) };
     await updateTakimin(id, updatedData);
     toast.success("Takimi u përditësua me sukses!");
     navigate("/menaxhoTakimet");
@@ -88,7 +129,7 @@ function EditTakimin() {
         >
           <option value="">Zgjidh Pacientin</option>
           {patients.map((p) => (
-            <option key={p.id} value={p.id}>
+            <option key={p.id} value={String(p.id)}>
               {p.emri} {p.mbiemri}
             </option>
           ))}

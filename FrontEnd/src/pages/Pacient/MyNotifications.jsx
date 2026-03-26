@@ -54,6 +54,15 @@ function MyNotifications() {
         navigate('/login');
     };
 
+    const handleBack = () => {
+        if (window.history.length > 1) {
+            navigate(-1);
+            return;
+        }
+
+        navigate('/pacientDashboard');
+    };
+
     const formatDate = (dateString) => {
         if (!dateString) return 'N/A';
         const date = new Date(dateString);
@@ -104,7 +113,7 @@ function MyNotifications() {
                     <button onClick={handleLogout} className="btn btn-danger btn-sm w-100 py-1 mb-2" style={{fontSize: '0.8rem'}}>
                         🚪 Logout
                     </button>
-                    <button onClick={() => navigate('/pacientDashboard')} className="btn btn-secondary btn-sm w-100 py-1" style={{fontSize: '0.8rem'}}>
+                    <button onClick={handleBack} className="btn btn-secondary btn-sm w-100 py-1" style={{fontSize: '0.8rem'}}>
                         ← Kthehu
                     </button>
                 </div>

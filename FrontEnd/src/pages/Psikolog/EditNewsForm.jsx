@@ -2,18 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { getNewsById, updateNews } from "../../services/newsService";
-import { Link } from "react-router-dom";
-import { logoutUser } from "../../services/authService";
-import axios from "axios";
+import PsikologSidePanel from "./PsikologSidePanel";
 
 function EditNewsForm() {
   const { id } = useParams();
   const navigate = useNavigate();
-
-  const handleLogout = async () => {
-    await logoutUser();
-    navigate("/");
-  };
 
   const [formData, setFormData] = useState({
     description: "",
@@ -25,7 +18,6 @@ function EditNewsForm() {
   const [loading, setLoading] = useState(false);
   const [news, setNews] = useState(null);
   const [fetchLoading, setFetchLoading] = useState(true);
-  const [psikologInfo, setPsikologInfo] = useState(null);
   const API_BASE_URL = "https://localhost:7062";
 
   useEffect(() => {
@@ -188,53 +180,7 @@ function EditNewsForm() {
 
   return (
     <div className="d-flex" style={{ minHeight: "100vh" }}>
-      {/* Sidebar */}
-      <div
-        className="bg-dark text-white p-3 d-flex flex-column"
-        style={{ width: "250px", position: "fixed", height: "100vh" }}
-      >
-        {/* Dashboard */}
-        <div className="mb-3">
-          <Link to="/psikologDashboard" className="nav-link text-white px-3 py-2 mb-1" style={{borderRadius: '4px'}}>
-            🏠 Dashboard
-          </Link>
-        </div>
-
-        {/* News Section */}
-        <div className="mb-3">
-          <div className="text-white mb-2 px-2 py-1">
-            <small className="text-uppercase fw-semibold" style={{fontSize: '0.75rem', letterSpacing: '0.5px'}}>📰 News</small>
-          </div>
-          <Link to="/add-news" className="nav-link text-white px-3 py-2 mb-1">
-            ➕ Shto News
-          </Link>
-          <Link to="/menaxhoNews" className="nav-link text-white px-3 py-2 mb-1 active" style={{backgroundColor: 'rgba(255,255,255,0.15)', borderRadius: '4px'}}>
-            📋 Menaxho News
-          </Link>
-        </div>
-
-        {/* Pacientët Section */}
-        <div className="mb-3">
-          <div className="text-white mb-2 px-2 py-1">
-            <small className="text-uppercase fw-semibold" style={{fontSize: '0.75rem', letterSpacing: '0.5px'}}>📖 Pacientët</small>
-          </div>
-          <Link to="/menaxhoRaportet" className="nav-link text-white px-3 py-2 mb-1">
-            👨‍⚕️ Menaxho Raportet
-          </Link>
-          <Link to="/add-raportin" className="nav-link text-white px-3 py-2 mb-1">
-            ➕ Shto Raport
-          </Link>
-        </div>
-        
-        <div className="mt-auto">
-          <button onClick={handleLogout} className="btn btn-danger w-100 mb-2">
-            🚪 Logout
-          </button>
-          <button onClick={handleGoBack} className="btn btn-secondary w-100">
-            ← Kthehu
-          </button>
-        </div>
-      </div>
+      <PsikologSidePanel section="news" activePath="/menaxhoNews" />
 
       {/* Përmbajtja kryesore */}
       <div className="flex-grow-1" style={{ marginLeft: "250px", backgroundColor: "#f8f9fa" }}>
@@ -280,19 +226,6 @@ function EditNewsForm() {
                       </div>
                     </div>
                   </div>
-
-                  {/* Informacion i psikologit */}
-                  {psikologInfo && (
-                    <div className="alert alert-primary mb-4">
-                      <h6 className="alert-heading mb-2">
-                        <i className="fas fa-user-md me-2"></i>
-                        Ju jeni duke modifikuar si:
-                      </h6>
-                      <div className="small">
-                        <strong>Emri:</strong> {psikologInfo.emri} {psikologInfo.mbiemri}
-                      </div>
-                    </div>
-                  )}
 
                   <form onSubmit={handleSubmit}>
                     {/* Fotoja aktuale dhe upload */}

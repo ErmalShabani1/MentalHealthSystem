@@ -1,20 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { getTakimetByPsikologId, deleteTakimin } from "../../services/AppointmentService";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import { logoutUser } from "../../services/authService";
+import PsikologSidePanel from "./PsikologSidePanel";
 
 function MenaxhoTakimet() {
-  const navigate = useNavigate();
   const [takimet, setTakimet] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filterStatus, setFilterStatus] = useState("Të gjitha");
   const psikologId = localStorage.getItem("psikologId");
-
-  const handleLogout = async () => {
-    await logoutUser();
-    navigate("/");
-  };
 
   // Merr takimet nga backend
   const fetchData = async () => {
@@ -43,21 +37,9 @@ function MenaxhoTakimet() {
     }
   };
 
-  const handleStatusChange = async (takimId, newStatus) => {
-    try {
-      // Këtu duhet të implementosh update të statusit
-      // Për momentin, vetëm përditësojmë lokalisht
-      setTakimet(prev => prev.map(t => 
-        t.id === takimId ? { ...t, status: newStatus } : t
-      ));
-      toast.success(`Statusi u ndryshua në ${newStatus}`);
-    } catch (error) {
-      toast.error("Gabim gjatë ndryshimit të statusit!");
-    }
-  };
-
   useEffect(() => {
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Filtro takimet sipas statusit
@@ -87,40 +69,7 @@ function MenaxhoTakimet() {
 
   return (
     <div className="d-flex" style={{ minHeight: "100vh" }}>
-      {/* Sidebar */}
-      <div
-        className="bg-dark text-white p-3 d-flex flex-column"
-        style={{ width: "250px", position: "fixed", height: "100vh" }}
-      >
-        {/* Dashboard */}
-        <div className="mb-3">
-          <Link to="/psikologDashboard" className="nav-link text-white px-3 py-2 mb-1" style={{borderRadius: '4px'}}>
-            🏠 Dashboard
-          </Link>
-        </div>
-
-        {/* Takimet Section */}
-        <div className="mb-3">
-          <div className="text-white mb-2 px-2 py-1">
-            <small className="text-uppercase fw-semibold" style={{fontSize: '0.75rem', letterSpacing: '0.5px'}}>📅 Takimet</small>
-          </div>
-          <Link to="/menaxhoTakimet" className="nav-link text-white px-3 py-2 mb-1 active" style={{backgroundColor: 'rgba(255,255,255,0.15)', borderRadius: '4px'}}>
-            📋 Menaxho Takimet
-          </Link>
-          <Link to="/add-takimet" className="nav-link text-white px-3 py-2 mb-1">
-            ➕ Shto Takim
-          </Link>
-        </div>
-        
-        <div className="mt-auto">
-          <button onClick={handleLogout} className="btn btn-danger w-100 mb-2">
-            🚪 Logout
-          </button>
-          <button onClick={() => navigate('/psikologDashboard')} className="btn btn-secondary w-100">
-            ← Kthehu
-          </button>
-        </div>
-      </div>
+      <PsikologSidePanel section="takime" activePath="/menaxhoTakimet" />
 
       {/* Përmbajtja kryesore */}
       <div className="flex-grow-1" style={{ marginLeft: "250px", backgroundColor: "#f8f9fa" }}>

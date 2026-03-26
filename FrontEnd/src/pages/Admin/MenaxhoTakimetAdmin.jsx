@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getAllAppointmentsAdmin, deleteTakimin } from "../../services/AppointmentService";
+import { getAllAppointmentsAdmin } from "../../services/AppointmentService";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { logoutUser } from "../../services/authService";
@@ -12,6 +12,15 @@ function MenaxhoTakimetAdmin() {
   const handleLogout = async () => {
     await logoutUser();
     navigate("/");
+  };
+
+  const handleBack = () => {
+    if (window.history.length > 1) {
+      navigate(-1);
+      return;
+    }
+
+    navigate("/adminDashboard");
   };
 
   useEffect(() => {
@@ -27,18 +36,6 @@ function MenaxhoTakimetAdmin() {
       toast.error("Gabim gjatë marrjes së takimeve");
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleDelete = async (id) => {
-    if (window.confirm("Jeni i sigurt që dëshironi të fshini këtë takim?")) {
-      try {
-        await deleteTakimin(id);
-        toast.success("Takimi u fshi me sukses!");
-        fetchTakimet();
-      } catch (error) {
-        toast.error("Gabim gjatë fshirjes së takimit");
-      }
     }
   };
 
@@ -70,7 +67,7 @@ function MenaxhoTakimetAdmin() {
           <button onClick={handleLogout} className="btn btn-danger w-100 mb-2">
             🚪 Logout
           </button>
-          <button onClick={() => navigate('/adminDashboard')} className="btn btn-secondary w-100">
+          <button onClick={handleBack} className="btn btn-secondary w-100">
             ← Kthehu
           </button>
         </div>

@@ -1,20 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import { getAllNews, deleteNews, getMyNews } from "../../services/newsService";
-import { logoutUser } from "../../services/authService";
-import axios from "axios";
+import { deleteNews, getMyNews } from "../../services/newsService";
+import PsikologSidePanel from "./PsikologSidePanel";
 
 function MenaxhoNews() {
-  const navigate = useNavigate();
   const [newsList, setNewsList] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [psikologInfo, setPsikologInfo] = useState(null);
-const API_BASE_URL = "https://localhost:7062";
-  const handleLogout = async () => {
-    await logoutUser();
-    navigate("/");
-  };
+  const API_BASE_URL = "https://localhost:7062";
 
   useEffect(() => {
     fetchMyNews();
@@ -57,40 +50,7 @@ const API_BASE_URL = "https://localhost:7062";
 
   return (
     <div className="d-flex" style={{ minHeight: "100vh" }}>
-      {/* Sidebar */}
-      <div
-        className="bg-dark text-white p-3 d-flex flex-column"
-        style={{ width: "250px", position: "fixed", height: "100vh" }}
-      >
-        {/* Dashboard */}
-        <div className="mb-3">
-          <Link to="/psikologDashboard" className="nav-link text-white px-3 py-2 mb-1" style={{borderRadius: '4px'}}>
-            🏠 Dashboard
-          </Link>
-        </div>
-
-        {/* News Section */}
-        <div className="mb-3">
-          <div className="text-white mb-2 px-2 py-1">
-            <small className="text-uppercase fw-semibold" style={{fontSize: '0.75rem', letterSpacing: '0.5px'}}>📰 News</small>
-          </div>
-          <Link to="/menaxhoNews" className="nav-link text-white px-3 py-2 mb-1 active" style={{backgroundColor: 'rgba(255,255,255,0.15)', borderRadius: '4px'}}>
-            📋 Menaxho News
-          </Link>
-          <Link to="/add-news" className="nav-link text-white px-3 py-2 mb-1">
-            ➕ Shto News
-          </Link>
-        </div>
-        
-        <div className="mt-auto">
-          <button onClick={handleLogout} className="btn btn-danger w-100 mb-2">
-            🚪 Logout
-          </button>
-          <button onClick={() => navigate('/psikologDashboard')} className="btn btn-secondary w-100">
-            ← Kthehu
-          </button>
-        </div>
-      </div>
+      <PsikologSidePanel section="news" activePath="/menaxhoNews" />
 
       {/* Përmbajtja kryesore */}
       <div className="flex-grow-1" style={{ marginLeft: "250px", backgroundColor: "#f8f9fa" }}>
@@ -106,23 +66,6 @@ const API_BASE_URL = "https://localhost:7062";
               News i Ri
             </Link>
           </div>
-
-          {/* Informacion i psikologit */}
-          {psikologInfo && (
-            <div className="alert alert-primary mb-4">
-              <div className="d-flex justify-content-between align-items-center">
-                <div>
-                  <strong>Psikologu:</strong> {psikologInfo.emri} {psikologInfo.mbiemri}
-                  <span className="ms-3">
-                    <strong>ID:</strong> {psikologInfo.id}
-                  </span>
-                </div>
-                <small className="text-muted">
-                  Të gjitha news do të publikohën me emrin tuaj
-                </small>
-              </div>
-            </div>
-          )}
 
           {/* Statistikat e shpejta */}
           <div className="row mb-4">

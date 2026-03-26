@@ -1,19 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { getAllPatients, deletePacientin } from "../../services/PacientiService";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import { logoutUser } from "../../services/authService";
+import PsikologSidePanel from "./PsikologSidePanel";
 
 function MenaxhoPacientetPsikolog() {
-  const navigate = useNavigate();
   const [pacient, setPacients] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  const handleLogout = async () => {
-    await logoutUser();
-    navigate("/");
-  };
 
   const fetchData = async () => {
     try {
@@ -60,38 +54,7 @@ function MenaxhoPacientetPsikolog() {
 
   return (
     <div className="d-flex" style={{ minHeight: "100vh" }}>
-      {/* Sidebar */}
-      <div
-        className="bg-dark text-white p-3"
-        style={{ width: "250px", position: "fixed", height: "100vh" }}
-      >
-        <h4 className="mb-4 text-center">Psikolog Panel</h4>
-        <ul className="nav flex-column">
-          <li className="nav-item mb-2">
-            <Link to="/psikologDashboard" className="nav-link text-white">
-              🏠 Dashboard
-            </Link>
-          </li>
-          <li className="nav-item mb-2">
-            <Link to="/add-pacientin" className="nav-link text-white">
-              ➕ Shto Pacient
-            </Link>
-          </li>
-          <li className="nav-item mb-2">
-            <Link to="/menaxhoPacientet-Psikolog" className="nav-link text-white">
-              👨‍⚕️ Menaxho Pacientet
-            </Link>
-          </li>
-        </ul>
-        <div className="mt-auto pt-3 border-top">
-          <button onClick={handleLogout} className="btn btn-danger w-100 mb-2">
-            🚪 Logout
-          </button>
-          <button onClick={() => navigate('/psikologDashboard')} className="btn btn-secondary w-100">
-            ← Kthehu
-          </button>
-        </div>
-      </div>
+      <PsikologSidePanel section="paciente" activePath="/menaxhoPacientet-Psikolog" />
 
       {/* Përmbajtja kryesore */}
       <div className="flex-grow-1" style={{ marginLeft: "250px" }}>

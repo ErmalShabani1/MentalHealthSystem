@@ -5,7 +5,6 @@ import { getAllNews } from "../../services/newsService";
 function PatientNewsSection() {
   const [newsList, setNewsList] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [imageStatus, setImageStatus] = useState({});
 
   useEffect(() => {
     fetchLatestNews();
@@ -58,7 +57,6 @@ function PatientNewsSection() {
           console.log(`✅ Imazhi u ngarkua me sukses: ${fullUrl}`);
           setImgSrc(fullUrl);
           setIsLoading(false);
-          setImageStatus(prev => ({ ...prev, [news.id]: 'loaded' }));
         };
         
         testImage.onerror = (error) => {
@@ -85,7 +83,6 @@ function PatientNewsSection() {
             console.error(`❌ Të dyja URL-të dështuan`);
             setHasError(true);
             setIsLoading(false);
-            setImageStatus(prev => ({ ...prev, [news.id]: 'error' }));
           };
           
           fallbackImage.src = httpUrl;
@@ -156,7 +153,7 @@ function PatientNewsSection() {
         <div className="card shadow-sm">
           <div className="card-header bg-white d-flex justify-content-between align-items-center">
             <h5 className="mb-0">📰 Lajmet e Fundit</h5>
-            <Link to="/news" className="btn btn-sm btn-outline-info">
+            <Link to="/newsList" className="btn btn-sm btn-outline-info">
               Shiko të Gjitha
             </Link>
           </div>
@@ -171,24 +168,10 @@ function PatientNewsSection() {
 
   return (
     <div className="col-md-6 mb-4">
-      {/* Debug info */}
-      <div className="alert alert-info alert-sm mb-2">
-        <small>
-          <strong>Statusi i imazheve:</strong>
-          <div className="mt-1">
-            {newsList.map(news => (
-              <span key={news.id} className={`badge me-1 ${imageStatus[news.id] === 'loaded' ? 'bg-success' : imageStatus[news.id] === 'error' ? 'bg-danger' : 'bg-warning'}`}>
-                {news.id}: {imageStatus[news.id] || 'loading'}
-              </span>
-            ))}
-          </div>
-        </small>
-      </div>
-
       <div className="card shadow-sm">
         <div className="card-header bg-white d-flex justify-content-between align-items-center">
           <h5 className="mb-0">📰 Lajmet e Fundit</h5>
-          <Link to="/news" className="btn btn-sm btn-outline-info">
+          <Link to="/newsList" className="btn btn-sm btn-outline-info">
             Shiko të Gjitha
           </Link>
         </div>
@@ -210,21 +193,6 @@ function PatientNewsSection() {
                         <small className="text-muted">
                           <i className="fas fa-user-md me-1"></i>
                           {news.psikologName}
-                        </small>
-                        {/* Debug link */}
-                        <small className="d-block">
-                          <a 
-                            href={`https://localhost:7062${news.imageUrl}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-decoration-none"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              window.open(`https://localhost:7062${news.imageUrl}`, '_blank');
-                            }}
-                          >
-                            Testo imazhin →
-                          </a>
                         </small>
                       </div>
                       <span className="badge bg-light text-dark">

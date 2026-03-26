@@ -1,20 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import axios from "axios";
-import { getAllRaportet, deleteRaportin, getRaportetByPsikologId } from "../../services/RaportService";
-import { logoutUser } from "../../services/authService";
+import { getAllRaportet, deleteRaportin } from "../../services/RaportService";
+import PsikologSidePanel from "./PsikologSidePanel";
 
 function MenaxhoRaportet() {
-  const navigate = useNavigate();
   const [raportet, setRaportet] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filterPatient, setFilterPatient] = useState("Të gjitha");
-
-  const handleLogout = async () => {
-    await logoutUser();
-    navigate("/");
-  };
 
   useEffect(() => {
     fetchRaportet();
@@ -84,40 +77,7 @@ const handleDelete = async (id) => {
 
   return (
     <div className="d-flex" style={{ minHeight: "100vh" }}>
-      {/* Sidebar */}
-      <div
-        className="bg-dark text-white p-3 d-flex flex-column"
-        style={{ width: "250px", position: "fixed", height: "100vh" }}
-      >
-        {/* Dashboard */}
-        <div className="mb-3">
-          <Link to="/psikologDashboard" className="nav-link text-white px-3 py-2 mb-1" style={{borderRadius: '4px'}}>
-            🏠 Dashboard
-          </Link>
-        </div>
-
-        {/* Pacientët Section */}
-        <div className="mb-3">
-          <div className="text-white mb-2 px-2 py-1">
-            <small className="text-uppercase fw-semibold" style={{fontSize: '0.75rem', letterSpacing: '0.5px'}}>📖 Pacientët</small>
-          </div>
-          <Link to="/menaxhoRaportet" className="nav-link text-white px-3 py-2 mb-1 active" style={{backgroundColor: 'rgba(255,255,255,0.15)', borderRadius: '4px'}}>
-            👨‍⚕️ Menaxho Raportet
-          </Link>
-          <Link to="/add-raportin" className="nav-link text-white px-3 py-2 mb-1">
-            ➕ Shto Raport
-          </Link>
-        </div>
-        
-        <div className="mt-auto">
-          <button onClick={handleLogout} className="btn btn-danger w-100 mb-2">
-            🚪 Logout
-          </button>
-          <button onClick={() => navigate('/psikologDashboard')} className="btn btn-secondary w-100">
-            ← Kthehu
-          </button>
-        </div>
-      </div>
+      <PsikologSidePanel section="raporte" activePath="/menaxhoRaportet" />
 
       {/* Përmbajtja kryesore */}
       <div className="flex-grow-1" style={{ marginLeft: "250px", backgroundColor: "#f8f9fa" }}>

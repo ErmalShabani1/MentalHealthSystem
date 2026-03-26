@@ -15,6 +15,15 @@ function MenaxhoUserat() {
     navigate("/");
   };
 
+  const handleBack = () => {
+    if (window.history.length > 1) {
+      navigate(-1);
+      return;
+    }
+
+    navigate("/adminDashboard");
+  };
+
   const fetchData = async () => {
     try {
       setLoading(true);
@@ -86,7 +95,7 @@ function MenaxhoUserat() {
           <button onClick={handleLogout} className="btn btn-danger w-100 mb-2">
             🚪 Logout
           </button>
-          <button onClick={() => navigate('/adminDashboard')} className="btn btn-secondary w-100">
+          <button onClick={handleBack} className="btn btn-secondary w-100">
             ← Kthehu
           </button>
         </div>

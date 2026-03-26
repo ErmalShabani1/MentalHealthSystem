@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { getUshtrimById, updateUshtrim } from "../../services/UshtrimiService";
-import { logoutUser } from "../../services/authService";
 import axios from "axios";
+import PsikologSidePanel from "./PsikologSidePanel";
 
 function EditUshtrimin() {
   const { id } = useParams();
@@ -19,11 +19,6 @@ function EditUshtrimin() {
   const [loading, setLoading] = useState(false);
   const [ushtrimLoading, setUshtrimLoading] = useState(true);
   const [patientsLoading, setPatientsLoading] = useState(true);
-
-  const handleLogout = async () => {
-    await logoutUser();
-    navigate("/");
-  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -125,57 +120,7 @@ function EditUshtrimin() {
 
   return (
     <div className="d-flex" style={{ minHeight: "100vh" }}>
-      {/* Sidebar */}
-      <div
-        className="bg-dark text-white p-3 d-flex flex-column"
-        style={{ width: "250px", position: "fixed", height: "100vh" }}
-      >
-        <div className="mb-3">
-          <Link
-            to="/psikologDashboard"
-            className="nav-link text-white px-3 py-2 mb-1"
-            style={{ borderRadius: "4px" }}
-          >
-            🏠 Dashboard
-          </Link>
-        </div>
-
-        {/* Ushtrimet Section */}
-        <div className="mb-3">
-          <div className="text-white mb-2 px-2 py-1">
-            <small
-              className="text-uppercase fw-semibold"
-              style={{ fontSize: "0.75rem", letterSpacing: "0.5px" }}
-            >
-              💪 Ushtrimet
-            </small>
-          </div>
-          <Link
-            to="/add-ushtrim"
-            className="nav-link text-white px-3 py-2 mb-1"
-          >
-            ➕ Shto Ushtrim
-          </Link>
-          <Link
-            to="/menaxho-ushtrimet"
-            className="nav-link text-white px-3 py-2 mb-1"
-          >
-            📊 Menaxho Ushtrimet
-          </Link>
-        </div>
-
-        <div className="mt-auto">
-          <button
-            onClick={handleLogout}
-            className="btn btn-danger w-100 mb-2"
-          >
-            🚪 Logout
-          </button>
-          <button onClick={handleGoBack} className="btn btn-secondary w-100">
-            ← Kthehu
-          </button>
-        </div>
-      </div>
+      <PsikologSidePanel section="ushtrime" activePath="/menaxho-ushtrimet" />
 
       {/* Përmbajtja kryesore */}
       <div

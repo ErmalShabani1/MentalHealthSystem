@@ -1,5 +1,12 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+  Outlet,
+  useLocation,
+} from "react-router-dom";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import { ToastContainer } from "react-toastify";
@@ -50,7 +57,39 @@ import EditNotification from "./pages/Psikolog/EditNotification";
 import MyNotifications from "./pages/Pacient/MyNotifications";
 import MenaxhoPacientetPsikolog from "./pages/Psikolog/MenaxhoPacientetPsikolog";
 import RaportetAdmin from "./pages/Admin/RaportetAdmin";
+import PendingAuthorization from "./pages/PendingAuthorization";
 
+
+function getDashboardByRole(role) {
+  if (role === "Pacient") return "/pacientDashboard";
+  if (role === "Psikolog") return "/psikologDashboard";
+  if (role === "Admin") return "/adminDashboard";
+  return "/login";
+}
+
+function RequireAuth() {
+  const location = useLocation();
+  const rawUser = localStorage.getItem("user");
+  const parsedUser = rawUser ? JSON.parse(rawUser) : null;
+  const role = localStorage.getItem("role") || parsedUser?.role || "";
+
+  if (!role) {
+    return <Navigate to="/login" replace state={{ from: location }} />;
+  }
+
+  if (role === "User") {
+    if (location.pathname !== "/pending-authorization") {
+      return <Navigate to="/pending-authorization" replace />;
+    }
+    return <Outlet />;
+  }
+
+  if (location.pathname === "/pending-authorization") {
+    return <Navigate to={getDashboardByRole(role)} replace />;
+  }
+
+  return <Outlet />;
+}
 
 
 
@@ -62,6 +101,8 @@ function App() {
         <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
+        <Route element={<RequireAuth />}>
+         <Route path="/pending-authorization" element={<PendingAuthorization />} />
          <Route path="/adminDashboard" element={<AdminDashboard />} />
            {/* Psikolog&User Routes */}
           <Route path="/add-psikologin" element={<AddPsikologinForm />} />
@@ -119,6 +160,7 @@ function App() {
           <Route path="/add-notification" element={<AddNotification />} />
           <Route path="/edit-notification/:id" element={<EditNotification />} />
           <Route path="/my-notifications" element={<MyNotifications />} />
+        </Route>
       </Routes>
     </Router>
   );

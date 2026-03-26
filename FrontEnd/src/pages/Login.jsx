@@ -58,6 +58,8 @@ const navigate = useNavigate();
           navigate("/pacientDashboard");
         } else if (userData.role === "Psikolog") {
           navigate("/psikologDashboard");
+        } else if (userData.role === "User") {
+          navigate("/pending-authorization");
         } else {
           navigate("/adminDashboard");
         }

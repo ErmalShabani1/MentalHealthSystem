@@ -10,14 +10,30 @@ function NewsList() {
   const [loading, setLoading] = useState(true);
   const [userRole, setUserRole] = useState("");
 
+  const getDashboardRouteByRole = (role) => {
+    if (role === "Psikolog") return "/psikologDashboard";
+    if (role === "Admin") return "/adminDashboard";
+    return "/pacientDashboard";
+  };
+
   const handleLogout = async () => {
     await logoutUser();
     navigate("/");
   };
 
+  const handleBack = () => {
+    if (window.history.length > 1) {
+      navigate(-1);
+      return;
+    }
+
+    navigate(getDashboardRouteByRole(userRole));
+  };
+
   useEffect(() => {
-    // Merr rolin e përdoruesit
-    const role = localStorage.getItem("userRole") || "";
+    // Merr rolin e përdoruesit nga çelësat që përdoren në app
+    const role =
+      localStorage.getItem("userRole") || localStorage.getItem("role") || "";
     setUserRole(role);
 
     // Merr të gjitha news
@@ -139,7 +155,7 @@ function NewsList() {
               </Link>
             </li>
             <li className="nav-item mb-2">
-              <Link to="/news" className="nav-link text-white active">
+              <Link to="/newsList" className="nav-link text-white active">
                 📰 Lajmet
               </Link>
             </li>
@@ -169,7 +185,7 @@ function NewsList() {
               </Link>
             </li>
             <li className="nav-item mb-2">
-              <Link to="/news" className="nav-link text-white active">
+              <Link to="/newsList" className="nav-link text-white active">
                 📰 Lajmet
               </Link>
             </li>
@@ -194,7 +210,7 @@ function NewsList() {
               </Link>
             </li>
             <li className="nav-item mb-2">
-              <Link to="/news" className="nav-link text-white active">
+              <Link to="/newsList" className="nav-link text-white active">
                 📰 Lajmet
               </Link>
             </li>
@@ -205,7 +221,7 @@ function NewsList() {
           <button onClick={handleLogout} className="btn btn-danger w-100 mb-2">
             🚪 Logout
           </button>
-          <button onClick={() => navigate('/pacientDashboard')} className="btn btn-secondary w-100">
+          <button onClick={handleBack} className="btn btn-secondary w-100">
             ← Kthehu
           </button>
         </div>
@@ -239,33 +255,6 @@ function NewsList() {
               </Link>
             </div>
           )}
-
-          {/* Debug info */}
-          <div className="alert alert-info mb-3">
-            <small>
-              <strong>Informacion debug:</strong>
-              <div className="mt-1">
-                <span className="badge bg-secondary me-1">Total News: {newsList.length}</span>
-                <span className="badge bg-info me-1">
-                  Me Foto: {newsList.filter(n => n.imageUrl).length}
-                </span>
-                <button 
-                  className="btn btn-sm btn-outline-warning"
-                  onClick={() => {
-                    newsList.forEach(news => {
-                      console.log(`News ${news.id}:`, {
-                        imageUrl: news.imageUrl,
-                        fullUrl: getFullImageUrl(news.imageUrl),
-                        backendUrl: `https://localhost:7062${news.imageUrl}`
-                      });
-                    });
-                  }}
-                >
-                  Log URL Details
-                </button>
-              </div>
-            </small>
-          </div>
 
           {loading ? (
             <div className="text-center py-5">
@@ -333,21 +322,6 @@ function NewsList() {
                           Shiko më shumë
                         </button>
                         
-                        {/* Debug link - mund të hiqet më vonë */}
-                        <small className="d-block text-center mt-1">
-                          <a 
-                            href={getFullImageUrl(news.imageUrl)}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-decoration-none"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              window.open(getFullImageUrl(news.imageUrl), '_blank');
-                            }}
-                          >
-                            <small>Open image</small>
-                          </a>
-                        </small>
                       </div>
                     </div>
                   </div>

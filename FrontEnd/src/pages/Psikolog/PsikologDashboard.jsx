@@ -123,14 +123,6 @@ function PsikologDashboard() {
       return false;
     }
   }).length;
-  
-  const updatedReports = raportet.filter(rap => {
-    return rap.updatedAt && rap.updatedAt !== rap.createdAt && rap.updatedAt !== (rap.date || rap.createdDate);
-  }).length;
-  
-  const uniquePatientsWithReports = [...new Set(raportet.map(rap => 
-    rap.patientName || rap.pacientName || 'Pacient i panjohur'
-  ).filter(name => name !== 'Pacient i panjohur'))].length;
 
   // Përgatit të dhëna për grafikët
   const chartData = [

@@ -2,17 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { getTherapySessionById, updateTherapySession } from "../../services/TherapySessionService";
-import { Link } from "react-router-dom";
-import { logoutUser } from "../../services/authService";
+import PsikologSidePanel from "./PsikologSidePanel";
 
 function EditTherapySession() {
   const { id } = useParams();
   const navigate = useNavigate();
-
-  const handleLogout = async () => {
-    await logoutUser();
-    navigate("/");
-  };
 
   const [formData, setFormData] = useState({
     sessionDate: "",
@@ -128,7 +122,7 @@ function EditTherapySession() {
   };
 
   const handleGoBack = () => {
-    navigate("/menaxhoSeancat");
+    navigate("/menaxhoTerapine");
   };
 
   if (fetchLoading) {
@@ -158,48 +152,7 @@ function EditTherapySession() {
 
   return (
     <div className="d-flex" style={{ minHeight: "100vh" }}>
-      {/* Sidebar */}
-      <div
-        className="bg-dark text-white p-3"
-        style={{ width: "250px", position: "fixed", height: "100vh", overflowY: "auto" }}
-      >
-        <h4 className="mb-4 text-center">Psikolog Panel</h4>
-        <ul className="nav flex-column">
-          <li className="nav-item mb-2">
-            <Link to="/psikologDashboard" className="nav-link text-white">
-              🏠 Dashboard
-            </Link>
-          </li>
-          <li className="nav-item mb-2">
-            <Link to="/add-seancen" className="nav-link text-white">
-              📝 Shto Seancë
-            </Link>
-          </li>
-          <li className="nav-item mb-2">
-            <Link to="/menaxhoSeancat" className="nav-link text-white active">
-              📊 Menaxho Seancat
-            </Link>
-          </li>
-          <li className="nav-item mb-2">
-            <Link to="/menaxhoTakimet" className="nav-link text-white">
-              📋 Menaxho Takimet
-            </Link>
-          </li>
-          <li className="nav-item mb-2">
-            <Link to="/pacientetEMi" className="nav-link text-white">
-              👥 Pacientët e Mi
-            </Link>
-          </li>
-        </ul>
-        <div className="mt-auto pt-3 border-top">
-          <button onClick={handleLogout} className="btn btn-danger w-100 mb-2">
-            🚪 Logout
-          </button>
-          <button onClick={() => navigate('/psikologDashboard')} className="btn btn-secondary w-100">
-            ← Kthehu
-          </button>
-        </div>
-      </div>
+      <PsikologSidePanel section="terapi" activePath="/menaxhoTerapine" />
 
       {/* Përmbajtja kryesore */}
       <div className="flex-grow-1" style={{ marginLeft: "250px", backgroundColor: "#f8f9fa" }}>

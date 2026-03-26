@@ -1,19 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { getAllTherapySessions, deleteTherapySession } from "../../services/TherapySessionService";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import { logoutUser } from "../../services/authService";
+import PsikologSidePanel from "./PsikologSidePanel";
 
 function MenaxhoTerapine() {
-  const navigate = useNavigate();
   const [sessions, setSessions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filterStatus, setFilterStatus] = useState("Të gjitha");
-
-  const handleLogout = async () => {
-    await logoutUser();
-    navigate("/");
-  };
 
   const fetchData = async () => {
     try {
@@ -68,53 +62,9 @@ function MenaxhoTerapine() {
     return <span className={`badge ${config.class}`}>{config.label}</span>;
   };
 
-  const getSessionTypeBadge = (type) => {
-    const typeConfig = {
-      'Individual': { class: 'bg-primary', label: 'Individuale' },
-      'Group': { class: 'bg-info', label: 'Grupore' },
-      'Family': { class: 'bg-success', label: 'Familjare' }
-    };
-    
-    const config = typeConfig[type] || { class: 'bg-secondary', label: type };
-    return <span className={`badge ${config.class}`}>{config.label}</span>;
-  };
-
   return (
     <div className="d-flex" style={{ minHeight: "100vh" }}>
-      {/* Sidebar */}
-      <div
-        className="bg-dark text-white p-3 d-flex flex-column"
-        style={{ width: "250px", position: "fixed", height: "100vh" }}
-      >
-        {/* Dashboard */}
-        <div className="mb-3">
-          <Link to="/psikologDashboard" className="nav-link text-white px-3 py-2 mb-1" style={{borderRadius: '4px'}}>
-            🏠 Dashboard
-          </Link>
-        </div>
-
-        {/* Terapia Section */}
-        <div className="mb-3">
-          <div className="text-white mb-2 px-2 py-1">
-            <small className="text-uppercase fw-semibold" style={{fontSize: '0.75rem', letterSpacing: '0.5px'}}>🧘 Terapia</small>
-          </div>
-          <Link to="/menaxhoTerapine" className="nav-link text-white px-3 py-2 mb-1 active" style={{backgroundColor: 'rgba(255,255,255,0.15)', borderRadius: '4px'}}>
-            📋 Menaxho Seanca
-          </Link>
-          <Link to="/add-terapine" className="nav-link text-white px-3 py-2 mb-1">
-            ➕ Shto Seancë
-          </Link>
-        </div>
-        
-        <div className="mt-auto">
-          <button onClick={handleLogout} className="btn btn-danger w-100 mb-2">
-            🚪 Logout
-          </button>
-          <button onClick={() => navigate('/psikologDashboard')} className="btn btn-secondary w-100">
-            ← Kthehu
-          </button>
-        </div>
-      </div>
+      <PsikologSidePanel section="terapi" activePath="/menaxhoTerapine" />
 
       {/* Main Content */}
       <div className="flex-grow-1" style={{ marginLeft: "250px", backgroundColor: "#f8f9fa" }}>

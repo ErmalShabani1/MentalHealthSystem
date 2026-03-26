@@ -20,7 +20,12 @@ export const logoutUser = async () => {
         console.error("Logout request failed:", err?.response || err);
     }
     localStorage.removeItem("user");
+    localStorage.removeItem("role");
     localStorage.removeItem("psikologId");
+    localStorage.removeItem("patientId");
+    localStorage.removeItem("userRole");
+    localStorage.removeItem("token");
+    localStorage.removeItem("authToken");
 
     window.location.href = "/login";
 }

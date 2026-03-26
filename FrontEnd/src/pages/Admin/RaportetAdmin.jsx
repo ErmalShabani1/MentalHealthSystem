@@ -21,6 +21,15 @@ function RaportetAdmin() {
     navigate("/");
   };
 
+  const handleBack = () => {
+    if (window.history.length > 1) {
+      navigate(-1);
+      return;
+    }
+
+    navigate("/adminDashboard");
+  };
+
   useEffect(() => {
     fetchRaportet();
     fetchStats();
@@ -130,7 +139,7 @@ autoTable(doc, {
           <button onClick={handleLogout} className="btn btn-danger w-100 mb-2">
             🚪 Logout
           </button>
-          <button onClick={() => navigate('/adminDashboard')} className="btn btn-secondary w-100">
+          <button onClick={handleBack} className="btn btn-secondary w-100">
             ← Kthehu
           </button>
         </div>

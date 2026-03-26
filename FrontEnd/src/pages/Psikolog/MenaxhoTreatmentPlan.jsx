@@ -1,19 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { getTreatmentPlansForPsikolog, deleteTreatmentPlan } from "../../services/TreatmentPlanService";
-import { logoutUser } from "../../services/authService";
+import PsikologSidePanel from "./PsikologSidePanel";
 
 function MenaxhoTreatmentPlan() {
-  const navigate = useNavigate();
   const [treatmentPlans, setTreatmentPlans] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filterStatus, setFilterStatus] = useState("Të gjitha");
-
-  const handleLogout = async () => {
-    await logoutUser();
-    navigate("/");
-  };
 
   // Merr treatment plan-et nga backend
   const fetchData = async () => {
@@ -84,40 +78,7 @@ function MenaxhoTreatmentPlan() {
 
   return (
     <div className="d-flex" style={{ minHeight: "100vh" }}>
-      {/* Sidebar - I njëjtë si në komponentët e tjerë */}
-      <div
-        className="bg-dark text-white p-3 d-flex flex-column"
-        style={{ width: "250px", position: "fixed", height: "100vh" }}
-      >
-        {/* Dashboard */}
-        <div className="mb-3">
-          <Link to="/psikologDashboard" className="nav-link text-white px-3 py-2 mb-1" style={{borderRadius: '4px'}}>
-            🏠 Dashboard
-          </Link>
-        </div>
-
-        {/* Treatment Plan Section */}
-        <div className="mb-3">
-          <div className="text-white mb-2 px-2 py-1">
-            <small className="text-uppercase fw-semibold" style={{fontSize: '0.75rem', letterSpacing: '0.5px'}}>📋 Treatment Plan</small>
-          </div>
-          <Link to="/menaxho-treatmentplan" className="nav-link text-white px-3 py-2 mb-1 active" style={{backgroundColor: 'rgba(255,255,255,0.15)', borderRadius: '4px'}}>
-            📊 Menaxho Planet
-          </Link>
-          <Link to="/add-treatmentplan" className="nav-link text-white px-3 py-2 mb-1">
-            ➕ Shto Plan
-          </Link>
-        </div>
-        
-        <div className="mt-auto">
-          <button onClick={handleLogout} className="btn btn-danger w-100 mb-2">
-            🚪 Logout
-          </button>
-          <button onClick={() => navigate('/psikologDashboard')} className="btn btn-secondary w-100">
-            ← Kthehu
-          </button>
-        </div>
-      </div>
+      <PsikologSidePanel section="treatmentPlan" activePath="/menaxho-treatmentplan" />
 
       {/* Përmbajtja kryesore */}
       <div className="flex-grow-1" style={{ marginLeft: "250px", backgroundColor: "#f8f9fa" }}>

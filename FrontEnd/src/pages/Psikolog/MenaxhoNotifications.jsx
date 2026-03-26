@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { getNotificationsByPsikolog, deleteNotification } from '../../services/NotificationService';
+import PsikologSidePanel from './PsikologSidePanel';
 import '../../styles/auth.css';
 
 function MenaxhoNotifications() {
@@ -39,11 +40,6 @@ function MenaxhoNotifications() {
         }
     };
 
-    const handleLogout = () => {
-        document.cookie = 'jwt=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-        navigate('/login');
-    };
-
     const formatDate = (dateString) => {
         if (!dateString) return 'N/A';
         const date = new Date(dateString);
@@ -57,37 +53,8 @@ function MenaxhoNotifications() {
     };
 
     return (
-        <div className="d-flex">
-            {/* Sidebar */}
-            <div className="bg-dark text-white p-3 d-flex flex-column" style={{ width: "250px", position: "fixed", height: "100vh" }}>
-                <div className="mb-3">
-                    <Link to="/psikologDashboard" className="nav-link text-white px-3 py-2 mb-1" style={{ backgroundColor: "rgba(255,255,255,0.15)", borderRadius: "4px" }}>
-                        🏠 Dashboard
-                    </Link>
-                </div>
-                <div className="mb-3">
-                    <div className="text-white mb-2 px-2 py-1">
-                        <small className="text-uppercase fw-semibold" style={{ fontSize: "0.75rem", letterSpacing: "0.5px" }}>
-                            📢 NJOFTIMET
-                        </small>
-                    </div>
-                    <Link to="/add-notification" className="nav-link text-white px-3 py-2 mb-1">
-                        ➕ Shto Njoftim
-                    </Link>
-                    <Link to="/menaxho-notifications" className="nav-link text-white px-3 py-2 mb-1 active" style={{ backgroundColor: "rgba(255,255,255,0.15)", borderRadius: "4px" }}>
-                        📊 Menaxho Njoftimet
-                    </Link>
-                </div>
-
-                <div className="mt-auto">
-                    <button onClick={handleLogout} className="btn btn-danger w-100 mb-2">
-                        🚪 Logout
-                    </button>
-                    <button onClick={() => navigate('/psikologDashboard')} className="btn btn-secondary w-100">
-                        ← Kthehu
-                    </button>
-                </div>
-            </div>
+        <div className="d-flex" style={{ minHeight: "100vh" }}>
+            <PsikologSidePanel section="njoftime" activePath="/menaxho-notifications" />
 
             {/* Përmbajtja kryesore */}
             <div className="flex-grow-1" style={{ marginLeft: "250px", backgroundColor: "#f8f9fa" }}>

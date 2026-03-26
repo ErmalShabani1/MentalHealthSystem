@@ -15,6 +15,15 @@ function ShfaqTerapine() {
     navigate("/");
   };
 
+  const handleBack = () => {
+    if (window.history.length > 1) {
+      navigate(-1);
+      return;
+    }
+
+    navigate("/pacientDashboard");
+  };
+
   const fetchData = async () => {
     try {
       setLoading(true);
@@ -56,17 +65,6 @@ function ShfaqTerapine() {
     return <span className={`badge ${config.class}`}>{config.label}</span>;
   };
 
-  const getSessionTypeBadge = (type) => {
-    const typeConfig = {
-      'Individual': { class: 'bg-primary', label: 'Individuale' },
-      'Group': { class: 'bg-info', label: 'Grupore' },
-      'Family': { class: 'bg-success', label: 'Familjare' }
-    };
-    
-    const config = typeConfig[type] || { class: 'bg-secondary', label: type };
-    return <span className={`badge ${config.class}`}>{config.label}</span>;
-  };
-
   return (
     <div className="d-flex" style={{ minHeight: "100vh" }}>
       {/* Sidebar */}
@@ -99,7 +97,7 @@ function ShfaqTerapine() {
         </div>
         
         <div className="mt-auto">
-          <button onClick={() => navigate('/pacientDashboard')} className="btn btn-secondary w-100 mb-2">
+          <button onClick={handleBack} className="btn btn-secondary w-100 mb-2">
             ⬅️ Kthehu
           </button>
           <button onClick={handleLogout} className="btn btn-danger w-100">
